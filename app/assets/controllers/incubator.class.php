@@ -24,6 +24,7 @@ class controller_incubator extends controller {
 		$this->bind("(?P<id>[0-9]+)/admin$", "renderAdmin");
 		$this->bind("(?P<id>[0-9]+)/admin/update$", "adminSave");
 		$this->bind("(?P<id>[0-9]+)/admin/promote$", "adminPromote");
+		$this->bind("(?P<id>[0-9]+)/admin/addMembers$", "addMembers");
 
 
 		$this->bindDefault('incubatorIndex');
@@ -404,6 +405,29 @@ class controller_incubator extends controller {
 			$this->setViewport($v);
 		}	
 	
+	}
+
+	protected function addMembers($args){
+		$this->m_noRender = true;
+		
+		if(count($_POST['users']) == 0) return;
+		
+		$id = $args['id'];
+		
+		$project = new project((int)$id);
+		
+		if($this->m_user->getEnrollment($project, resource::MEMBERSHIP_ADMIN)){
+			foreach($_POST['users'] as $userid){
+				$user = new user((int)$userid);
+				
+				$project->promoteUser($this->m_user, $user, resource::MEMBERSHIP_ADMIN);
+				$return = array("status" => 200);
+			}
+		} else {
+			$return = array("status" => 500, "details" => "You do not have adequate permissions to perform this function.");
+		}
+		
+		echo json_encode($return);
 	}
 
 	protected function vote(){

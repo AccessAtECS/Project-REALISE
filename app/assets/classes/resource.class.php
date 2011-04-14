@@ -76,6 +76,16 @@ abstract class resource extends dbo {
 		return true;
 	}
 	
+	public function promoteUser(user $currentUser, user $promotionUser, $role = resource::MEMBERSHIP_USER){
+		if(get_class($this) != "project") throw new Exception("This type of resource does not support user roles.");
+		
+		$db = db::singleton();
+		$check = $db->single("SELECT id FROM " . get_class($this) . "_user WHERE " . get_class($this) . "_id = '{$this->getId()}' AND user_id = '{$promotionUser->getId()}'");
+		if(empty($check)) throw new Exception("This user is not associated with this " . get_class($this) . ".");
+		$db->single("UPDATE " . get_class($this) . "_user SET role = " . $db->real_escape_string($role) . " WHERE " . get_class($this) . "_id ='{$this->getId()}' AND user_id = '{$promotionUser->getId()}'");
+		return true;
+	}
+	
 	public function voteClear(user $user) {
 		$db = db::singleton();
 		$check = $db->single("SELECT id FROM " . get_class($this) . "_user WHERE " . get_class($this) . "_id = {$this->getId()} AND user_id = {$user->getId()}");
@@ -94,7 +104,7 @@ abstract class resource extends dbo {
 			$this->totalVotes = $votes[0]['count'];
 		}
 		return $this->totalVotes;
-	}	
+	}
 	
 	public function getVoters($filter = resource::MEMBERSHIP_ANY){
 		$sql = "SELECT user_id FROM " . get_class($this) . "_user WHERE " . get_class($this) . "_id = '{$this->getId()}'";
