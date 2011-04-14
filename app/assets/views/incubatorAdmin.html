@@ -1,0 +1,75 @@
+<div id="theIdea" class="contentItem">
+	<img src="{image}" align="right" alt="{title} image" id="ideaImage" />
+	<h1>Incubated Administration for {title}</h1>
+	
+	<p>
+		Progress to full project:
+	    <div id="pbarHolder">
+		    <div class="pbar"><div class="pbar_progress" style="width:{percentage}%"></div></div>
+		    <div class="projectPercentage">{percentage}%</div>
+	    </div>
+	</p>
+
+	<form action="admin/update" method="post" enctype="multipart/form-data">
+		<p id="overviewHolder">
+			<label for="overview">Overview:</label><br />
+			<textarea cols="50" rows="5" name="overview" id="overview">{overview}</textarea>
+			<div id="charCount">Characters: <span id="currCharCount">{chars}</span>/100</div>
+		</p>
+		
+		<p id="descriptionHolder">
+			<label for="description">Description:</label><br />
+			<textarea cols="50" rows="10" name="description" id="description">{description}</textarea>
+		</p>
+	
+		<div id="tagHolder"><div id="tagTitle">Tags</div></div><br style="clear:both" />
+		
+		<input type="text" value="{tags}" name="tags" id="tags" size="70" />
+
+		<br /><br />
+	
+		<label for="image">Image:</label><br />
+		<input type="file" name="image" id="image" />
+
+		<div id="steps">
+			<h3>Steps to becoming a full project</h3>		
+			<p>
+				<label for="url">1. Project URL:</label><br />
+				<input type="text" name="url" value="{url}" id='url' size="70" />
+			</p>	
+			<p>
+				<label for="licence">2. Licence:</label><br />
+				<select id="licence" name="licence">
+					{licenses}
+					<option value="0">None Selected</option>
+				</select>
+			</p>	
+
+			<p>
+				<label for="community">3. Your community:</label><br />
+				<input type="text" name="community" value="{community-url}" id='community' size="70" />
+			</p>	
+			
+			<p>
+				<label for="scm">4. Tracking and bug fixes:</label><br />
+				<input type="text" name="scm" value="{scm-url}" id='scm' size="70" />
+			</p>	
+			
+			<p>
+				<label for="repo">5. Repository URL:</label><br />
+				<input type="text" name="repo" value="{repo-url}" id='repo' size="70" />
+			</p>			
+			
+		</div>
+		
+		<br style="clear:both" />
+		<br style="clear:both" />
+		<input type="submit" value="Update" id="updateButton" />
+	</form>
+	
+	<form action="admin/promote">
+		<input type="submit" value="Promote" id="promoteButton"{promoteDisabled} />
+		<input type="hidden" name="promote_status" value="1" />
+	</form>
+
+</div>

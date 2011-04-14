@@ -1,0 +1,28 @@
+<div id="theIdea">
+	<img src="{image}" align="right" alt="{title} image" />
+	<h1>{title}</h1>
+	<p>{description}</p>
+	
+    <div style="width:200px; margin-top:10px; float:right; clear: right">
+		{openness-progress}
+    </div>	
+	
+	<div id="urlcontainer">
+		<a href="{website}" class="homepageurl projecturl">Project Website</a>
+  		<a href="{community-website}" class="communityurl projecturl">Community Website</a>
+  		<a href="{license-url}" class="licenseurl projecturl">Licensed under the {licence} licence</a>
+  		<a href="{scm-url}" class="scmurl projecturl">Tracking and bug fixes</a>
+  		<a href="{repo-url}" class="repourl projecturl">Project code repository</a>
+	</div>
+	
+	<p id="categoryHolder">Listed in the <a href="/category/{cat-id}">{category}</a> category</p>
+	
+	<div id="tagHolder"><div id="tagTitle">Tags</div>{tags}</div>
+	
+	<br style="clear:both" /><br />
+	
+	<div id="originalIdea">This project came out of the <a href="/idea/{ideaID}">{ideaName}</a> idea.</div>
+	{buttons}
+	<br /><br /><br />
+	{comment-block}
+</div>

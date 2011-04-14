@@ -1,0 +1,51 @@
+<div id="incubate">
+	<h1>Ready to take {idea} further?</h1>
+
+	<p style="text-align:left">
+	
+	Before you progress, consider the following:
+	<ol>
+		<li>Have you got a website?</li>
+		<li>Building a community</li>
+		<li>Which licence to choose</li>
+		<li>Tracking Development</li>
+		<li>Where to keep the code</li>
+	</ol>
+
+	</p>
+
+	<p style="text-align:left">Are you ready to start taking this idea towards a project?</p>
+
+	<form id="incubateForm" action="incubate/confirm" method="post" enctype="multipart/form-data">
+		<label for="name">Choose a name for your incubated project (different to the original idea):</label><br />
+		<input type="text" name="name" id="name" placeholder="Enter a project name here" size="60" /><br /><br />
+
+		<label for="overview">Add a quick overview of the project:</label><br />
+		<textarea id="overview" name="overview" cols="50" rows="4"></textarea><br /><br />
+
+		
+		<label for="description">Add a description to the new incubated project:</label><br />
+		<textarea id="description" name="description" cols="50" rows="10"></textarea><br /><br />
+		
+		<label for="tags">Add any tags you would like to associate with this incubated project:</label><br />
+		<input type="text" name="tags" id="tags" placeholder="Enter tags here..." value="" size="60" /><br />
+		<p class="smtext">Enter tags here separated by a space.</p>
+		<input type="hidden" id="id" name="id" value="{id}" />
+		
+		<label for="category">Category:</label>
+		<select id="category" name="category">
+			{categories}
+		</select>
+		
+		<br /><br />
+		
+		<label for="image">Image:</label>
+		<input type="file" name="image" id="image" />
+		
+		<br style="clear:both" />		
+		
+		<div id="buttonControls"><button id="accept">Incubate!</button> <button id="cancel" onclick="javascript:history.back(); return false;">Cancel</button></div>
+	</form>
+	
+
+</div>

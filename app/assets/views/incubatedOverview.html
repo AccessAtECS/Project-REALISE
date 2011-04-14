@@ -1,0 +1,23 @@
+<div id="theIdea">
+	<img src="{image}" align="right" alt="{title} image" />
+
+    <div style="width:200px; margin-top:10px; float:right; clear: right">
+    Progress to full project:
+	    <div class="pbar"><div class="pbar_progress" style="width:{percentage}%"></div></div>
+	    <div class="projectPercentage">{percentage}%</div>
+    </div>
+
+	<h1>{title}</h1>
+	<p style="clear:both">{description}</p>
+	
+	<p id="categoryHolder">Listed in the <a href="/category/{cat-id}">{category}</a> category</p>
+	
+	<div id="tagHolder"><div id="tagTitle">Tags</div>{tags}</div>
+	
+	<br style="clear:both" /><br />
+	
+	<div id="originalIdea">This incubated project came out of the <a href="/idea/{ideaID}">{ideaName}</a> idea.</div>
+	{buttons}
+	<br /><br /><br />
+	{comment-block}
+</div>

@@ -1,0 +1,28 @@
+<div id="theIdea">
+	<img src="{image}" align="right" alt="{title} image" id="ideaImage" />
+	<h1>{title}</h1>
+	
+	<div id="ownerHolder"><img src="{ownerPic}" align="left" height="50" width="50" alt="{owner}'s picture" /> Suggested by {owner}</div>
+	
+	<p id="descriptionHolder">{description}</p>
+	<p id="categoryHolder">Listed in the <a href="/category/{cat-id}">{category}</a> category</p>
+	
+	{linked-projects}	
+
+	<br style="clear:both" />
+
+
+		
+	<div id="tagHolder"><div id="tagTitle">Tags</div>{tags}</div>
+	
+	<br style="clear:both" />
+	<p>
+	<a href="#" id="vote">
+		<img id="voteImage" src="{vote}" alt="vote"> <span style="margin-left:5px" class="voteCount">{voteCount}</span> votes
+	</a>
+	{extraButtons}
+	</p>
+	
+	<br /><br /><br />
+	{comment-block}
+</div>

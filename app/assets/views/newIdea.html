@@ -1,0 +1,18 @@
+<div id="newIdea" class="contentPad">
+	<h1>Add a new idea</h1>
+	<form action="new/add" method="post">
+		<p><label for="ideaTitle">Idea Title:</label> <br /><input type="text" name="ideaTitle" id="ideaTitle" placeholder="Title of the idea" style="width:700px" autofocus /></p>
+		<p>
+			<label for="overview">A quick overview:</label><br /> <textarea name="overview" id="overview" cols="98" rows="5">{overview}</textarea>
+			<div id="charCount">Characters: <span id="currCharCount">0</span>/100</div>
+		</p>
+		<p><label for="description">A more lengthy description of the project:</label><br /> <textarea name="description" id="description" cols="98" rows="10"></textarea></p>
+		<p><label for="tags">Tags:</label><br /> <input name="tags" id="tags" type="text" placeholder="Enter tags here..." style="width:700px;" /></p>
+		<span class="smtext">Enter tags here separated by a space.</span><br /><br />
+		<label for="category">Category:</label><br />
+		<select id="category" name="category">
+			{categories}
+		</select>
+		<p><input type="submit" value="Submit Idea" /></p>
+	</form>
+</div>

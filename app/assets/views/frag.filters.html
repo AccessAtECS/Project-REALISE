@@ -1,0 +1,18 @@
+<div id="filters">
+	<h1>FILTERS</h1>
+	<form>
+		<label for="search">Name contains:</label>
+		<input id="search" name="search" type="search" />
+		
+		<br />
+		
+		<label for="category">In category:</label>
+		<select name="category" id="category">
+			<option value="0">Any</option>
+			{categories}
+		</select>
+		
+		<br /><br />
+		<input type="submit" value="Filter" />
+	</form>
+</div>
