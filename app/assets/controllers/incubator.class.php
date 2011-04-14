@@ -117,7 +117,7 @@ class controller_incubator extends controller {
 		$this->viewport()->replace('category', $this->m_currentProject->getCategory()->getName());
 		$this->viewport()->replace('cat-id', $this->m_projectIdea->getCategory()->getId());
 		
-		if( $this->m_currentProject->hasMember( $this->m_user ) ){
+		if( $this->m_user->getEnrollment($this->m_currentProject, resource::MEMBERSHIP_ADMIN) ){
 			$buttons = array("Manage" => "{$this->m_currentProject->getId()}/admin");
 			
 			$this->viewport()->replace("buttons", util::flatButtons($buttons) );

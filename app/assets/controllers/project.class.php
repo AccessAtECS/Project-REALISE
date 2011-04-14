@@ -19,8 +19,11 @@ class controller_project extends controller {
 		$this->bind("(?P<id>[0-9]+)/comment$", "comment"); // Comment on an idea
 		$this->bind("(?P<id>[0-9]+)/comment/(?P<comment_id>[0-9]+)/delete", "deleteComment"); // Delete comment
 		
+		$this->bind("(?P<id>[0-9]+)/vote$", "vote"); // DATA - vote on an idea
+		
 		$this->bind("(?P<id>[0-9]+)/admin$", "itemAdmin");
 		$this->bind("(?P<id>[0-9]+)/admin/update$", "adminSave");
+		$this->bind("(?P<id>[0-9]+)/admin/addMembers$", "addMembers");
 
 		$this->bindDefault('projectIndex');
 	}
@@ -91,15 +94,6 @@ class controller_project extends controller {
 		// Pull out the idea from the database.
 		$this->m_currentProject = new project($id);
 		$this->m_projectIdea = $this->m_currentProject->getIdea();
-
-		$side = new view();
-		$side->append( util::getProjectUsers( $this->m_currentProject->getMembers() ) );
-
-		$side->append( new view("frag.projectResources") );
-		
-		$this->superview()->replace("sideContent", $side);	
-				
-		
 		
 		$this->setViewport(new view("projectOverview"));
 		
@@ -129,7 +123,7 @@ class controller_project extends controller {
 		$this->viewport()->replace("ideaName", $this->m_projectIdea->getTitle());
 		$this->viewport()->replace("ideaID", $this->m_projectIdea->getId());
 		
-		if( $this->m_currentProject->hasMember( $this->m_user ) ){
+		if( $this->m_user->getEnrollment($this->m_currentProject, resource::MEMBERSHIP_ADMIN) ){
 			$buttons = array("Manage" => "{$this->m_currentProject->getId()}/admin");
 			
 			$this->viewport()->replace("buttons", util::flatButtons($buttons) );
@@ -169,10 +163,65 @@ class controller_project extends controller {
 		
 		$c->replace('picture', $this->m_user->getPicture());
 		
-		
 		$this->viewport()->replace('comment-block', $c);
 
+
+		// Deal with sidebar
+		
+		// Get list of users
+		$sidebar = new view();
+		$sidebar->append( util::getProjectUsers( $this->m_currentProject->getMembers(project::ROLE_ADMIN) ) );
+		$sidebar->append(new view('frag.projectFollowers'));
+		
+		$project_followers = $this->m_currentProject->countVotes(resource::MEMBERSHIP_USER);
+		
+		$sidebar->replace('follower-count', $project_followers);
+		
+		
+		if(!$this->m_user->getEnrollment($this->m_currentProject, resource::MEMBERSHIP_ADMIN)){
+			$voteButton = new view('frag.followProject');
+			// Has the user voted?
+			if($this->m_currentProject->hasVoted($this->m_user)){
+				$voteButton->replace('follow', "Unfollow");
+				$voteButton->replace('vote', "/presentation/images/minus-white.png");
+			} else {
+				$voteButton->replace('follow', "Follow");
+				$voteButton->replace('vote', "/presentation/images/plus-circle.png");
+			}
+			$sidebar->replace('follow', $voteButton);
+		} else {
+			$sidebar->replace('follow', '');
+		}
+		
+		if($project_followers > 0){
+			// Get a list of followers
+			$followers = $this->m_currentProject->getVoters(resource::MEMBERSHIP_USER);
+			
+			$output = new view();
+			$follower_template = new view('frag.follower');
+			
+			foreach($followers as $follower){
+				$follower_template->replaceAll(array(
+					"picture" => $follower->getPicture(),
+					"author" => $follower->getName()
+				));
+				
+				$output->append($follower_template);
+				$follower_template->reset();
+			}
+			
+			$sidebar->replace('followers', $output);
+		} else {
+			$sidebar->replace('followers', '');
+		}
+		
+		$sidebar->append(new view("frag.projectResources"));
+		
+		
+		$this->superview()->replace("sideContent", $sidebar );
+
 		$assets = util::newScript("/presentation/scripts/comments.js");
+		$assets .= util::newScript("/presentation/scripts/project.js");
 		
 		$this->superview()->replace("additional-assets", $assets);
 				
@@ -273,7 +322,38 @@ class controller_project extends controller {
 			$tags = $this->m_currentProject->parseTags($this->m_currentProject, $t);
 			$this->viewport()->replace("tags", $tags);
 			
-			$this->superview()->replace("sideContent", util::getProjectUsers( $this->m_currentProject->getMembers() ) );
+			$side = new view();
+			
+			$side->append(util::getProjectUsers( $this->m_currentProject->getMembers(project::ROLE_ADMIN) ));
+			
+			$side->append(new view('frag.addMembers'));
+			
+			// Get list of followers
+			$followers = $this->m_currentProject->getMembers(project::ROLE_USER);
+			
+			if(count($followers) > 0){
+				$follower_template = new view('frag.addFollower');
+				$output = new view();
+				
+				foreach($followers as $follower){
+					$follower_template->replaceAll(array(
+						"picture" => $follower->getPicture(),
+						"author" => $follower->getName(),
+						"id" => $follower->getId()
+					));
+					
+					$output->append($follower_template);
+					$follower_template->reset();
+				}
+				
+				$side->replace("followers", $output);
+			
+			} else {
+				$side->replace("followers", "");
+			}
+						
+			
+			$this->superview()->replace("sideContent", $side );
 
 			$scripts = util::addScripts(array("/presentation/lib/ckeditor/ckeditor.js", "/presentation/lib/ckeditor/adapters/jquery.js", "/presentation/scripts/ideaAdmin.js"));
 		
@@ -314,6 +394,66 @@ class controller_project extends controller {
 		}
 		
 		
+	}
+
+	protected function addMembers($args){
+		$this->m_noRender = true;
+		
+		if(count($_POST['users']) == 0) return;
+		
+		$id = $args['id'];
+		
+		$project = new project((int)$id);
+		
+		if($this->m_user->getEnrollment($project, resource::MEMBERSHIP_ADMIN)){
+			foreach($_POST['users'] as $userid){
+				$user = new user((int)$userid);
+				
+				$project->promoteUser($this->m_user, $user, resource::MEMBERSHIP_ADMIN);
+				$return = array("status" => 200);
+			}
+		} else {
+			$return = array("status" => 500, "details" => "You do not have adequate permissions to perform this function.");
+		}
+		
+		echo json_encode($return);
+	}
+
+	protected function vote(){
+		// Should be called via AJAX.
+		$this->m_noRender = true;
+		
+		if($this->m_user->getId() == null) {
+			echo json_encode(array("status" => 500, "message" => "You must be signed in to vote for this idea"));
+			exit;
+		}
+		
+		try {
+			$project = new project((int)$_POST['project']);
+			
+			// Has the user voted?
+			if($project->hasVoted($this->m_user)){
+				// Vote down	
+				$project->voteClear($this->m_user);
+				$action = "unfollow";
+				$recalc = -1;
+				
+				$image = "/presentation/images/plus-circle.png";
+			} else {
+				// Vote up
+				$project->voteUp($this->m_user);
+				$recalc = 1;
+				$action = "follow";
+				$image = "/presentation/images/minus-white.png";
+			}
+			
+			$return = array("status" => 200, "recalc" => $recalc, "image" => $image, "action" => $action);
+		
+		} catch(Exception $e){
+			$return = array("status" => 500, "details" => $e->getMessage());
+		}
+		
+		echo json_encode($return);
 	}
 	
 	protected function noRender(){

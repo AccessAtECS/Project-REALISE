@@ -158,6 +158,7 @@ abstract class resource extends dbo {
 			
 			} else {
 				$this->openness = false;
+				$or = "";
 			}
 			
 			$objectCache->put($or);
