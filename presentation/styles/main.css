@@ -178,6 +178,7 @@ img {
 	width:340px;
 	font-size: 10pt;
 	margin-right:10px;
+	margin-bottom:20px;
 }
 
 #menu a {
@@ -377,7 +378,7 @@ li.newproject {
 }
 
 #menu .innovatorinfo {
-	width:270px;
+	width:90%;
 }
 
 #theIdea {
