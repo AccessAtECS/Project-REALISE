@@ -11,6 +11,7 @@ class idea extends resource {
 	private $tags;
 	private $category;
 	private $comments;
+	private $hidden;
 	
 	public function __construct($id = null) {
 		if($id == null) return;
@@ -24,6 +25,7 @@ class idea extends resource {
 			$this->owner_id = $p[0]['user_id'];
 			$this->image = $p[0]['image'];
 			$this->category = new category((int)$p[0]['category_id']);
+			$this->hidden = (BOOL) $p[0]['hidden'];
 		} else {
 			throw new Exception("No idea with that ID!");
 		}
@@ -37,6 +39,7 @@ class idea extends resource {
 		$data['user_id'] = $this->owner_id;
 		$data['image'] = $this->image;
 		$data['category_id'] = $this->category->getId();
+		$data['hidden'] = $this->hidden;
 		
 		$db = db::singleton();
 		$check = $db->single("SELECT id FROM idea WHERE id = '$this->id'");
@@ -134,6 +137,14 @@ class idea extends resource {
 
 	public function setOverview($i) {
 		$this->overview = $i;
+	}
+
+	public function getHidden(){
+		return $this->hidden;
+	}
+	
+	public function setHidden($h){
+		$this->hidden = (BOOL)$h;
 	}
 
 	public function getDescription() {

@@ -16,6 +16,7 @@ class project extends resource {
 	private $community_url = "";
 	private $scm_url = "";
 	private $repo_url = "";
+	private $hidden;
 	
 	const ROLE_ANY = 0;
 	const ROLE_USER = 1;
@@ -36,6 +37,8 @@ class project extends resource {
 		if(isset($p[0]['image'])) $this->image = $p[0]['image'];
 		$this->category = new category((int)$p[0]['category_id']);
 		
+		$this->hidden = (BOOL) $p[0]['hidden'];
+		
 		$this->community_url = $p[0]['community_url'];
 		$this->scm_url = $p[0]['scm_url'];
 		$this->repo_url = $p[0]['repo_url'];
@@ -55,6 +58,7 @@ class project extends resource {
 		$data['community_url'] = $this->community_url;
 		$data['scm_url'] = $this->scm_url;
 		$data['repo_url'] = $this->repo_url;
+		$data['hidden'] = $this->hidden;
 		if($this->license != null) {
 			$data['license'] = $this->license->getId();
 		} else {
@@ -254,6 +258,14 @@ class project extends resource {
 	
 	public function setRepoUrl($url){
 		$this->repo_url = $url;
+	}
+	
+	public function getHidden(){
+		return $this->hidden;
+	}
+	
+	public function setHidden($h){
+		$this->hidden = (BOOL)$h;
 	}
 	
 	public function getPromotionStatus(){
