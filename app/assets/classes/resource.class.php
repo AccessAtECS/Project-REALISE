@@ -121,6 +121,32 @@ abstract class resource extends dbo {
 
 		return $voters;		
 	}
+
+	public function formatProjectUsers($filter = resource::MEMBERSHIP_ADMIN, view $template = null, $header = true){		
+		$users = $this->getMembers($filter);
+		
+		if(count($users) == 0) return;
+		
+		$o = new view();
+		$template = ($template == null) ? new view('frag.innovator') : $template;
+		
+		if($header) $o->set("<h1>TEAM MEMBERS</h1>");
+
+		foreach($users as $innovator){
+			$template->replace("name", $innovator->getName());
+			$template->replace("tagline", $innovator->getTagline());
+			
+			$template->replace("src", $innovator->getPicture());
+			$template->replace("id", $innovator->getId());
+			$template->replace("img-size", 30);
+			
+			$o->append($template->get());
+			
+			$template->reset();
+		}		
+		
+		return $o;
+	}
 	
 	private function getORating(){
 		// First, see if we have a cached version (this is an expensive routine to run otherwise)

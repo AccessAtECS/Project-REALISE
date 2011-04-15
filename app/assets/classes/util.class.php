@@ -137,27 +137,8 @@
 			return md5($p . "4565QQRGfdkJf%^");
 		}
 		
-		public static function getProjectUsers($users){
-			if(count($users) == 0) return;
-			$o = new view();
-			$template = new view('frag.innovator');
-			
-			$o->set("<h1>TEAM MEMBERS</h1>");
-	
-			foreach($users as $innovator){
-				$template->replace("name", $innovator->getName());
-				$template->replace("tagline", $innovator->getTagline());
-				
-				$template->replace("src", $innovator->getPicture());
-				
-				$template->replace("img-size", 30);
-				
-				$o->append($template->get());
-				
-				$template->reset();
-			}		
-			
-			return $o;
+		public static function id($i){
+			return $i;
 		}
 
 	}
