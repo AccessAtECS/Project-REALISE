@@ -11,6 +11,9 @@ class view {
 	private $identifier;
 	private $source;
 	
+	const REPLACE_TEMP = 1;
+	const REPLACE_CORE = 2;
+	
 	public function __construct($sourcefile = "", $identifier = ""){
 		if($sourcefile == ""){
 				$this->viewSource = "";
@@ -29,11 +32,13 @@ class view {
 		return $this;
 	}
 	
-	public function replace($var, $fragment){
+	public function replace($var, $fragment, $type = view::REPLACE_TEMP){
 		if(is_object( $fragment ) == true && get_class($fragment) == get_class($this) ){
 			$this->viewSource = str_ireplace("{" . strtolower($var) . "}", $fragment->get(), $this->viewSource);
+			if($type == view::REPLACE_CORE) $this->source = str_ireplace("{" . strtolower($var) . "}", $fragment->get(), $this->source);
 		} else {
 			$this->viewSource = str_ireplace("{" . strtolower($var) . "}", $fragment, $this->viewSource);
+			if($type == view::REPLACE_CORE) $this->source = str_ireplace("{" . strtolower($var) . "}", $fragment, $this->source);
 		}
 		return $this;
 	}
