@@ -916,6 +916,8 @@ p.info {
 	float:right;
 	opacity: 0.6;
 	-webkit-transition: all .2s ease-in-out;
+	color: red;
+	font-weight: bold;
 }
 
 .idea .delete {
@@ -940,4 +942,13 @@ p.info {
 
 .addNewUser img {
 	margin-right:5px;
+}
+
+#denied {
+	background-color: #ff784e;
+	text-align: center;
+	border-radius: 5px;
+	margin:20px;
+	padding:10px;
+	padding-bottom:20px;
 }

@@ -78,6 +78,9 @@ class controller_idea extends controller {
 		
 		
 		foreach($ideaArray as $idea) {
+		
+			if($idea->getHidden() && !$this->m_user->getIsAdmin()) continue;
+		
 			$template->replace("title", $idea->getTitle());
 			$template->replace("chats", $idea->countVotes());
 			$template->replace("pitch", $idea->getOverview());
@@ -86,9 +89,13 @@ class controller_idea extends controller {
 			$template->replace("type", "idea");
 			$template->replace("url", "idea/" . $idea->getId());
 			
-			if($this->m_user->canDelete($idea)){
-				// Display the deletion icon
-				$template->replace('delete', $delete);
+			if($this->m_user->getIsAdmin()){
+				if($idea->getHidden()){
+					$template->replace('delete', 'HIDDEN');
+				} else {
+					// Display the deletion icon
+					$template->replace('delete', $delete);
+				}
 			} else {
 				$template->replace('delete', '');
 			}			
@@ -108,6 +115,11 @@ class controller_idea extends controller {
 		
 		// Pull out the idea from the database.
 		$this->m_currentIdea = new idea($id);
+		
+		if($this->m_currentIdea->getHidden() && !$this->m_user->getIsAdmin()){
+			$this->setViewport(new view("denied"));
+			return;
+		}
 		
 		if(isset($_SESSION['createdNewIdea']) && $_SESSION['createdNewIdea'] == true){
 			$new = new view('frag.createdNew');

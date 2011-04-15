@@ -62,7 +62,7 @@ class controller_project extends controller {
 		$delete = new view('frag.deleteComment');
 		
 		foreach($projects->get() as $project) {
-			
+			if($project->getHidden() && !$this->m_user->getIsAdmin()) continue;
 			$idea = $project->getIdea();
 			
 			$template->replace("title", $project->getName());
@@ -73,9 +73,13 @@ class controller_project extends controller {
 			$template->replace("type", "project");
 			$template->replace("chats", $project->countVotes());
 			
-			if($this->m_user->canDelete($project)){
-				// Display the deletion icon
-				$template->replace('delete', $delete);
+			if($this->m_user->getIsAdmin()){
+				if($project->getHidden()){
+					$template->replace('delete', 'HIDDEN');
+				} else {
+					// Display the deletion icon
+					$template->replace('delete', $delete);
+				}
 			} else {
 				$template->replace('delete', '');
 			}
@@ -95,6 +99,11 @@ class controller_project extends controller {
 		// Pull out the idea from the database.
 		$this->m_currentProject = new project($id);
 		$this->m_projectIdea = $this->m_currentProject->getIdea();
+
+		if($this->m_currentProject->getHidden() && !$this->m_user->getIsAdmin()){
+			$this->setViewport(new view("denied"));
+			return;
+		}
 		
 		$this->setViewport(new view("projectOverview"));
 		

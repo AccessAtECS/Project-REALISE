@@ -12,9 +12,8 @@
 				var id = object.find('input[name=id]').val();
 				var type = object.find('input[name=type]').val();
 				
-				$.post("/admin/" + type + "/" + id + "/delete", function(data){
+				$.post("/admin/" + type + "/" + id + "/hide", function(data){
 					if(data.status == 200){
-
 						object.fadeOut('fast', function() { $(object).remove(); } );
 					} else {
 						alert(data.message);
