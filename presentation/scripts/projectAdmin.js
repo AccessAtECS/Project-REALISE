@@ -32,6 +32,28 @@
 			
 			}, 'json');
 		});
+		
+		$('.delete .deleteButton').bind('click', function(){
+			
+			// Get number of innovators
+			if($('.innovator').length == 1){
+				alert("There must be at least one member in the team.");
+				return;
+			}
+			
+			var cfm = confirm("Are you sure you want to remove this user as a team member?");
+			
+			var user_id = $(this).parentsUntil('.innovator').parent().find('input[name="id"]').val();
+			
+			$.post(window.location.pathname + "/demoteMember", { "user_id": user_id }, function(data){
+				if(data.status == 200){
+					location.reload();			
+				} else {
+					alert(data.message);
+				}
+			
+			}, 'json');
+		});
 	}
 
 

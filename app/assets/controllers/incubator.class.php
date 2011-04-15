@@ -25,6 +25,7 @@ class controller_incubator extends controller {
 		$this->bind("(?P<id>[0-9]+)/admin/update$", "adminSave");
 		$this->bind("(?P<id>[0-9]+)/admin/promote$", "adminPromote");
 		$this->bind("(?P<id>[0-9]+)/admin/addMembers$", "addMembers");
+		$this->bind("(?P<id>[0-9]+)/admin/demoteMember$", "demoteMember");
 
 
 		$this->bindDefault('incubatorIndex');
@@ -61,7 +62,7 @@ class controller_incubator extends controller {
 			$template->replace("image", $project->getImage());
 			$template->replace("id", $project->getId());
 			$template->replace("type", "project");
-			$template->replace("chats", 0);
+			$template->replace("chats", $project->countVotes());
 
 			if($this->m_user->canDelete($project)){
 				// Display the deletion icon
@@ -423,6 +424,28 @@ class controller_incubator extends controller {
 				$project->promoteUser($this->m_user, $user, resource::MEMBERSHIP_ADMIN);
 				$return = array("status" => 200);
 			}
+		} else {
+			$return = array("status" => 500, "details" => "You do not have adequate permissions to perform this function.");
+		}
+		
+		echo json_encode($return);
+	}
+
+	protected function demoteMember($args){
+		$this->m_noRender = true;
+		
+		if(empty($_POST['user_id'])) return;
+		
+		$id = $args['id'];
+		
+		$project = new project((int)$id);
+		
+		if($this->m_user->getEnrollment($project, resource::MEMBERSHIP_ADMIN)){
+			
+				$user = new user((int)$_POST['user_id']);
+				
+				$project->promoteUser($this->m_user, $user, resource::MEMBERSHIP_USER);
+				$return = array("status" => 200);
 		} else {
 			$return = array("status" => 500, "details" => "You do not have adequate permissions to perform this function.");
 		}

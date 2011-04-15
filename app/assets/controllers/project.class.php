@@ -24,6 +24,7 @@ class controller_project extends controller {
 		$this->bind("(?P<id>[0-9]+)/admin$", "itemAdmin");
 		$this->bind("(?P<id>[0-9]+)/admin/update$", "adminSave");
 		$this->bind("(?P<id>[0-9]+)/admin/addMembers$", "addMembers");
+		$this->bind("(?P<id>[0-9]+)/admin/demoteMember$", "demoteMember");
 
 		$this->bindDefault('projectIndex');
 	}
@@ -70,7 +71,7 @@ class controller_project extends controller {
 			$template->replace("image", $project->getImage());
 			$template->replace("id", $project->getId());
 			$template->replace("type", "project");
-			$template->replace("chats", 0);
+			$template->replace("chats", $project->countVotes());
 			
 			if($this->m_user->canDelete($project)){
 				// Display the deletion icon
@@ -170,7 +171,7 @@ class controller_project extends controller {
 		
 		// Get list of users
 		$sidebar = new view();
-		$sidebar->append( util::getProjectUsers( $this->m_currentProject->getMembers(project::ROLE_ADMIN) ) );
+		$sidebar->append( $this->m_currentProject->formatProjectUsers() );
 		$sidebar->append(new view('frag.projectFollowers'));
 		
 		$project_followers = $this->m_currentProject->countVotes(resource::MEMBERSHIP_USER);
@@ -324,7 +325,10 @@ class controller_project extends controller {
 			
 			$side = new view();
 			
-			$side->append(util::getProjectUsers( $this->m_currentProject->getMembers(project::ROLE_ADMIN) ));
+			$admin_member = new view('frag.innovator');
+			$admin_member->replace("name", "{name} <div class='delete'>" . new view('frag.deleteComment') . "</div>", view::REPLACE_CORE);
+			
+			$side->append( $this->m_currentProject->formatProjectUsers(resource::MEMBERSHIP_ADMIN, $admin_member) );
 			
 			$side->append(new view('frag.addMembers'));
 			
@@ -336,9 +340,14 @@ class controller_project extends controller {
 				$output = new view();
 				
 				foreach($followers as $follower){
+					
+					$nameHeader = new view();
+					
+					$nameHeader->append($follower->getName());
+					
 					$follower_template->replaceAll(array(
 						"picture" => $follower->getPicture(),
-						"author" => $follower->getName(),
+						"author" => $nameHeader,
 						"id" => $follower->getId()
 					));
 					
@@ -412,6 +421,28 @@ class controller_project extends controller {
 				$project->promoteUser($this->m_user, $user, resource::MEMBERSHIP_ADMIN);
 				$return = array("status" => 200);
 			}
+		} else {
+			$return = array("status" => 500, "details" => "You do not have adequate permissions to perform this function.");
+		}
+		
+		echo json_encode($return);
+	}
+	
+	protected function demoteMember($args){
+		$this->m_noRender = true;
+		
+		if(empty($_POST['user_id'])) return;
+		
+		$id = $args['id'];
+		
+		$project = new project((int)$id);
+		
+		if($this->m_user->getEnrollment($project, resource::MEMBERSHIP_ADMIN)){
+			
+				$user = new user((int)$_POST['user_id']);
+				
+				$project->promoteUser($this->m_user, $user, resource::MEMBERSHIP_USER);
+				$return = array("status" => 200);
 		} else {
 			$return = array("status" => 500, "details" => "You do not have adequate permissions to perform this function.");
 		}
