@@ -24,7 +24,7 @@ class db extends mysqli {
 	
 	// A private constructor; prevents direct creation of object
 	private function __construct($server = null, $username = "woo", $password = null, $schema = null){
-		$defaults = array("server" => "localhost", "username" => "realise-php", "password" => "swampdonkey1", "schema" => "realise-php");
+		$defaults = array("server" => "localhost", "username" => "realise-php", "password" => "password", "schema" => "realise-php");
 		
 		$settings = array("server" => $server, "username" => $username, "password" => $password, "schema" => $schema);
 		
