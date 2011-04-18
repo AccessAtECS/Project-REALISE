@@ -174,7 +174,7 @@ class controller_incubator extends controller {
 		
 		// Get list of users
 		$sidebar = new view();
-		$sidebar->append( util::getProjectUsers( $this->m_currentProject->getMembers(project::ROLE_ADMIN) ) );
+		$sidebar->append( $this->m_currentProject->formatProjectUsers() );
 		$sidebar->append(new view('frag.projectFollowers'));
 		
 		$project_followers = $this->m_currentProject->countVotes(resource::MEMBERSHIP_USER);
