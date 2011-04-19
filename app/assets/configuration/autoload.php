@@ -11,6 +11,8 @@ function getRuntimeObjects(){
 define('GDATA_USERNAME', "s@ecs.soton.ac.uk");
 define('GDATA_PASS', 'hdRFyRX8H');
 
+define("REALISE_VERSION", "0.9 (r1003)");
+
 // This function auto loads classes.
 function __autoload($class_name) {
 

@@ -944,6 +944,14 @@ p.info {
 	margin-right:5px;
 }
 
+a#skip {
+	position: absolute;
+}
+
+#ORcontainer a {
+	 font-size:22pt;
+}
+
 #denied {
 	background-color: #ff784e;
 	text-align: center;

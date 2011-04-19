@@ -20,6 +20,8 @@ class controller_resources extends controller {
 		
 		$this->superview()->replace("sideContent", $side);
 
+		$this->bind('faq', 'faq');
+
 		$this->bindDefault('resourcesLanding');	
 	}
 	
@@ -30,6 +32,10 @@ class controller_resources extends controller {
 		
 		$emptech_categories = $this->emptechData();
 		$this->viewport()->replace("emptech", $emptech_categories);
+	}
+	
+	protected function faq(){
+		$this->setViewPort(new view('faq'));
 	}
 
 

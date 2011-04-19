@@ -316,7 +316,7 @@ class controller_incubator extends controller {
 			
 			$side = new view();
 			
-			$side->append(util::getProjectUsers( $this->m_currentProject->getMembers(project::ROLE_ADMIN) ));
+			$side->append( $this->m_currentProject->formatProjectUsers() );
 			
 			$side->append(new view('frag.addMembers'));
 			

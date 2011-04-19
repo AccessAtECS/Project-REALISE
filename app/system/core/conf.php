@@ -3,7 +3,6 @@
 error_reporting(E_ALL);
 
 define("DEV", true);
-define("REALISE_VERSION", "0.6 (r732)");
 
 
 // Location of conf.php in infolio.
