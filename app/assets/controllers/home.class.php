@@ -14,6 +14,12 @@ class controller_home extends controller {
 		$this->bind('register', 'registerFrag');
 		$this->bind('updateImageCache', "updateImageCache");
 		// Set the default request handler
+		
+		// Stray pages
+		$this->bind('contact', 'contactPage');
+		$this->bind('sitemap', 'sitemapPage');
+		$this->bind('accessibility', 'accessibility');
+		
 		$this->bindDefault("homepageHandler");	
 		
 		$this->errors = array(
@@ -157,6 +163,31 @@ class controller_home extends controller {
 			
 			$this->setViewport($error->append($this->viewport()));
 		}	
+	}
+	
+	protected function contactPage(){
+		$this->setupPage();
+	}
+	
+	protected function sitemapPage(){
+		$this->setupPage();
+		
+		$this->setViewport(new view('sitemap'));
+	}
+	
+	protected function accessibility(){
+		$this->setupPage();
+		
+		$this->setViewport(new view('accessibility'));
+	}
+	
+	protected function setupPage(){
+		$this->superview()->replace("sideContent", util::displayNewInnovators() );
+		
+		// Select the tab	
+		util::selectTab($this->superview(), "home");
+		// Display user box		
+		util::userBox($this->m_user, $this->superView());		
 	}
 	
 
