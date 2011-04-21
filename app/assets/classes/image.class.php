@@ -16,7 +16,7 @@ class image {
 
 		preg_match("/([^.]+)$/", $this->name, $matches);
 		if(count($matches) == 0) throw new Exception("Filetype not detected");
-		$this->filetype = $matches[0];
+		$this->filetype = strtolower($matches[0]);
 		
 		if(!in_array($this->filetype, $this->filetypes)) throw new Exception("Filetype not supported: " . $this->filetype);
 		
@@ -29,6 +29,8 @@ class image {
 			$this->resizeImage();
 			
 			return $this->url;		
+		} else {
+			echo "File upload failed.";
 		}
 	}
 	

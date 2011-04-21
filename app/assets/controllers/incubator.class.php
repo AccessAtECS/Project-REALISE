@@ -161,8 +161,8 @@ class controller_incubator extends controller {
 		$commentCollection->setSort("id", collection::SORT_DESC);
 		
 		foreach($commentCollection->get() as $comment){
-			$c->append($comment->get());
-		}	
+			$c->append($comment->get($this->m_user));
+		}
 		
 		$c->replace('picture', $this->m_user->getPicture());
 		
