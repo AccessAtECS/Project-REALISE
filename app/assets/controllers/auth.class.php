@@ -81,7 +81,7 @@ class controller_auth extends controller {
 				break;
 			}
 		}
-		
+
 		// Unserialize the object from session store.
 		$linkedIn = $_SESSION['LI_authObject'];
 		
