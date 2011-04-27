@@ -1,0 +1,33 @@
+<div id="profile" class="innerContent">
+	<h1>Update your profile</h1>
+	
+	<form class="innerContent">
+	
+		<h2>Image</h2>
+		<p>
+			<div class="img"><img src="{profileImage}" align="left" /></div>
+			<div class="leftMargin">
+			<p><label for="newImage">Change image:</label> <input type="file" name="newImage" id="newImage" /></p>
+			<button id="removeImage">Remove Image</button>
+			</div>
+		</p>
+		
+		<br style="clear:both" />
+		
+		<p style="clear:both">
+			<h2>Tagline</h2>
+			<label for="newTagline">Change tagline:</label> <br />
+			<input type="text" name="newTagline" id="newTagline" value="{tagline}" size="120" />
+		</p>
+		
+		<p>
+			<h2>Email</h2>
+			<label for="newEmail">Change email:</label> <br />
+			<input type="text" name="newEmail" id="newEmail" value="{email}" size="120" />
+		</p>
+		
+		
+		<br style="clear:both" />
+		<input type="submit" name="submit" value="Save" />
+	</form>
+</div>

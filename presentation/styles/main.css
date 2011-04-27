@@ -362,6 +362,11 @@ li.newproject {
 	border-radius: 5px;
 }
 
+.img img {
+	border-radius: 5px;
+	margin:2px;
+}
+
 .innovator .name {
 	margin-left:5px;
 	font-weight: bold;
@@ -849,7 +854,7 @@ input[type="text"], textarea, input[type="password"] {
 }
 
 .comment .postComment {
-		width:650px;
+	width:650px;
 }
 
 #newComment .postComment textarea {
@@ -964,4 +969,13 @@ a#skip {
 	margin:20px;
 	padding:10px;
 	padding-bottom:20px;
+}
+
+.innerContent {
+	margin:10px;
+}
+
+.leftMargin {
+	margin-left:10px;
+	float:left;
 }
