@@ -23,8 +23,8 @@ class image {
 	}
 	
 	public function move($to){
-		$this->newpath = INSTEP_SYS_ROOTDIR . "presentation/asset_images/" . $to;
-		$this->url = INSTEP_BASEURL . "presentation/asset_images/" . $to;
+		$this->newpath = INSTEP_SYS_ROOTDIR . "site_assets/images/" . $to;
+		$this->url = INSTEP_BASEURL . "site_assets/images/" . $to;
 		if(move_uploaded_file($this->tmp_path, $this->newpath)){
 			$this->resizeImage();
 			
@@ -41,7 +41,7 @@ class image {
 	}
 	
 	public static function updateAll(){
-		$dir = INSTEP_SYS_ROOTDIR . "presentation/asset_images/";
+		$dir = INSTEP_SYS_ROOTDIR . "site_assets/images/";
 		if ($dh = opendir($dir)) {
 	        while (($file = readdir($dh)) !== false) {
 	        	if($file == ".." || $file == ".") continue;

@@ -24,6 +24,7 @@ class twitter extends feed {
 	}
 	
 	private function process(){
+		if(count($this->m_data) == 0) return;
 		foreach($this->m_data as $tweet){
 			$this->addItem("Tweet", $this->parseText($tweet['text']), $tweet['user']['name'], $this->m_link . $tweet['id_str'], $tweet['created_at']);
 		}
