@@ -14,6 +14,8 @@ class controller_profile extends controller {
 				
 		$this->superview()->replace("sideContent", util::displayNewInnovators());
 
+		$this->bind('/update', 'saveProfile');
+
 		$this->bindDefault('displayProfile');
 	}
 	
@@ -28,7 +30,9 @@ class controller_profile extends controller {
 
 	}
 
-
+	protected function saveProfile(){
+		print_r($_POST);
+	}
 
 }
 

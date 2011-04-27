@@ -82,7 +82,8 @@ class controller_idea extends controller {
 			if($idea->getHidden() && !$this->m_user->getIsAdmin()) continue;
 		
 			$template->replace("title", $idea->getTitle());
-			$template->replace("chats", $idea->countVotes());
+			$template->replace("points", $idea->countVotes());
+			$template->replace("chats", $idea->getChatCount());
 			$template->replace("pitch", $idea->getOverview());
 			$template->replace("image", $idea->getImage());
 			$template->replace("id", $idea->getId());
@@ -234,7 +235,7 @@ class controller_idea extends controller {
 		
 		foreach($commentCollection->get() as $comment){
 			$c->append($comment->get($this->m_user));
-		}		
+		}
 		
 		$c->replace('picture', $this->m_user->getPicture());
 		

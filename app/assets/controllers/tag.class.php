@@ -44,7 +44,7 @@ class controller_tag extends controller {
 		if(count($ideas) > 0){
 			foreach($ideas as $idea){
 				$template->replace("title", $idea->getTitle());
-				$template->replace("chats", $idea->countVotes());
+				$template->replace("points", $idea->countVotes());
 				$template->replace("pitch", $idea->getOverview());
 				$template->replace("image", $idea->getImage());
 				$template->replace("url", "/idea/" . $idea->getId());
@@ -65,7 +65,7 @@ class controller_tag extends controller {
 				$template->replace("url", "project/" . $project->getId());
 				$template->replace("pitch", $project->getOverview());
 				$template->replace("image", $project->getImage());
-				$template->replace("chats", 0);
+				$template->replace("points", $project->countVotes());
 				
 				$o->append( $template->get() );
 				$template->reset();			

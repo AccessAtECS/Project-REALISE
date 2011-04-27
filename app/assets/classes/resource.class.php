@@ -148,6 +148,15 @@ abstract class resource extends dbo {
 		return $o;
 	}
 	
+	public function getChatCount(){
+		$sql = "SELECT COUNT(*) AS count FROM comment WHERE " . get_class($this) . "_id = '{$this->getId()}'";
+
+		$db = db::singleton();
+		$votes = $db->single($sql);
+
+		return $votes[0]['count'];
+	}
+	
 	private function getORating(){
 		// First, see if we have a cached version (this is an expensive routine to run otherwise)
 		

@@ -71,7 +71,7 @@ class controller_project extends controller {
 			$template->replace("image", $project->getImage());
 			$template->replace("id", $project->getId());
 			$template->replace("type", "project");
-			$template->replace("chats", $project->countVotes());
+			$template->replace("points", $project->countVotes());
 			
 			if($this->m_user->getIsAdmin()){
 				if($project->getHidden()){
