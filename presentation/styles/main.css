@@ -845,6 +845,11 @@ input[type="text"], textarea, input[type="password"] {
 
 .postComment {
 	float:left;
+	width:650px;
+}
+
+.comment .postComment {
+		width:650px;
 }
 
 #newComment .postComment textarea {

@@ -272,7 +272,7 @@ class controller_idea extends controller {
 				
 				$comment_id = $comment->commit();
 				
-				$html = $comment->get();
+				$html = $comment->get($this->m_user);
 				
 				echo json_encode(array("status" => 200, "html" => $html));
 				
