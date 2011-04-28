@@ -36,6 +36,12 @@ class resourceView extends view {
 		$this->replace("type", get_class($this->resource));
 		$this->replace("url", $this->resourceType . "/" . $this->resource->getId());
 		
+		if(get_class($this->resource) == "project"){
+			$this->replace("assoc", $this->resource->getSiblingCount());
+		} else {
+			$this->replace("assoc", $this->resource->getProjectCount());
+		}
+		
 		if($this->user->getIsAdmin()){
 			if($this->resource->getHidden()){
 				$this->replace('delete', 'HIDDEN');

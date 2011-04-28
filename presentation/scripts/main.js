@@ -26,6 +26,8 @@ function REALISE(){
 			 });
 		});	
 		
+		
+		$('.tip').tipsy();
 	}
 	
 	$.fn.disableSelection = function() {
@@ -38,20 +40,20 @@ function REALISE(){
 	
 }
 
-	function bindOverview(){
-		$('#overview').bind('keydown focusout', function(){
-			var length = $(this).val().length;
-			
-			if(length >= 100){
-				$(this).val($(this).val().substr(0, 100));
-				length = $(this).val().length;
-			}
-			
-			$('#currCharCount').html(length);
-			
-		});
-		$('#overview').trigger('keydown');
-	}
+function bindOverview(){
+	$('#overview').bind('keydown focusout', function(){
+		var length = $(this).val().length;
+		
+		if(length >= 100){
+			$(this).val($(this).val().substr(0, 100));
+			length = $(this).val().length;
+		}
+		
+		$('#currCharCount').html(length);
+		
+	});
+	$('#overview').trigger('keydown');
+}
 
 var REALISE = new REALISE();
 

@@ -102,6 +102,13 @@ class idea extends resource {
 		}
 	}
 	
+	public function getProjectCount(){
+		$db = db::singleton();
+		$i = $db->single("SELECT COUNT(*) AS count FROM idea_project WHERE idea_project.idea_id=" . $db->real_escape_string($this->id));
+		
+		return (int)$i[0]['count'];
+	}
+	
 
 	public function setImage($image){
 		if(empty($image['tmp_name'])) return;

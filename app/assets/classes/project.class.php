@@ -78,6 +78,19 @@ class project extends resource {
 		return $this->id;	
 	}
 
+	public function getSiblings(){
+		
+	}
+	
+	public function getSiblingCount(){
+		$sql = "SELECT COUNT(*) AS count FROM idea_project WHERE idea_id = {$this->getIdea()->getId()} AND project_id <> {$this->getId()}";
+		
+		$db = db::singleton();
+		$siblings = $db->single($sql);
+		
+		return (int)$siblings[0]['count'];
+	}
+
 	public function getMembers($filter = project::ROLE_ANY) {
 
 		$sql = "SELECT * FROM project_user pu JOIN user u ON (pu.user_id = u.id) WHERE pu.project_id = '$this->id'";
