@@ -63,29 +63,9 @@ class controller_project extends controller {
 		
 		foreach($projects->get() as $project) {
 			if($project->getHidden() && !$this->m_user->getIsAdmin()) continue;
-			$idea = $project->getIdea();
-			
-			$template->replace("title", $project->getName());
-			$template->replace("url", "project/" . $project->getId());
-			$template->replace("pitch", $project->getOverview());
-			$template->replace("image", $project->getImage());
-			$template->replace("id", $project->getId());
-			$template->replace("type", "project");
-			$template->replace("points", $project->countVotes());
-			
-			if($this->m_user->getIsAdmin()){
-				if($project->getHidden()){
-					$template->replace('delete', 'HIDDEN');
-				} else {
-					// Display the deletion icon
-					$template->replace('delete', $delete);
-				}
-			} else {
-				$template->replace('delete', '');
-			}
-			
+			$template = new resourceView($project, $this->m_user);
+	
 			$o->append( $template->get() );
-			$template->reset();
 		}
 		
 		$this->viewport()->replace("recentIdeas", $o);

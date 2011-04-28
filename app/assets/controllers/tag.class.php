@@ -39,18 +39,11 @@ class controller_tag extends controller {
 		$ideas = $tag->getIdeas();
 		
 		$o = new view();
-		$template = new view("frag.idea");
 		
 		if(count($ideas) > 0){
 			foreach($ideas as $idea){
-				$template->replace("title", $idea->getTitle());
-				$template->replace("points", $idea->countVotes());
-				$template->replace("pitch", $idea->getOverview());
-				$template->replace("image", $idea->getImage());
-				$template->replace("url", "/idea/" . $idea->getId());
-				
+				$template = new resourceView($idea, $this->m_user);
 				$o->append( $template->get() );
-				$template->reset();
 			}
 			
 			$this->viewport()->replace('ideasList', $o);
@@ -61,14 +54,9 @@ class controller_tag extends controller {
 		
 		if(count($projects) > 0){
 			foreach($projects as $project){
-				$template->replace("title", $project->getName());
-				$template->replace("url", "project/" . $project->getId());
-				$template->replace("pitch", $project->getOverview());
-				$template->replace("image", $project->getImage());
-				$template->replace("points", $project->countVotes());
+				$template = new resourceView($project, $this->m_user);
 				
-				$o->append( $template->get() );
-				$template->reset();			
+				$o->append( $template->get() );		
 			}
 			
 			$this->viewport()->replace('projectList', $o);

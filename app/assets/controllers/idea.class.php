@@ -63,7 +63,6 @@ class controller_idea extends controller {
 		if($category != 0) $ideas->setQuery(array($operator, "category_id", "=", $category));
 		
 		$o = new view();
-		$template = new view("frag.idea");
 		
 		$ideaArray = $ideas->get();
 		
@@ -73,36 +72,12 @@ class controller_idea extends controller {
 			$this->viewport()->replace("recentIdeas", $o);
 			return;
 		}
-		
-		$delete = new view('frag.deleteComment');
-		
+
 		
 		foreach($ideaArray as $idea) {
-		
 			if($idea->getHidden() && !$this->m_user->getIsAdmin()) continue;
-		
-			$template->replace("title", $idea->getTitle());
-			$template->replace("points", $idea->countVotes());
-			$template->replace("chats", $idea->getChatCount());
-			$template->replace("pitch", $idea->getOverview());
-			$template->replace("image", $idea->getImage());
-			$template->replace("id", $idea->getId());
-			$template->replace("type", "idea");
-			$template->replace("url", "idea/" . $idea->getId());
-			
-			if($this->m_user->getIsAdmin()){
-				if($idea->getHidden()){
-					$template->replace('delete', 'HIDDEN');
-				} else {
-					// Display the deletion icon
-					$template->replace('delete', $delete);
-				}
-			} else {
-				$template->replace('delete', '');
-			}			
-			
+			$template = new resourceView($idea, $this->m_user);
 			$o->append( $template->get() );
-			$template->reset();
 		}
 		
 		$this->viewport()->replace("recentIdeas", $o);

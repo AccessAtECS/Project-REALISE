@@ -122,6 +122,10 @@ class idea extends resource {
 		return $this->title;
 	}
 	
+	public function getName() {
+		return $this->title;
+	}
+	
 	public function getImage(){
 		return empty($this->image) ? $this->defaultImage : $this->image;
 	}
