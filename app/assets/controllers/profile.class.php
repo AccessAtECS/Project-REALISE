@@ -33,7 +33,8 @@ class controller_profile extends controller {
 			"profileImage" => $this->m_user->getPicture(),
 			"tagline" => $this->m_user->getTagline(),
 			"email" => $this->m_user->getEmail(),
-			"username" => $this->m_user->getUsername()
+			"username" => $this->m_user->getUsername(),
+			"bio" => $this->m_user->getBio()
 		));
 		
 		if($this->m_user->getEmailIsPublic()){
@@ -42,7 +43,9 @@ class controller_profile extends controller {
 			$this->viewport()->replace('emailVisibility', '');
 		}
 		
-		$this->superview()->replace("additional-assets", util::newScript("/presentation/scripts/profile.js"));
+		$scripts = util::addScripts(array("/presentation/lib/ckeditor/ckeditor.js", "/presentation/lib/ckeditor/adapters/jquery.js", "/presentation/scripts/profile.js"));
+		
+		$this->superview()->replace("additional-assets", $scripts);
 	}
 
 	protected function saveProfile(){
@@ -53,8 +56,10 @@ class controller_profile extends controller {
 		$this->m_user->setTagline($_POST['newTagline']);
 		$this->m_user->setEmail($_POST['newEmail']);
 		if(isset($_POST['emailVisibility'])) $this->m_user->setEmailPublic($_POST['emailVisibility'] == "on" ? true : false);
+		$this->m_user->setBio($_POST['bio']);
 		
-		if($_FILES['newImage'] != ""){
+
+		if($_FILES['newImage']['name'] != ""){
 			
 			$picture = new image($_FILES['newImage']);
 			$picture->resizeWidth = 80;
@@ -66,7 +71,7 @@ class controller_profile extends controller {
 		$this->m_user->commit();
 		
 		$this->setObject(get_class($this->m_user), $this->m_user);
-		//$this->redirect("/home");
+		$this->redirect("/profile");
 	}
 	
 	protected function checkUsername(){
@@ -83,7 +88,20 @@ class controller_profile extends controller {
 	}
 	
 	protected function viewProfile($args){
-		echo "fetch profile id " . $args['profile_id'];
+		
+		$this->setViewport(new view("viewProfile"));
+		
+		$user = new user($args['profile_id'], user::ID_USERNAME);
+		$this->viewport()->replaceAll(array(
+			"username" => $user->getUsername(),
+			"name" => $user->getName(),
+			"tagline" => $user->getTagline(),
+			"picture" => $user->getPicture(),
+			"bio" => $user->getBio()
+		));
+		
+		
+
 	}
 	
 	protected function noRender(){

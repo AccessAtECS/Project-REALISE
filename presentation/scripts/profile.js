@@ -7,6 +7,7 @@
 	function setupPage(){
 		
 		defaultVal = $('#username').val();
+		$('#bio').ckeditor();
 	
 		$('#username').bind('blur', function(){
 			

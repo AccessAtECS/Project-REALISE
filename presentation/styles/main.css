@@ -983,3 +983,17 @@ a#skip {
 	margin-left:10px;
 	float:left;
 }
+
+.italic {
+	font-style: italic;
+}
+
+.dividingLine {
+	border-bottom-color: #587599;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+	display: block;
+	height:1px;
+	clear:both;
+	margin-bottom:10px;
+}

@@ -12,11 +12,14 @@ class user extends dbo {
 	private $username = "";
 	private $hash = "";
 	private $admin = 0;
+	
+	private $authenticated = false;
 		
 	const ID_LOCAL = 1;
 	const ID_LINKEDIN = 2;
 	const LOCAL_ARRAY = 3;
 	const USERNAME_CHECK = 4;
+	const ID_USERNAME = 5;
 	
 	function __construct($id = null, $id_base = user::ID_LOCAL ) {
 		if($id == null) return;
@@ -25,6 +28,7 @@ class user extends dbo {
 		$linkedInQuery = "SELECT * FROM user WHERE linkedinID = '%s'";
 		$arrayQuery = "SELECT * FROM user WHERE username= '%s' AND hash='%s'";
 		$checkQuery = "SELECT COUNT(*) AS num FROM user WHERE username='%s'";
+		$usernameQuery = "SELECT * FROM user WHERE username = '%s'";
 		
 		$db = db::singleton();
 		
@@ -55,6 +59,10 @@ class user extends dbo {
 				}
 			break;
 			
+			case user::ID_USERNAME:
+				$p = $db->single(sprintf($usernameQuery, $id));
+			break;
+			
 			case user::USERNAME_CHECK:
 				$p = $db->single(sprintf($checkQuery, $id));
 				if( (BOOL) $p[0]['num']) throw new Exception('User exists', 663);
@@ -67,6 +75,7 @@ class user extends dbo {
 		}
 		
 		if(!empty($p)) {
+			$this->id = (int)$p[0]['id'];
 			$this->name = $p[0]['name'];
 			$this->tagline = $p[0]['tagline'];
 			$this->linkedin_id = $p[0]['linkedinID'];
