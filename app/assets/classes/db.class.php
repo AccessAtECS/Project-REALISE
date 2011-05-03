@@ -186,8 +186,10 @@ class db extends mysqli {
 		}
 		
 		// Format query, append additionals and push to query list
-		$this->queries[] = "INSERT INTO `{$this->database}`.`{$table}` ({$fieldsList}) VALUES ({$valuesList}) {$additionals};";
-		$this->currentQuery = $out;
+		$currentQuery = "INSERT INTO `{$this->database}`.`{$table}` ({$fieldsList}) VALUES ({$valuesList}) {$additionals};";
+		
+		$this->queries[] = $currentQuery;
+		$this->currentQuery = $currentQuery;
 		
 		return $this;
 	}
@@ -224,8 +226,10 @@ class db extends mysqli {
 		// Format query, append additionals and push to query list
 		// TODO: Could use the queuedQuery method to do this, but need to write the currentQuery storer into that function.
 		// Also, what is currentQuery, and why isn't it a fuction? It seems to ALWAYS be the last item in $this->queries...
-		$this->queries[] = "UPDATE `{$this->database}`.`{$table}` SET {$fieldsList} WHERE {$conditionsList} {$additionals};";
-		$this->currentQuery = $out;
+		$currentQuery = "UPDATE `{$this->database}`.`{$table}` SET {$fieldsList} WHERE {$conditionsList} {$additionals};";
+		
+		$this->queries[] = $currentQuery;
+		$this->currentQuery = $currentQuery;
 		
 		return $this;
 	}
@@ -253,8 +257,10 @@ class db extends mysqli {
 		}
 		
 		// Push the query to the class array queries.
-		$this->queries[] = "DELETE FROM `{$this->database}`.`{$table}` WHERE {$conditionsList} {$additionals};";
-		$this->currentQuery = $out;
+		$currentQuery = "DELETE FROM `{$this->database}`.`{$table}` WHERE {$conditionsList} {$additionals};";
+		
+		$this->queries[] = $currentQuery;
+		$this->currentQuery = $currentQuery;
 		
 		return $this;
 	}
