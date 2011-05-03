@@ -1,17 +1,23 @@
 <?php
-//////////////////////////////////////////////////////
-// (c) Seb Skuse (seb@skuse-consulting.co.uk)	   //
-//				ss1706@ecs.soton.ac.uk			//
-// A Class for abstracting MySQLi database		  //
-// functions to allow queueing and other functions. //
-// Secures input from all user input.			   //
-// CV: 1.20.2									   //
-//													//
-// Modified 2009 by Russell Newman to implement	 //
-// singleton pattern, with code from www.php.net	//
-// and extensions to mysqli transactioning      	//
-//////////////////////////////////////////////////////
-
+/*!
+ * PHP MySQL abstraction class 
+ *
+ * Copyright (c) 2011 Seb Skuse (seb@skuse-consulting.co.uk)
+ * All rights reserved.
+ * Modifications made by Russell Newman & Phillip Whittlesea
+ *
+ * http://seb.skus.es/
+ * https://github.com/sebskuse/db
+ *
+ * Licensed under the BSD Licence.
+ * 
+ * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+ * 
+ * Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+ * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+ * Neither the name of Skuse Consulting Limited nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
 
 class db extends mysqli {
 	
@@ -19,23 +25,24 @@ class db extends mysqli {
 	private static $instance;
 	
 	public $queries = array();
-	protected $numQueries = 0;
-	public $database;
+	private $numQueries = 0;
+	private $database;
+	public $currentQuery;
+	
+	const VERSION = 1.4;
+	
+	const ERR_UNAVAILABLE = 6001;
+	const ERR_CONNECT_ERROR = 6002;
+	const ERR_CLONE = 6003;
 	
 	// A private constructor; prevents direct creation of object
-	private function __construct($server = null, $username = "woo", $password = null, $schema = null){
-		$defaults = array("server" => "localhost", "username" => "realise-php", "password" => "password", "schema" => "realise-php");
-		
-		$settings = array("server" => $server, "username" => $username, "password" => $password, "schema" => $schema);
-		
-		foreach($settings as $key => $value) if($value == null) $settings[$key] = $defaults[$key];
-		
-		$this->database = $settings['schema'];
+	private function __construct($server = "localhost", $username = "", $password = "", $schema = ""){
+		$this->database = $schema;
 		
 		// Prevents mysql sock warnings. I prefer to throw exception as below.
-		@parent::__construct($settings['server'], $settings['username'], $settings['password'], $settings['schema']);
-		if (mysqli_connect_error()) throw new Exception('Connect Error (' . mysqli_connect_errno() . ') '. mysqli_connect_error());
-		if(!@parent::ping()) throw new Exception("Database server unavailable", 512);
+		@parent::__construct($server, $username, $password, $schema);
+		if ($this->connect_error) throw new Exception("Connect Error ({$this->connect_errno}) {$this->connect_error}", self::ERR_CONNECT_ERROR);
+		if(!@parent::ping()) throw new Exception("Database server unavailable", self::ERR_UNAVAILABLE);
 	}
 	
 	public static function singleton($server = null, $username = null, $password = null, $schema = null) {
@@ -46,9 +53,9 @@ class db extends mysqli {
 		return self::$instance;
 	}
 	
-	// Prevent users to clone the instance
+	// Prevent users from cloning this instance
 	public function __clone() {
-		trigger_error('Clone is not allowed.', E_USER_ERROR);
+		throw new Exception('Clone is not allowed.', self::ERR_CLONE);
 	}
 	
 	public function startTransaction() {
@@ -65,13 +72,16 @@ class db extends mysqli {
 		$this->autocommit(true);
 	}
 	
-	/*
-	public function __destruct(){
-		//parent::close();
-	}
-	*/
 	public function queryCount(){
 		return $this->numQueries;
+	}
+	
+	public function getSQL(){
+		return $this->currentQuery;
+	}
+	
+	public function run(){
+		return $this->runBatch();
 	}
 
 	// These functions are all custom implementations.
@@ -87,45 +97,58 @@ class db extends mysqli {
 	*/
 
 	public function select($fields = array(), $table, $conditions = array(), $additionals = ""){
-		// Start with the SELECT statement.
-		$out = "SELECT ";
-		// For each of the fields add them in here after the SELECT statement.
-		foreach($fields as $field){
-			$out .= $this->real_escape_string($field) . " ,";
+				
+		$fieldsList = "";
+		$tablesList = "";
+		$conditionsList = "";
+		
+		// Populate the list of fields
+		foreach($fields as $i => $field) {
+			$field = $this->real_escape_string($field);
+			$fieldsList .= ($i == 0) ? $field : ", {$field}";
 		}
-
-		// Remove trailing comma, then add the source database to the SQL statement.
-		$out = rtrim($out, ",") . "FROM `" . $this->database . "`.`" . $table . "` WHERE ";
-
-		if(count($conditions) > 0){
-	
-			// For each of the conditions write them into the SQL variable.
-			$i = 0;
-			foreach($conditions as $value){
-				if($i != 0){
-					$out .= $value[0] . " ";
-				}
-				$out .=  $value[1] . " ". $value[2] . " '" . $this->real_escape_string($value[3]) . "' ";
-				$i++;
-			}
+		
+		// Addition of the possiblity of multiple table selection by Phillip Whittlesea on 21/12/2010
+		// If function is passed an array in $table all tables will be added to SELECT statement
+		if(is_array($table)){
+			foreach($table as $i => $tbl) $tablesList .= ($i == 0) ? "`{$this->database}`.`{$tbl}`" : ", `{$this->database}`.`{$tbl}`";
 		} else {
-			$out = rtrim($out, "WHERE ");
+			$tablesList .= "`{$this->database}`.`{$table}`";
 		}
-		// Trim trailing space, add any additionals.
-		$out = rtrim($out, " ") . " " . $additionals . ";";
+		
+		// Populate the list of conditions
+		if(!empty($conditions)){
+			$conditionsList .= "WHERE ";
+			// For each of the conditions write them into the SQL variable.
+			foreach($conditions as $i => $value){
+				// SEB: This is not documented. Appears to let you write a WHERE in plaintext
+				if(strtoupper($value[0]) == "CUSTOM"){
+					$conditionsList .= $value[1];
+					continue;
+				}
+			
+				if($i != 0) $conditionsList .= $value[0] . " ";
+				
+				// TODO: Should the two ' characters be `?
+				$conditionsList .=  $value[1] . " ". $value[2] . " '" . $this->real_escape_string($value[3]) . "' ";
+			}
+		}
+		
 		// Push the query to the class array queries.
-		array_push($this->queries, $out);
-		return $out;
+		$currentQuery = "SELECT {$fieldsList} FROM {$tablesList} {$conditionsList} {$additionals}";
+		
+		$this->queries[] = $currentQuery;
+		$this->currentQuery = $currentQuery;
+		
+		return $this;
 	}
 	
 	// Converts WHERE array to regular SQL
 	public function convertWhereArrayToSql($where) {
 		$out = "";
-		$i = 0;
-		foreach($where as $value) {
+		foreach($where as $i => $value) {
 			if($i != 0) $out .= $value[0] . " ";
 			$out .=  $value[1] . " ". $value[2] . " '" . $this->real_escape_string($value[3]) . "' ";
-			$i++;
 		}
 		return $out;
 	}
@@ -139,34 +162,34 @@ class db extends mysqli {
 	 * @ $additionals = not required. Any additional bits of SQL you wish to have after the common bit.
 	*/
 
-	public function insert($dataArr = array(), $table, $additionals = ""){
-		// Start with the INSERT INTO statement, with the database stored in the class variable and then the table that the user has passed to us.
-		$out = "INSERT INTO `" . $this->database . "`.`" . $table . "` (";
-		// For each of the keys in the dataArr output them here, seperated by commas into the $out variable.
-		foreach(array_keys($dataArr) as $key){
-			$out .= "`" . $this->real_escape_string($key) . "`,";
+	public function insert($fields = array(), $table, $additionals = "") {
+		
+		// These variables will hold the fields and values parts of the INSERT query
+		$fieldsList = "";
+		$valuesList = "";
+		
+		// Let's build the fields and values parts. "comma" is used to add commas where necessary
+		$comma = "";
+		foreach($fields as $field => $data) {
+			// Sanitise, sanitise, sanitise
+			$field = $this->real_escape_string($field);
+			$data = $this->real_escape_string($data);
+			
+			// Append to the list of fields
+			$fieldsList .= "{$comma}`{$field}`";
+			
+			// Append to the list of values. Numbers and NULLs don't get quotes around them.
+			$valuesList .= (is_string($data) and strtoupper($data) != "NULL") ? "{$comma}'{$data}'" : $comma.$data;
+			
+			// Sets comma to be a comma, so the first item in the list won't have a comma before it
+			$comma = ", ";
 		}
-
-		// Remove the trailing comma, close the bracket and start the VALUES section.
-		$out = rtrim($out, ",") . ") VALUES(";
-		// For each of the array values output in the same order that we did with the keys so that they match up.
-		// Note, if it is a number or NULL then we shouldnt really have quotes around it.
-		foreach(array_values($dataArr) as $value){
-			if(is_string($value)){
-				if(strtoupper($value) != "NULL"){
-					$out .= "'" . $this->real_escape_string($value) . "',";
-				} else {
-					$out .= $this->real_escape_string($value) . ",";
-				}
-			} else {
-				$out .= $this->real_escape_string($value) . ",";
-			}
-		}
-		// Trim the trailing comma off, close the brackets then add the additionals.
-		$out = rtrim($out, ",") . ")" . $additionals . ";";
-		// Push the query to the class array queries.
-		array_push($this->queries, $out);
-		return $out;
+		
+		// Format query, append additionals and push to query list
+		$this->queries[] = "INSERT INTO `{$this->database}`.`{$table}` ({$fieldsList}) VALUES ({$valuesList}) {$additionals};";
+		$this->currentQuery = $out;
+		
+		return $this;
 	}
 
 
@@ -179,32 +202,32 @@ class db extends mysqli {
 	 * @ $additionals = not required. Any additional bits of SQL you wish to have after the common bit.
 	*/
 
-	public function update($updateFLDS = array(), $table, $fields = array(), $additionals = ""){
-		// Start with the UPDATE statement, with the database that we are connected to and the table at the end.
-		$out = "UPDATE `" . $this->database . "`.`" . $table . "` SET ";
-
+	public function update($fields = array(), $table, $conditions = array(), $additionals = ""){
+		
+		$fieldsList = "";
+		$conditionsList = "";
+		
 		// For each update field output to the string in the format $key = '$data',. This will allow multiple fields to be updated.
-		foreach($updateFLDS as $key => $value){
-			$out .= $key . " ='" . $this->real_escape_string($value) . "', ";
+		$comma = "";
+		foreach($fields as $field => $value) {
+			$fieldsList .= "{$comma}{$field} = '{$this->real_escape_string($value)}'";
+			$comma = ", ";
 		}
-
-		// Remove trailing comma and space and append the WHERE clause.
-		$out = rtrim($out, ", ") . " WHERE ";
 
 		// Append all of the conditional fields to the end of the statement that the user has added.
-		$i = 0;
-		foreach($fields as $value){
-			if($i != 0){
-				$out .= $value[0] . " ";
-			}
-			$out .= $value[1] . " ='" . $this->real_escape_string($value[2]) . "' ";
-			$i++;
+		foreach($conditions as $i => $value){
+			if($i != 0) $conditionsList .= " {$value[0]}";
+			// TODO: ARG! This 'conditions' arr doesn't appear to contain the operator, unlike in INSERT. This assumes the op is always '='
+			$conditionsList .= " {$value[1]} = '{$this->real_escape_string($value[2])}'";
 		}
-		// Remove trailing spaces and add the additionals variable to the end of the statement.
-		$out = rtrim($out, " ") . " " . $additionals . ";";
-		// Push the query to the class array queries.
-		array_push($this->queries, $out);
-		return $out;
+		
+		// Format query, append additionals and push to query list
+		// TODO: Could use the queuedQuery method to do this, but need to write the currentQuery storer into that function.
+		// Also, what is currentQuery, and why isn't it a fuction? It seems to ALWAYS be the last item in $this->queries...
+		$this->queries[] = "UPDATE `{$this->database}`.`{$table}` SET {$fieldsList} WHERE {$conditionsList} {$additionals};";
+		$this->currentQuery = $out;
+		
+		return $this;
 	}
 
 
@@ -216,79 +239,71 @@ class db extends mysqli {
 	 * @ $additionals = not required. Any additional bits of SQL you wish to have after the common bit.
 	*/
 
-	public function delete($table, $fields = array(), $additionals = ""){
-		// Start with the DELETE FROM statement, with the database and table appended afterwards. Follow with the WHERE clause...
-		$out = "DELETE FROM `" . $this->database . "`.`" . $table . "` WHERE ";
-		$i = 0;
-
-		// For each of the conditional fields that the user has entered append them to the SQL string.
-		foreach($fields as $value){
-			if($i != 0){
-				$out .= $value[0] . " ";
-			}
-			$out .= $value[1] . " ='" . $this->real_escape_string($value[2]) . "' ";
-			$i++;
-		}
-		// Remove trailing whitespace and add the additionals variable to the end of the SQL.
-		$out = rtrim($out, " ") . " " . $additionals . ";";
-		// Push the query to the class array queries.
-		array_push($this->queries, $out);
-	}
+	public function delete($table, $conditions = array(), $additionals = ""){
 		
+		// SEB: Is this a good idea or not? Nice safety net, but is it really practical?
+		if(empty($conditions)) throw new Exception("No conditions were specified for the delete operation");
+		
+		$conditionsList = "";
+		
+		// For each of the conditional conditions that the user has entered append them to the SQL string.
+		foreach($conditions as $i => $value){
+			if($i != 0) $conditionsList .= " {$value[0]}";
+			$conditionsList .= " {$value[1]} = '{$this->real_escape_string($value[2])}'";
+		}
+		
+		// Push the query to the class array queries.
+		$this->queries[] = "DELETE FROM `{$this->database}`.`{$table}` WHERE {$conditionsList} {$additionals};";
+		$this->currentQuery = $out;
+		
+		return $this;
+	}
+	
+	// Accepts a raw query and returns the first row of the results (i.e. a 2D array). Handy for logins, IDs, etc.
+	public function oneRow($query) {
+		$out = $this->single($query);
+		if(!empty($out)) return $out[0];
+		return null;
+	}
 	
 	public function single($query){
-		$res = parent::query($query);
-		if(mysqli_error($this)){ 
-			  throw new exception(mysqli_error($this), mysqli_errno($this)); 
-		} 
+		$result = parent::query($query);
+		if($this->error) throw new exception($this->error, $this->errno); 
 
-		$x = 0;
 		$out = array();
-		if(is_bool($res) == true) {
+		if(is_bool($result)) {
 				$out[] = "";
 		} else {
-			while ( $row = $res->fetch_assoc() ) {
-				$out[$x] = $row;
-				$x++;
-			}	
+			while($row = $result->fetch_assoc()) $out[] = $row;
 		}
 		return $out;
 	}
 	
+	// Add raw SQL to the query queue.
 	public function queuedQuery($query) {
-		array_push($this->queries, $query);
+		$this->queries[] = $query;
 		return $query;
 	}
 	
-	
 	public function runBatch(){
-		// Create a new array for the output.
+		// SEB: What is going on here? If numQueries is a count of the number of queries, why is it adding to itself? Why isn't it a function?
 		$this->numQueries += count($this->queries);
 		$out = array();
-		$i = 0;
 		// Ping the server and re-establish the connection if it has been dropped.
 		parent::ping();
+		
 		// For each query...
-		foreach($this->queries as $query){
+		foreach($this->queries as $queryId => $query){
 			// Run the query.
-			// echo $query;
 			$res = parent::query($query, MYSQLI_USE_RESULT);
-			if(mysqli_error($this)){ 
-				  throw new exception(mysqli_error($this), mysqli_errno($this)); 
-			} 
+			if($this->error) throw new exception($this->error, $this->errno); 
 
-			$x = 0;
 			// Append the results into a 3d array in $out.
-			//echo $res;
 			if(is_bool($res) == true) {
-				$out[$i] = "";
+				$out[$queryId] = "";
 			} else {
-				while ( $row = $res->fetch_assoc() ) {
-					$out[$i][$x] = $row;
-					$x++;
-				}
+				while($row = $res->fetch_assoc()) $out[$queryId][] = $row;
 			}
-			$i++;
 		}
 		
 		$this->queries = array();
@@ -297,4 +312,3 @@ class db extends mysqli {
 		return $out;
 	} 
 }
-?>
