@@ -7,6 +7,9 @@ class image {
 	private $filetype;
 	private $newpath;
 	private $url;
+	
+	public $resizeWidth = 220;
+	public $resizeHeight = 100;
 
 	private $filetypes = array("png", "jpg", "jpeg", "gif");
 
@@ -36,7 +39,7 @@ class image {
 	
 	private function resizeImage(){
 		$im = new Imagick($this->newpath);
-		$im->scaleImage(220, 100, true);
+		$im->scaleImage($this->resizeWidth, $this->resizeHeight, true);
 		$im->writeImage($this->newpath);
 	}
 	
@@ -45,9 +48,9 @@ class image {
 		if ($dh = opendir($dir)) {
 	        while (($file = readdir($dh)) !== false) {
 	        	if($file == ".." || $file == ".") continue;
-	        echo $dir . $file . "<br />";
+	        	echo $dir . $file . "<br />";
 	        	$im = new Imagick($dir . $file);
-				$im->scaleImage(220, 100, true);
+				$im->scaleImage($this->resizeWidth, $this->resizeHeight, true);
 				$im->writeImage($dir . $file);
 	        }
 	        closedir($dh);
