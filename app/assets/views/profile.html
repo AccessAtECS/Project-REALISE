@@ -1,29 +1,45 @@
 <div id="profile" class="innerContent">
 	<h1>Update your profile</h1>
 	
-	<form class="innerContent">
+	<form action="profile/update" method="post" class="innerContent" enctype="multipart/form-data">
 	
 		<h2>Image</h2>
 		<p>
-			<div class="img"><img src="{profileImage}" align="left" /></div>
+			<div class="img"><label for="newImage"><img src="{profileImage}" align="left" /></label></div>
 			<div class="leftMargin">
-			<p><label for="newImage">Change image:</label> <input type="file" name="newImage" id="newImage" /></p>
-			<button id="removeImage">Remove Image</button>
+			<p>Choose an image to use as your profile image. Note: it will be resized to 80x80.</p>
+			<p><input type="file" name="newImage" id="newImage" /></p>
 			</div>
 		</p>
 		
 		<br style="clear:both" />
 		
 		<p style="clear:both">
+			<h2>Username</h2>
+			<label for="username">Username:</label><br />
+			<input type="text" name="username" id="username" value="{username}" size="50" />
+			<p>Setting a username will allow people to view your profile. Your username must be unique.</p>
+		</p>
+		
+		<p>
+			<h2>Password</h2>
+			<label for="password">Password:</label><br />
+			<input type="password" name="password" id="password" />
+			<p>Note: This will only change your password on REALISE. This will not affect LinkedIn logins.</p>
+		</p>
+		
+		<p>
 			<h2>Tagline</h2>
-			<label for="newTagline">Change tagline:</label> <br />
+			<label for="newTagline">Tagline:</label> <br />
 			<input type="text" name="newTagline" id="newTagline" value="{tagline}" size="120" />
 		</p>
 		
 		<p>
 			<h2>Email</h2>
-			<label for="newEmail">Change email:</label> <br />
+			<label for="newEmail">Email:</label> <br />
 			<input type="text" name="newEmail" id="newEmail" value="{email}" size="120" />
+			<p><input type="checkbox" name="emailVisibility" id="emailVisibility"{emailVisibility} /><label for="emailVisibility">Allow people to contact me</label></p>
+			<p>We won't display your email publicly, but other users will be able to send you messages through REALISE.</p>
 		</p>
 		
 		

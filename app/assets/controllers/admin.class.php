@@ -17,6 +17,8 @@ class controller_admin extends controller {
 	protected function hide($args){
 		$this->m_noRender = true;
 	
+		if($this->m_user->getId() == null) throw new Exception("You do not have access to this area.");
+	
 		$object = new $args['name']($args['id']);
 		$object->setHidden(TRUE);
 		$object->commit();

@@ -100,7 +100,7 @@ class user extends dbo {
 		$db->runBatch();
 		
 		$id = $db->insert_id;
-		$this->setId($id);
+		if($this->id == null) $this->setId($id);
 	}
 	
 	public function createAccount($name, $tagline, $linkedinID = ""){
@@ -180,6 +180,7 @@ class user extends dbo {
 	}
 	
 	public function setUsername($u){
+		if(user::usernameExists($u)) throw new Exception("Username exists!");
 		$this->username = $u;
 	}
 	
@@ -247,6 +248,17 @@ class user extends dbo {
 		$res = $db->single(sprintf($sql, get_class($resource), (int)$resource->getId(), $this->id));
 
 		return (BOOL)$res[0]['enrolled'];
+	}
+	
+	/* Static functions */
+
+	public static function usernameExists($username){
+		$db = db::singleton();
+		
+		$sql = "SELECT COUNT(*) AS user_exists FROM user WHERE username = \"%s\"";
+		$res = $db->single(sprintf($sql, $username));
+
+		return (BOOL)$res[0]['user_exists'];
 	}
 	
 }

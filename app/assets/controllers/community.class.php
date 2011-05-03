@@ -37,7 +37,12 @@ class controller_community extends controller {
 		$template = new view("frag.innovator");
 		
 		foreach($userList as $innovator){
-			$template->replace("name", $innovator->getName());
+			if($innovator->getUsername() == ""){
+				$template->replace("name", $innovator->getName());
+			} else {
+				$template->replace("name", "<a href='/profile/view/" . $innovator->getUsername() . "'>" . $innovator->getName() . "</a>");
+			}
+			
 			$template->replace("tagline", $innovator->getTagline());
 				
 			$template->replace("src", $innovator->getPicture());

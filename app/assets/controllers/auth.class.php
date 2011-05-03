@@ -107,7 +107,7 @@ class controller_auth extends controller {
 		try {
 			$u = new user($p['id'], user::ID_LINKEDIN);
 			
-			if($p['picture-url'] != "" && $u->getPicture() != $p['picture-url']){
+			if($p['picture-url'] != "" && $u->getPicture() == ""){
 				$u->setPicture($p['picture-url']);
 				$u->commit();
 			}
