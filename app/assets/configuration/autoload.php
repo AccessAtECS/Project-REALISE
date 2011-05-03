@@ -8,10 +8,12 @@ function getRuntimeObjects(){
 }
 
 // definitions for the app
-define('GDATA_USERNAME', "s@ecs.soton.ac.uk");
-define('GDATA_PASS', 'hdRFyRX8H');
-
 define("REALISE_VERSION", "1.0 (r1071)");
+
+require_once(realpath(INSTEP_SYS_ROOTDIR . "../system_configuration.php"));
+
+// Set up database.
+$db = db::singleton(MYSQL_SERVER, MYSQL_USERNAME, MYSQL_PASSWORD, MYSQL_SCHEMA);
 
 // This function auto loads classes.
 function __autoload($class_name) {

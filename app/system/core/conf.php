@@ -6,12 +6,12 @@ define("DEV", true);
 
 
 // Location of conf.php in infolio.
-define("SYSTEM_DIR", "/var/www/dev/realise/app/");
+define("SYSTEM_DIR", "/var/www/dev/realise/htdocs/app/");
 //define("SYSTEM_CONF", SYSTEM_DIR . "system/core/conf.php");
 
 define('INSTEP_SYS_DEFAULTCNTRLR', 'home');
 
-define('INSTEP_SYS_ROOTDIR', "/var/www/dev/realise/");
+define('INSTEP_SYS_ROOTDIR', "/var/www/dev/realise/htdocs/");
 define('INSTEP_SYS_REALBASEURL', 'http://realise.devx.co.uk/');
 define('INSTEP_BASEURL', 'http://realise.devx.co.uk/');
 define('INSTEP_SYS_INCLUDEURL', INSTEP_SYS_REALBASEURL . 'instep/');
