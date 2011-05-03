@@ -4,6 +4,7 @@ class user extends dbo {
 	private $linkedin_id = null;
 	private $name;
 	private $tagline = "";
+	private $bio;
 	private $picture = "";
 	private $defaultPicture = "/presentation/images/avatar.png";
 	private $email = "";
@@ -75,6 +76,7 @@ class user extends dbo {
 			$this->hash = $p[0]['hash'];
 			$this->admin = $p[0]['admin'];
 			$this->emailPublic = (BOOL)$p[0]['emailPublic'];
+			$this->bio = $p[0]['bio'];
 		} else {
 			throw new Exception("No user with that ID!");
 		}
@@ -89,6 +91,7 @@ class user extends dbo {
 		$data['username'] = $this->username;
 		$data['hash'] = $this->hash;
 		$data['emailPublic'] = (int)$this->emailPublic;
+		$data['bio'] = $this->bio;
 				
 		$db = db::singleton();
 		$check = $db->single("SELECT id FROM user WHERE id = '{$this->id}'");
@@ -202,6 +205,14 @@ class user extends dbo {
 	
 	public function getEmailIsPublic(){
 		return $this->emailPublic;
+	}
+	
+	public function setBio($b){
+		$this->bio = $b;
+	}
+	
+	public function getBio(){
+		return $this->bio;
 	}
 	
 	public function canDelete(dbo $object){
