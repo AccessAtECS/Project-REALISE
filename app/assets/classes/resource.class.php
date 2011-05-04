@@ -133,7 +133,7 @@ abstract class resource extends dbo {
 		if($header) $o->set("<h1>TEAM MEMBERS</h1>");
 
 		foreach($users as $innovator){
-			$template->replace("name", $innovator->getName());
+			$template->replace("name", $innovator->getHTMLName());
 			$template->replace("tagline", $innovator->getTagline());
 			
 			$template->replace("src", $innovator->getPicture());

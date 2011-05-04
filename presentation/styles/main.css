@@ -554,6 +554,11 @@ input[type="submit"][disabled], input[type="button"][disabled], button[disabled]
 	box-shadow: 1px 1px 0px #d3d3d3;
 }
 
+#tagHolder .tag:hover {
+	background-color: #ffcf47;
+	background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#ffd04c), to(#ffa100));
+}
+
 #tagHolder a {
 	text-decoration: none;
 	color: #966930 !important;

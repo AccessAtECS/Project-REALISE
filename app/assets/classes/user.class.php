@@ -163,6 +163,14 @@ class user extends dbo {
 		return $this->name;
 	}
 	
+	public function getHTMLName(){
+		if($this->username != ""){
+			return "<a href='/profile/view/{$this->getUsername()}'>{$this->getName()}</a>";
+		} else {
+			return $this->getName();
+		}
+	}
+	
 	public function getTagline() {
 		return $this->tagline;
 	}
