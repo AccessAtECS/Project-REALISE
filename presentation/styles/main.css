@@ -225,13 +225,6 @@ img {
 	background-image: url(../images/light-bulb.png);
 }
 
-#ideaLab #filters {
-	text-align: right;
-	margin-right:50px;
-	margin-top:5px;
-	font-size: 10pt;
-}
-
 #ideaLab #ideaHolder {
 	margin-left:37px;
 }
@@ -551,13 +544,19 @@ input[type="submit"][disabled], input[type="button"][disabled], button[disabled]
 	padding-right:7px;
 	padding-top:2px;
 	padding-bottom:2px;
-	background-color: #e1e1e1;
-	-webkit-border-radius: 5px;
-	-moz-border-radius: 5px;
+	background-color: #fdd870;
+	border: 1px solid #d0902e;
+	height:20px;
+	font-weight: bold;
+	border-radius: 5px;
+	text-shadow: #ffe5b6 1px 1px 0px;
+	background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#ffda72), to(#fcbc4e));
+	box-shadow: 1px 1px 0px #d3d3d3;
 }
 
 #tagHolder a {
 	text-decoration: none;
+	color: #966930 !important;
 }
 
 #ownerHolder {
@@ -996,4 +995,24 @@ a#skip {
 	height:1px;
 	clear:both;
 	margin-bottom:10px;
+}
+
+#contentPane #filters {
+	height:25px;
+	margin-right:40px;
+}
+
+#contentPane #filters a {
+	display: block;
+	float:right;
+	height:25px;
+	background: black;
+	width:150px;
+	margin-right:10px;
+	line-height: 25px;
+	border-radius: 5px;
+}
+
+#contentPane #filters a.selected {
+	background: #EEE;
 }

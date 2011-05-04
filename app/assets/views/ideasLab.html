@@ -3,7 +3,8 @@
 	<form id="newIdea" action="/idea/new" method="post">
 		<input name="idea" id="ideaBox" type="text" placeholder="Got an idea?" style="float:left; margin-left:42px" /><button style="height:44px; margin-left:10px">Submit idea</button>
 	</form>
-	<div id="filters">Recent Activity</div>
+	<div id="filters"><a href="#" class="recent">Mine</a>  <a href="#" class="recent">My Interest</a> <a href="#" class="recent selected">Recent</a></div>
+	<br style="clear:both" />
 	
 	<div id="ideaHolder">
 		{recentIdeas}
