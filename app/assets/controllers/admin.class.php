@@ -18,9 +18,14 @@ class controller_admin extends controller {
 		$this->m_noRender = true;
 	
 		if($this->m_user->getId() == null) throw new Exception("You do not have access to this area.");
-	
+		
 		$object = new $args['name']($args['id']);
-		$object->setHidden(TRUE);
+		if($_POST['action'] == "enable"){
+			$object->setHidden(FALSE);
+		} else {
+			$object->setHidden(TRUE);
+		}
+		
 		$object->commit();
 		
 		echo json_encode(array("status" => 200));

@@ -44,7 +44,7 @@ class resourceView extends view {
 		
 		if($this->user->getIsAdmin()){
 			if($this->resource->getHidden()){
-				$this->replace('delete', 'HIDDEN');
+				$this->replace('delete', new view('frag.makeVisible'));
 			} else {
 				// Display the deletion icon
 				$delete = new view('frag.deleteComment');
