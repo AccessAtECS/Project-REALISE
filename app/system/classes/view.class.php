@@ -33,13 +33,21 @@ class view {
 	}
 	
 	public function replace($var, $fragment, $type = view::REPLACE_TEMP){
-		if(is_object( $fragment ) == true && get_class($fragment) == get_class($this) ){
-			$this->viewSource = str_ireplace("{" . strtolower($var) . "}", $fragment->get(), $this->viewSource);
-			if($type == view::REPLACE_CORE) $this->source = str_ireplace("{" . strtolower($var) . "}", $fragment->get(), $this->source);
-		} else {
-			$this->viewSource = str_ireplace("{" . strtolower($var) . "}", $fragment, $this->viewSource);
-			if($type == view::REPLACE_CORE) $this->source = str_ireplace("{" . strtolower($var) . "}", $fragment, $this->source);
+		if(substr($var, 0, 1) == "#"){
+			return $this->replaceById(substr($var, 1), $fragment, $type);
 		}
+		
+		$this->viewSource = str_ireplace("{" . strtolower($var) . "}", $fragment, $this->viewSource);
+		
+		if($type == view::REPLACE_CORE) $this->source = $this->viewSource;
+		return $this;
+	}
+	
+	public function replaceById($id, $with, $type = view::REPLACE_TEMP){
+		$this->viewSource = str_ireplace("<\w+\s?(?:id=[\"']" . $id . "[\"'])\s?\b[^>]*>(.*?)</\w+>", $fragment, $this->viewSource);
+		
+		if($type == view::REPLACE_CORE) $this->source = $this->viewSource;
+		
 		return $this;
 	}
 	
