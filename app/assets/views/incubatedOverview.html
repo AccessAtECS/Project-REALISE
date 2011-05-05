@@ -8,6 +8,15 @@
     </div>
 
 	<h1>{title}</h1>
+
+	<div id="urlcontainer">
+		<a id="projWebsite" href="{website}" class="homepageurl projecturl">Project Website</a>
+  		<a id="communityWebsite" href="{community-website}" class="communityurl projecturl">Community Website</a>
+  		<a id="licenceSelection" href="{license-url}" class="licenseurl projecturl">Licensed under the {licence} licence</a>
+  		<a id="scmWebsite" href="{scm-url}" class="scmurl projecturl">Tracking and bug fixes</a>
+  		<a id="repositoryWebsite" href="{repo-url}" class="repourl projecturl">Project code repository</a>
+	</div>
+
 	<p style="clear:both">{description}</p>
 	
 	<p id="categoryHolder">Listed in the <a href="/category/{cat-id}">{category}</a> category</p>

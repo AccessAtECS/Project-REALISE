@@ -1021,3 +1021,7 @@ a#skip {
 #contentPane #filters a.selected {
 	background: #EEE;
 }
+
+#urlcontainer {
+	margin:10px;
+}

@@ -94,9 +94,11 @@ class controller_incubator extends controller {
 		$this->setViewport(new view("incubatedOverview"));
 		
 		$this->viewport()->replace("title", $this->m_currentProject->getName());
-		$this->viewport()->replace("image", $this->m_currentProject->getImage()); // Hardcoded for time being
+		$this->viewport()->replace("image", $this->m_currentProject->getImage());
 		$this->viewport()->replace("description", $this->m_currentProject->getDescription());
 		$this->viewport()->replace("id", $id);
+
+		$this->renderProjectInformation();
 
 		$this->viewport()->replace('percentage', $this->m_currentProject->getPromotionPercentage());
 		
@@ -197,9 +199,6 @@ class controller_incubator extends controller {
 			$sidebar->replace('followers', '');
 		}
 		
-		
-		
-		
 		$this->superview()->replace("sideContent", $sidebar );
 		
 		
@@ -207,6 +206,43 @@ class controller_incubator extends controller {
 		$assets .= util::newScript("/presentation/scripts/project.js");
 		
 		$this->superview()->replace("additional-assets", $assets);
+	}
+	
+	private function renderProjectInformation(){
+		
+		// Set up project information
+		if($this->m_currentProject->getUrl() == ""){
+			$this->viewport()->replace("#projWebsite", "");
+		} else {
+			$this->viewport()->replace("website", $this->m_currentProject->getUrl());
+		}
+		
+		if($this->m_currentProject->getCommunityUrl() == ""){
+			$this->viewport()->replace("#communityWebsite", "");
+		} else {
+			$this->viewport()->replace("community-website", $this->m_currentProject->getCommunityUrl());
+		}
+
+		if($this->m_currentProject->getLicense()->getUrl() == ""){
+			$this->viewport()->replace("#licenceSelection", "");
+		} else {
+			$this->viewport()->replace("licence", $this->m_currentProject->getLicense()->getName());
+			$this->viewport()->replace("license-url", $this->m_currentProject->getLicense()->getUrl());		
+		}
+		
+		if($this->m_currentProject->getScmUrl() == ""){
+			$this->viewport()->replace("#scmWebsite", "");
+		} else {
+			$this->viewport()->replace("scm-url", $this->m_currentProject->getScmUrl());
+		}
+
+		if($this->m_currentProject->getRepoUrl() == ""){
+			$this->viewport()->replace("#repositoryWebsite", "");
+		} else {
+			$this->viewport()->replace("repo-url", $this->m_currentProject->getRepoUrl());
+		}
+		
+		
 	}
 
 	protected function comment($args){

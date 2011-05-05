@@ -90,10 +90,15 @@ class controller_project extends controller {
 		$this->viewport()->replace("title", $this->m_currentProject->getName());
 		$this->viewport()->replace("image", $this->m_currentProject->getImage());
 		$this->viewport()->replace("description", $this->m_currentProject->getDescription());
+		
 		$this->viewport()->replace("website", $this->m_currentProject->getUrl());
 		$this->viewport()->replace("community-website", $this->m_currentProject->getCommunityUrl());
 		$this->viewport()->replace("scm-url", $this->m_currentProject->getScmUrl());
 		$this->viewport()->replace("repo-url", $this->m_currentProject->getRepoUrl());
+		$this->viewport()->replace("licence", $this->m_currentProject->getLicense()->getName());
+		$this->viewport()->replace("license-url", $this->m_currentProject->getLicense()->getUrl());
+		
+		
 		$this->viewport()->replace("id", $id);
 
 		// Openness ratings
@@ -130,9 +135,6 @@ class controller_project extends controller {
 		$tags = $this->m_currentProject->parseTags($this->m_currentProject);
 		
 		if($tags == "") $tags = "None";
-		
-		$this->viewport()->replace("licence", $this->m_currentProject->getLicense()->getName());
-		$this->viewport()->replace("license-url", $this->m_currentProject->getLicense()->getUrl());
 		
 		$this->viewport()->replace("tags", $tags);
 	
