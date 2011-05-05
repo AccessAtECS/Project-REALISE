@@ -43,8 +43,8 @@ class view {
 		return $this;
 	}
 	
-	public function replaceById($id, $with, $type = view::REPLACE_TEMP){
-		$this->viewSource = str_ireplace("<\w+\s?(?:id=[\"']" . $id . "[\"'])\s?\b[^>]*>(.*?)</\w+>", $fragment, $this->viewSource);
+	public function replaceById($id, $fragment, $type = view::REPLACE_TEMP){
+		$this->viewSource = preg_replace("/<\w+\s?(?:id=[\"']{$id}[\"'])\s?\b[^>]*>(.*?)<\/\w+>/i", $fragment, $this->viewSource);
 		
 		if($type == view::REPLACE_CORE) $this->source = $this->viewSource;
 		
