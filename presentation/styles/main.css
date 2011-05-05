@@ -1005,6 +1005,7 @@ a#skip {
 #contentPane #filters {
 	height:25px;
 	margin-right:40px;
+	display: none;
 }
 
 #contentPane #filters a {

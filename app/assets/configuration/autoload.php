@@ -8,7 +8,7 @@ function getRuntimeObjects(){
 }
 
 // definitions for the app
-define("REALISE_VERSION", "1.0 (r1071)");
+define("REALISE_VERSION", "1.0.1 (r1083)");
 
 require_once(realpath(INSTEP_SYS_ROOTDIR . "../system_configuration.php"));
 

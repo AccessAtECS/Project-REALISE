@@ -15,7 +15,7 @@ class controller_profile extends controller {
 				
 		$this->superview()->replace("sideContent", util::displayNewInnovators());
 
-		$this->bind('view/(?P<profile_id>[a-zA-Z0-9]+)', 'viewProfile');
+		$this->bind('view/(?P<profile_id>[a-zA-Z0-9 ]+)', 'viewProfile');
 
 		$this->bind('update', 'saveProfile');
 		$this->bind('usernameCheck', 'checkUsername');
@@ -91,7 +91,7 @@ class controller_profile extends controller {
 		
 		$this->setViewport(new view("viewProfile"));
 		
-		$user = new user($args['profile_id'], user::ID_USERNAME);
+		$user = new user(urldecode($args['profile_id']), user::ID_USERNAME);
 		$this->viewport()->replaceAll(array(
 			"username" => $user->getUsername(),
 			"name" => $user->getName(),
