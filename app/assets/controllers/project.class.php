@@ -98,6 +98,7 @@ class controller_project extends controller {
 		$this->viewport()->replace("licence", $this->m_currentProject->getLicense()->getName());
 		$this->viewport()->replace("license-url", $this->m_currentProject->getLicense()->getUrl());
 		
+		$this->checkGithub();
 		
 		$this->viewport()->replace("id", $id);
 
@@ -217,6 +218,38 @@ class controller_project extends controller {
 		
 		$this->superview()->replace("additional-assets", $assets);
 				
+	}
+
+	private function checkGithub(){
+		
+		$repo = $this->m_currentProject->getRepoUrl();
+		
+		if(strstr($repo, "github.com")){
+			
+			// Check to see if we have a cached version
+			$objectCache = new cache("github-" . $this->m_currentProject->getId(), cache::REQUEST_DATA, 60);
+			if($objectCache->has()){
+				$repo = $objectCache->get();
+			} else {
+			
+				preg_match("/github.com\/([^\/]+)\/([^\/]+)/i", $repo, $matches);
+				if(count($matches) < 2) return;
+				
+				// Get github information
+				$github = new Github_Client();
+				$repo = $github->getRepoApi()->show($matches[1], $matches[2]);
+				
+				$objectCache->put($repo);
+			}
+			
+			$updated_time = new DateTime($repo['pushed_at'], new DateTimeZone('Europe/London'));
+			$repo['lastUpdated'] = $updated_time->diff(new DateTime())->format("%d days, %h hours and %i minutes ago");
+			
+			// Push information to the viewport
+			$this->viewport()->replace("remote-project", util::id(new view('frag.github'))->replaceAll($repo));
+		} else {
+			return;
+		}
 	}
 
 	protected function comment($args){

@@ -1026,3 +1026,37 @@ a#skip {
 #urlcontainer {
 	margin:10px;
 }
+
+#Github {
+	border-color: #ffe29c;
+	border-width: 1px;
+	border-style: solid;
+	padding:5px;
+	padding-left:10px;
+	background-color: #fdffde;
+	border-radius: 5px;
+}
+
+#Github h3 {
+	margin-top:5px;
+}
+
+#Github li#forks {
+	list-style-image: url(../images/arrow-switch.png);
+}
+
+#Github li#watchers {
+	list-style-image: url(../images/eye.png);
+}
+
+#Github li#lastUpdated {
+	list-style-image: url(../images/clock.png);
+}
+
+#Github li#language {
+	list-style-image: url(../images/gear.png);
+}
+
+#Github li#issues {
+	list-style-image: url(../images/exclamation-diamond.png);
+}

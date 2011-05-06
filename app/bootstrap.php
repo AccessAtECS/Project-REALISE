@@ -8,7 +8,9 @@ require_once("system/core/conf.php");
 $includePath = get_include_path() . ":" . implode(":", unserialize(INSTEP_SYS_INCLUDEPATHS));
 set_include_path($includePath);
 
+require_once("assets/classes/autoloader.class.php");
+
 // Get the autoload functions
-require_once("assets/configuration/autoload.php");
+require_once("assets/configuration/init.php");
 
 ?>
