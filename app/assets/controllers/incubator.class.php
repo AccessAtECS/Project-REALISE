@@ -97,7 +97,9 @@ class controller_incubator extends controller {
 		$this->viewport()->replace("image", $this->m_currentProject->getImage());
 		$this->viewport()->replace("description", $this->m_currentProject->getDescription());
 		$this->viewport()->replace("id", $id);
-
+		
+		$this->checkGithub();
+		
 		$this->renderProjectInformation();
 
 		$this->viewport()->replace('percentage', $this->m_currentProject->getPromotionPercentage());
@@ -206,6 +208,39 @@ class controller_incubator extends controller {
 		$assets .= util::newScript("/presentation/scripts/project.js");
 		
 		$this->superview()->replace("additional-assets", $assets);
+	}
+	
+	private function checkGithub(){
+		
+		$repo = $this->m_currentProject->getRepoUrl();
+		
+		if(strstr($repo, "github.com")){
+			
+			// Check to see if we have a cached version
+			$objectCache = new cache("github-" . $this->m_currentProject->getId(), cache::REQUEST_DATA, 10);
+			if($objectCache->has()){
+				$repo = $objectCache->get();
+			} else {
+			
+				preg_match("/github.com\/([^\/]+)\/([^\/]+)/i", $repo, $matches);
+				if(count($matches) < 2) return;
+				
+				// Get github information
+				$github = new Github_Client();
+				$repo = $github->getRepoApi()->show($matches[1], $matches[2]);
+				
+				$objectCache->put($repo);
+			}
+			
+			$updated_time = new DateTime($repo['pushed_at'], new DateTimeZone('Europe/London'));
+			$repo['lastUpdated'] = $updated_time->diff(new DateTime())->format("%d days, %h hours and %i minutes ago");
+			
+			// Push information to the viewport
+			$this->viewport()->replace("remote-project", util::id(new view('frag.github'))->replaceAll($repo));
+		} else {
+			$this->viewport()->replace("remote-project", "");
+			return;
+		}
 	}
 	
 	private function renderProjectInformation(){

@@ -227,7 +227,7 @@ class controller_project extends controller {
 		if(strstr($repo, "github.com")){
 			
 			// Check to see if we have a cached version
-			$objectCache = new cache("github-" . $this->m_currentProject->getId(), cache::REQUEST_DATA, 60);
+			$objectCache = new cache("github-" . $this->m_currentProject->getId(), cache::REQUEST_DATA, 10);
 			if($objectCache->has()){
 				$repo = $objectCache->get();
 			} else {
@@ -248,6 +248,7 @@ class controller_project extends controller {
 			// Push information to the viewport
 			$this->viewport()->replace("remote-project", util::id(new view('frag.github'))->replaceAll($repo));
 		} else {
+			$this->viewport()->replace("remote-project", "");
 			return;
 		}
 	}
