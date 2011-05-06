@@ -163,8 +163,7 @@ class controller_incubator extends controller {
 		
 		$sidebar->replace('follower-count', $project_followers);
 		
-		
-		if(!$this->m_user->getEnrollment($this->m_currentProject, resource::MEMBERSHIP_ADMIN)){
+		if(!$this->m_user->getEnrollment($this->m_currentProject, resource::MEMBERSHIP_ADMIN) && $this->m_user->getId() != null){
 			$voteButton = new view('frag.followProject');
 			// Has the user voted?
 			if($this->m_currentProject->hasVoted($this->m_user)){
