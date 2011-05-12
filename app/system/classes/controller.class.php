@@ -145,6 +145,10 @@ abstract class controller implements viewController {
 		return $this->context;
 	}
 	
+	final protected function getUrl(){
+		return BASEURL . str_replace("controller_", "", get_class($this)) . "/" . implode("/", $this->context);
+	}
+	
 	final protected function redirect($location){
 		$this->redirectTo = $location;
 	}

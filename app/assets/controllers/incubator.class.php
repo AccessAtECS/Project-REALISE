@@ -297,6 +297,18 @@ class controller_incubator extends controller {
 				
 				$html = $comment->get();
 				
+				// Fire off a notification
+				
+				$notification = new notification();
+				$action = array(
+					"user" => $this->m_user->getName(),
+					"body" => $_POST['body'],
+					"action" => str_replace(array("{tmpl}", "{type}"), array(util::id(new project($id))->getName(), "incubated project"), notification::NOTIFICATION_COMMENT),
+					"url" => str_replace("/comment", "", $this->getUrl()));
+				$notification->compose(new view('mail'), $action);
+				$notification->send();
+				
+				
 				echo json_encode(array("status" => 200, "html" => $html));
 				
 			} else {
@@ -453,6 +465,18 @@ class controller_incubator extends controller {
 			
 				$this->m_currentProject->setIncubated(0);
 				$this->m_currentProject->commit();
+			
+			
+				// Send a notification
+				$notification = new notification();
+				$action = array(
+					"user" => $this->m_user->getName(),
+					"body" => $_POST['overview'],
+					"action" => str_replace(array("{tmpl}"), array($this->m_currentProject->getName()), notification::NOTIFICATION_PROJECT),
+					"url" => str_replace("/admin/promote", "", $this->getUrl()));
+				$notification->compose(new view('mail'), $action);
+				$notification->send();
+			
 			
 				$this->redirect("/project/" . $id);
 			} else {

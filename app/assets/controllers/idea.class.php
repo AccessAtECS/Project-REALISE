@@ -228,8 +228,7 @@ class controller_idea extends controller {
 		$assets .= util::newScript("/presentation/scripts/comments.js");
 		
 		$this->superview()->replace("additional-assets", $assets);
-		
-		
+
 	}
 	
 	protected function comment($args){
@@ -249,6 +248,17 @@ class controller_idea extends controller {
 				$comment_id = $comment->commit();
 				
 				$html = $comment->get($this->m_user);
+				
+				// Fire off a notification
+				
+				$notification = new notification();
+				$action = array(
+					"user" => $this->m_user->getName(),
+					"body" => $_POST['body'],
+					"action" => str_replace(array("{tmpl}", "{type}"), array(util::id(new idea($id))->getTitle(), "idea"), notification::NOTIFICATION_COMMENT),
+					"url" => str_replace("/comment", "", $this->getUrl()));
+				$notification->compose(new view('mail'), $action);
+				$notification->send();
 				
 				echo json_encode(array("status" => 200, "html" => $html));
 				
@@ -428,6 +438,16 @@ class controller_idea extends controller {
 			
 			$project->addTags($project, $_POST['tags']);
 			
+			// Send a notification
+			$notification = new notification();
+			$action = array(
+				"user" => $this->m_user->getName(),
+				"body" => $_POST['overview'],
+				"action" => str_replace(array("{idea}", "{project}"), array($idea->getTitle(), $_POST['name']), notification::NOTIFICATION_INCUBATED),
+				"url" => str_replace("/incubate/confirm", "", $this->getUrl()));
+			$notification->compose(new view('mail'), $action);
+			$notification->send();
+			
 			$this->redirect("/incubator/" . $project_id);
 
 		} catch(Exception $e){
@@ -454,6 +474,16 @@ class controller_idea extends controller {
 			$idea->addTags($idea, $_POST['tags']);
 			
 			$_SESSION['createdNewIdea'] = true;
+			
+			// Send a notification
+			$notification = new notification();
+			$action = array(
+				"user" => $this->m_user->getName(),
+				"body" => $_POST['overview'],
+				"action" => str_replace(array("{tmpl}"), array($idea->getTitle()), notification::NOTIFICATION_IDEA),
+				"url" => str_replace("new/add", $id, $this->getUrl()));
+			$notification->compose(new view('mail'), $action);
+			$notification->send();
 			
 			$this->redirect("/idea/" . $id);
 		} catch(Exception $e){
