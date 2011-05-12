@@ -20,7 +20,7 @@ class view {
 				$this->source = "";		
 				$this->identifier = "";
 		} else {
-			$file = realpath( INSTEP_SYS_ASSETDIR . "views/" . $sourcefile . ".html");
+			$file = realpath( SYS_ASSETDIR . "views/" . $sourcefile . ".html");
 			if(file_exists($file) == true){
 				$this->viewSource = file_get_contents($file);
 				$this->source = $this->viewSource;
@@ -60,7 +60,7 @@ class view {
 	
 	public function replaceWithStatic($var, $template, $path = ""){
 		if($template == "") $template = "home";
-		$fileStr = INSTEP_SYS_ASSETDIR . "views/" . $path . $template . ".html";
+		$fileStr = SYS_ASSETDIR . "views/" . $path . $template . ".html";
 		if(file_exists($fileStr) == true){
 			$this->viewSource = str_ireplace("{" . strtolower($var) . "}", file_get_contents($fileStr), $this->viewSource);
 		} else {

@@ -5,7 +5,7 @@
 require_once("system/core/conf.php");
 
 // Set the include paths.
-$includePath = get_include_path() . ":" . implode(":", unserialize(INSTEP_SYS_INCLUDEPATHS));
+$includePath = get_include_path() . ":" . implode(":", unserialize(SYS_INCLUDEPATHS));
 set_include_path($includePath);
 
 require_once("assets/classes/autoloader.class.php");

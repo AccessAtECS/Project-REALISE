@@ -102,8 +102,8 @@ abstract class controller implements viewController {
 
 	final protected function renderWindow(){
 		$this->superview->replace("viewport", $this->viewport);
-		$this->superview->replace('include-url', INSTEP_SYS_INCLUDEURL);
-		$this->superview->replace('base-url', INSTEP_BASEURL);
+		$this->superview->replace('include-url', SYS_INCLUDEURL);
+		$this->superview->replace('base-url', BASEURL);
 		$this->superview->replace('additional-assets', "");
 		$this->superview->replace('version', REALISE_VERSION);
 		$this->superview->replace('dev', (DEV) ? "DEV" : "");

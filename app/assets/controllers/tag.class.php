@@ -3,7 +3,6 @@
 class controller_tag extends controller {
 
 	private $m_user;
-	private $m_inStep;
 
 	public function renderViewport() {
 		$this->m_user = $this->objects("user");

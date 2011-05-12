@@ -105,7 +105,7 @@ class collection {
 			break;
 			
 			case collection::TYPE_TOP_TAGS:
-				$sql = file_get_contents(INSTEP_SYS_ASSETDIR . "sql/toptags.sql") . $this->m_sort . $this->m_limit;
+				$sql = file_get_contents(SYS_ASSETDIR . "sql/toptags.sql") . $this->m_sort . $this->m_limit;
 				$output = $db->single($sql);
 				if(empty($output)) return array();
 				

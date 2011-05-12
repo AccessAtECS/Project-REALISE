@@ -1,5 +1,5 @@
 <?php
-require_once(INSTEP_SYS_ASSETDIR . "classes/" . 'oauth.class.php');
+require_once(SYS_ASSETDIR . "classes/" . 'oauth.class.php');
 
 class linkedin {
   public $base_url = "http://api.linkedin.com";

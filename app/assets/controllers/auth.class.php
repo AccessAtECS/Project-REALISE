@@ -39,7 +39,7 @@ class controller_auth extends controller {
 			$u->setUsername($_POST['username']);
 			$u->setHash(util::pass($_POST['password']));
 			
-			$gravatar = "http://www.gravatar.com/avatar/" . md5( strtolower(trim($_POST['email'])) ) . "?d=" . urlencode(INSTEP_BASEURL . "presentation/images/avatar.png") . "&s=60";
+			$gravatar = "http://www.gravatar.com/avatar/" . md5( strtolower(trim($_POST['email'])) ) . "?d=" . urlencode(BASEURL . "presentation/images/avatar.png") . "&s=60";
 			
 			$u->setPicture($gravatar);
 			$u->commit();
@@ -54,7 +54,7 @@ class controller_auth extends controller {
 	}
 	
 	protected function linkedinlogin(){
-		$linkedIn = new linkedin('tia2biBzgu20ST0XwYSuG-a4ciAcBo8UsX6IzzKYjlDmFs1h0o8w_W7r1mG07n6U', 'pKL9nJh9Tw3LZPeSHQ3j2IcptRPDkTsA1u9PPFSIIEwwZK1HI4IcaUQoFkpkKRiG', INSTEP_BASEURL . "auth/verify");
+		$linkedIn = new linkedin('tia2biBzgu20ST0XwYSuG-a4ciAcBo8UsX6IzzKYjlDmFs1h0o8w_W7r1mG07n6U', 'pKL9nJh9Tw3LZPeSHQ3j2IcptRPDkTsA1u9PPFSIIEwwZK1HI4IcaUQoFkpkKRiG', BASEURL . "auth/verify");
 		
 		//$linkedIn->debug = true;
 		

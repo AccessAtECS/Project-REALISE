@@ -34,7 +34,7 @@ class resourceView extends view {
 		$this->replace("image", $this->resource->getImage());
 		$this->replace("id", $this->resource->getId());
 		$this->replace("type", get_class($this->resource));
-		$this->replace("url", INSTEP_BASEURL . $this->resourceType . "/" . $this->resource->getId());
+		$this->replace("url", BASEURL . $this->resourceType . "/" . $this->resource->getId());
 		
 		if(get_class($this->resource) == "project"){
 			$this->replace("assoc", $this->resource->getSiblingCount());

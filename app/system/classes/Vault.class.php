@@ -6,7 +6,7 @@ class Vault extends SplObjectStorage {
 
 	// A private constructor; prevents direct creation of object
 	private function __construct(){
-
+		
 	}
 	
 	public static function singleton() {
@@ -15,6 +15,34 @@ class Vault extends SplObjectStorage {
 			self::$instance = new $c();
 		}
 		return self::$instance;
+	}
+
+	final public function &objects($selection = null){
+		if($type == "")	return $this;
+		
+		$this->rewind();
+		while($this->valid()) {
+		    $index  = $this->key();
+		    $object = $this->current();
+		    $data   = $this->getInfo();
+		
+			if($data == $selection){
+				return $object;
+			}
+		    $s->next();
+		}		
+		
+		return false;
+	}
+
+	final protected function setObject(&$newObj, $data = ""){
+		if($this->contains($newObj)){
+			$this->detach($newObj);
+			$this->attach($newObj);
+		} else {
+			$this->attach($newObj, $data);
+		}
+		
 	}
 
 }

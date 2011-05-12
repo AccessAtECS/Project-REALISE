@@ -2,7 +2,6 @@
 class controller_project extends controller {
 	
 	private $m_user;
-	private $m_inStep;
 	private $m_noRender = false;
 	private $m_currentProject;
 	

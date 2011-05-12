@@ -9,24 +9,24 @@ define("DEV", true);
 define("SYSTEM_DIR", "/var/www/dev/realise/htdocs/app/");
 //define("SYSTEM_CONF", SYSTEM_DIR . "system/core/conf.php");
 
-define('INSTEP_SYS_DEFAULTCNTRLR', 'home');
+define('SYS_DEFAULTCNTRLR', 'home');
 
-define('INSTEP_SYS_ROOTDIR', "/var/www/dev/realise/htdocs/");
-define('INSTEP_SYS_REALBASEURL', 'http://realise.devx.co.uk/');
-define('INSTEP_BASEURL', 'http://realise.devx.co.uk/');
-define('INSTEP_SYS_INCLUDEURL', INSTEP_SYS_REALBASEURL . 'instep/');
-define('INSTEP_SYS_CLASSDIR', INSTEP_SYS_ROOTDIR . "app/system/classes/");
-define('INSTEP_SYS_SYSDIR', INSTEP_SYS_ROOTDIR . "app/system/");
-define('INSTEP_SYS_ASSETDIR', INSTEP_SYS_ROOTDIR . "app/assets/");
+define('SYS_ROOTDIR', "/var/www/dev/realise/htdocs/");
+define('SYS_REALBASEURL', 'http://realise.devx.co.uk/');
+define('BASEURL', 'http://realise.devx.co.uk/');
+define('SYS_INCLUDEURL', SYS_REALBASEURL . 'instep/');
+define('SYS_CLASSDIR', SYS_ROOTDIR . "app/system/classes/");
+define('SYS_SYSDIR', SYS_ROOTDIR . "app/system/");
+define('SYS_ASSETDIR', SYS_ROOTDIR . "app/assets/");
 
-define('INSTEP_SYS_INCLUDEPATHS', serialize(array(
-	INSTEP_SYS_CLASSDIR,
-	INSTEP_SYS_ASSETDIR . "classes/",
-	INSTEP_SYS_ASSETDIR . "lib/",
+define('SYS_INCLUDEPATHS', serialize(array(
+	SYS_CLASSDIR,
+	SYS_ASSETDIR . "classes/",
+	SYS_ASSETDIR . "lib/",
 	SYSTEM_DIR  . "system/"
 )));
 
-define('INSTEP_SYS_RESTFORMATS', serialize(array(
+define('SYS_RESTFORMATS', serialize(array(
 	"xml",
 	"json"
 )));

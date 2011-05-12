@@ -1,6 +1,6 @@
 <?php
 // Pull in configuration
-require_once(realpath(INSTEP_SYS_ROOTDIR . "../system_configuration.php"));
+require_once(realpath(SYS_ROOTDIR . "../system_configuration.php"));
 
 // Register autoloaders here.
 autoloader::register();
@@ -13,6 +13,8 @@ $db = db::singleton(MYSQL_SERVER, MYSQL_USERNAME, MYSQL_PASSWORD, MYSQL_SCHEMA);
 
 // Initialise the Vault
 $Vault = Vault::singleton();
+
+$Vault->attach(new exceptionHandler(), "exceptionHandler");
 
 // Initialise objects
 function getRuntimeObjects(){

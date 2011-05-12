@@ -24,7 +24,7 @@ class cache {
 		$this->m_cacheInterval = $interval;
 		
 		$this->m_fingerprint = md5($identifier);
-		$this->m_cacheFile = INSTEP_SYS_ASSETDIR . "cache/{$this->m_fingerprint}.tmp";
+		$this->m_cacheFile = SYS_ASSETDIR . "cache/{$this->m_fingerprint}.tmp";
 	}
 
 	public function has(){

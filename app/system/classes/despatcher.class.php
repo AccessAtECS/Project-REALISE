@@ -33,7 +33,7 @@ class despatcher {
 		if(count($route['context']) > 1){
 			$routeEnd = array_slice($route['context'], -1);
 			
-			if(in_array($routeEnd[0], unserialize(INSTEP_SYS_RESTFORMATS))){
+			if(in_array($routeEnd[0], unserialize(SYS_RESTFORMATS))){
 				$this->dataType = $routeEnd;
 				$route['context'] = array_slice($route['context'], 0, -1);
 			} else {
@@ -45,7 +45,7 @@ class despatcher {
 	}
 	
 	private function createController($controllerName, $context, array $dependencies = array()){
-		$path = INSTEP_SYS_ASSETDIR . "controllers/" . $controllerName . ".class.php";
+		$path = SYS_ASSETDIR . "controllers/" . $controllerName . ".class.php";
 		
 		if(file_exists($path)){
 			require_once($path);
@@ -75,7 +75,7 @@ class despatcher {
 			);
 		} else {
 			$request = array(
-				"controller" => INSTEP_SYS_DEFAULTCNTRLR,
+				"controller" => SYS_DEFAULTCNTRLR,
 				"context" => array()
 			);		
 		}
