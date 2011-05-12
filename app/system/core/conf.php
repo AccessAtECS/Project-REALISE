@@ -4,6 +4,7 @@ error_reporting(E_ALL);
 
 define("DEV", true);
 
+define('SYS_MAILINGLIST_ADDR', "s@ecs.soton.ac.uk");
 
 // Location of conf.php in infolio.
 define("SYSTEM_DIR", "/var/www/dev/realise/htdocs/app/");

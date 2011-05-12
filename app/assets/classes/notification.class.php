@@ -2,7 +2,6 @@
 
 class notification {
 
-	const MAILINGLIST_TO_ADDR = "s@ecs.soton.ac.uk";
 	const FROM_ADDR = "marketplace@realisepotential.org";
 	
 	const NOTIFICATION_IDEA = "created a new idea entitled {tmpl}";
@@ -25,7 +24,7 @@ class notification {
 	}
 	
 	public function send(){
-		mail(notification::MAILINGLIST_TO_ADDR, "Someone has updated Project REALISE!", $this->body, $this->headers);
+		mail(SYS_MAILINGLIST_ADDR, "Someone has updated Project REALISE!", $this->body, $this->headers);
 	}
 
 
