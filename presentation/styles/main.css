@@ -625,6 +625,11 @@ input[type="submit"][disabled], input[type="button"][disabled], button[disabled]
 	background: -moz-linear-gradient(19% 75% 90deg, #E3E3E3, #FFFFFF, #FFFFFF 70%);
 	box-shadow:0px 0px 2px #333333;
 	-webkit-box-shadow:0px 0px 2px #333333;
+	word-wrap: break-word;
+}
+
+.comment a img:hover {
+	-webkit-transform: scale(1.1);
 }
 
 .feedItem .time {

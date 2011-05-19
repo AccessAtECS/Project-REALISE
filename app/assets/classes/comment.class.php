@@ -9,11 +9,12 @@ class comment extends dbo {
 	private $idea_id = null;
 	private $project_id = null;
 	private $view;
+	private $image;
 
 	public function __construct($id = null){
 	
 		$this->view = new view('frag.comment');
-	
+		$this->image = util::id(new view())->append("<img src=\"{picture}\" align=\"left\" height=\"50\" width=\"50\" alt=\"{author}'s picture\" class=\"roundItem\" />");
 		if($id == null) return;
 		
 		$db = db::singleton();
@@ -81,6 +82,14 @@ class comment extends dbo {
 	
 	private function compile(user $currentUser){
 		$delete = new view('frag.deleteComment');
+		
+		if($this->author->getUsername() != ""){
+			$o = "<a href='/profile/view/{$this->author->getUsername()}'>" . $this->image . "</a>";
+		} else {
+			$o = $this->image;
+		}
+		
+		$this->view->replace("image", $o);
 		
 		$this->view->replaceAll(array(
 			"id" => $this->getId(),
