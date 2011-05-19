@@ -38,7 +38,7 @@ class controller_community extends controller {
 		
 		foreach($userList as $innovator){
 			if($innovator->getUsername() == ""){
-				$template->replace("name", $innovator->getName());
+				$template->replace("name", $innovator->getHTMLName());
 			} else {
 				$template->replace("name", "<a href='/profile/view/" . $innovator->getUsername() . "'>" . $innovator->getName() . "</a>");
 			}
