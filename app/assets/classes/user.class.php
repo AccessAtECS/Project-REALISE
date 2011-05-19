@@ -12,6 +12,9 @@ class user extends dbo {
 	private $username = "";
 	private $hash = "";
 	private $admin = 0;
+	private $groups = array();
+	
+	private $mentorImage = "<img src='/presentation/images/star.png' class='tip mentor' title='This user is a mentor' style='float:right'>";
 	
 	private $authenticated = false;
 		
@@ -86,6 +89,9 @@ class user extends dbo {
 			$this->admin = $p[0]['admin'];
 			$this->emailPublic = (BOOL)$p[0]['emailPublic'];
 			$this->bio = $p[0]['bio'];
+			
+			$this->getGroups();
+			
 		} else {
 			throw new Exception("No user with that ID!");
 		}
@@ -135,6 +141,23 @@ class user extends dbo {
 		}
 	}
 	
+	public function getGroups(){
+		
+		if(count($this->groups) > 0) return $this->groups;
+		
+		$db = db::singleton();
+		
+		$res = $db->single("SELECT group.id AS id FROM user_group LEFT JOIN `group` ON user_group.group_id=group.id WHERE user_id={$this->getId()}");
+
+		if(count($res) == 0) return;
+		
+		foreach($res[0] as $group){
+			array_push($this->groups, new group((int)$group));
+		}
+		
+		return $this->groups;
+	}
+	
 	public function getId() {
 		return $this->id;
 	}
@@ -165,10 +188,19 @@ class user extends dbo {
 	
 	public function getHTMLName(){
 		if($this->username != ""){
-			return "<a href='/profile/view/{$this->getUsername()}'>{$this->getName()}</a>";
+			$username = "<a href='/profile/view/{$this->getUsername()}'>{$this->getName()}</a>";
 		} else {
-			return $this->getName();
+			$username = $this->getName();
 		}
+		
+		if(count($this->groups) == 0) return $username;
+		
+		foreach($this->groups as $group){
+			if($group->getId() == 1){
+				return $username . $this->mentorImage;
+			}
+		}
+		
 	}
 	
 	public function getTagline() {
