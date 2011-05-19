@@ -473,7 +473,7 @@ class controller_incubator extends controller {
 					"user" => $this->m_user->getName(),
 					"body" => $_POST['overview'],
 					"action" => str_replace(array("{tmpl}"), array($this->m_currentProject->getName()), notification::NOTIFICATION_PROJECT),
-					"url" => str_replace("/admin/promote", "", $this->getUrl()));
+					"url" => "/project/$id");
 				$notification->compose(new view('mail'), $action);
 				$notification->send();
 			
