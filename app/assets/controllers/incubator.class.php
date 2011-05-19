@@ -404,6 +404,8 @@ class controller_incubator extends controller {
 				$side->replace("followers", "");
 			}
 			
+			$side->append(new view('frag.projectResources'));
+			
 			$this->superview()->replace("sideContent",  $side);
 			
 			if($this->m_currentProject->getPromotionPercentage() == 100){

@@ -134,6 +134,7 @@ class controller_idea extends controller {
 			$frag = new view("frag.idea-project");
 			
 			foreach($projects as $project){
+				if($project->getHidden()) continue;
 				$frag->replace("projectName", $project->getName());
 				switch($project->getIncubated()){
 					case 0:
@@ -367,7 +368,7 @@ class controller_idea extends controller {
 		$tags = $idea->parseTags($idea, $t);
 		$this->viewport()->replace("tags", $tags);
 		
-		$this->superview()->replace("sideContent", new view('ideaLinks'));
+		$this->superview()->replace("sideContent", new view('ideaLinks') . new view('frag.projectResources'));
 		
 		$scripts = util::addScripts(array("/presentation/lib/ckeditor/ckeditor.js", "/presentation/lib/ckeditor/adapters/jquery.js", "/presentation/scripts/ideaAdmin.js"));
 		
@@ -444,7 +445,7 @@ class controller_idea extends controller {
 				"user" => $this->m_user->getName(),
 				"body" => $_POST['overview'],
 				"action" => str_replace(array("{idea}", "{project}"), array($idea->getTitle(), $_POST['name']), notification::NOTIFICATION_INCUBATED),
-				"url" => str_replace("/incubate/confirm", "", $this->getUrl()));
+				"url" => "/incubator/" . $project_id);
 			$notification->compose(new view('mail'), $action);
 			$notification->send();
 			

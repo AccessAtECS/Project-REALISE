@@ -396,6 +396,7 @@ class controller_project extends controller {
 				$side->replace("followers", "");
 			}
 						
+			$side->append(new view('frag.projectResources'));
 			
 			$this->superview()->replace("sideContent", $side );
 
