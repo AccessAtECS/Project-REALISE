@@ -93,7 +93,11 @@ class idea extends resource {
 			foreach($i as $project){
 				$id = (int)$project['project_id'];
 			
-				array_push($projects, new project($id));
+				$projectObj = new project($id);
+				
+				if($projectObj->getHidden()) continue;
+			
+				array_push($projects, $projectObj);
 			}
 			
 			return $projects;

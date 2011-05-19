@@ -13,17 +13,18 @@ class controller_project extends controller {
 
 		util::userBox($this->m_user, $this->superView());		
 
-		$this->bind("[0-9]+$", "renderItem");
+		$this->bind("^[0-9]+$", "renderItem");
 		
-		$this->bind("(?P<id>[0-9]+)/comment$", "comment"); // Comment on an idea
-		$this->bind("(?P<id>[0-9]+)/comment/(?P<comment_id>[0-9]+)/delete", "deleteComment"); // Delete comment
+		$this->bind("^(?P<id>[0-9]+)/comment$", "comment"); // Comment on an idea
+		$this->bind("^(?P<id>[0-9]+)/comment/(?P<comment_id>[0-9]+)/delete", "deleteComment"); // Delete comment
 		
-		$this->bind("(?P<id>[0-9]+)/vote$", "vote"); // DATA - vote on an idea
+		$this->bind("^(?P<id>[0-9]+)/vote$", "vote"); // DATA - vote on an idea
 		
-		$this->bind("(?P<id>[0-9]+)/admin$", "itemAdmin");
-		$this->bind("(?P<id>[0-9]+)/admin/update$", "adminSave");
-		$this->bind("(?P<id>[0-9]+)/admin/addMembers$", "addMembers");
-		$this->bind("(?P<id>[0-9]+)/admin/demoteMember$", "demoteMember");
+		$this->bind("^(?P<id>[0-9]+)/admin$", "itemAdmin");
+		$this->bind("^(?P<id>[0-9]+)/admin/update$", "adminSave");
+		$this->bind("^(?P<id>[0-9]+)/admin/addMembers$", "addMembers");
+		$this->bind("^(?P<id>[0-9]+)/admin/demoteMember$", "demoteMember");
+		$this->bind("^(?P<id>[0-9]+)/admin/mentor/(?P<user_id>[0-9]+)$", "mentor");
 
 		$this->bindDefault('projectIndex');
 	}
@@ -162,6 +163,9 @@ class controller_project extends controller {
 		
 		// Get list of users
 		$sidebar = new view();
+		// Get mentors
+		$sidebar->append( "<h1>MENTORS</h1>" );
+		$sidebar->append( $this->m_currentProject->formatProjectUsers(resource::MEMBERSHIP_MENTOR, null, false) );
 		$sidebar->append( $this->m_currentProject->formatProjectUsers() );
 		$sidebar->append(new view('frag.projectFollowers'));
 		
@@ -363,6 +367,8 @@ class controller_project extends controller {
 			$admin_member = new view('frag.innovator');
 			$admin_member->replace("name", "{name} <div class='delete'>" . new view('frag.deleteComment') . "</div>", view::REPLACE_CORE);
 			
+			$side->append( "<h1>MENTORS</h1>" );
+			$side->append( $this->m_currentProject->formatProjectUsers(resource::MEMBERSHIP_MENTOR, null, false) );
 			$side->append( $this->m_currentProject->formatProjectUsers(resource::MEMBERSHIP_ADMIN, $admin_member) );
 			
 			$side->append(new view('frag.addMembers'));
@@ -479,6 +485,36 @@ class controller_project extends controller {
 				
 				$project->promoteUser($this->m_user, $user, resource::MEMBERSHIP_USER);
 				$return = array("status" => 200);
+		} else {
+			$return = array("status" => 500, "details" => "You do not have adequate permissions to perform this function.");
+		}
+		
+		echo json_encode($return);
+	}
+	
+	protected function mentor($args){
+		$this->m_noRender = true;
+		
+		if(empty($args['user_id'])) return;
+		
+		if($this->m_user->getId() == null) {
+			echo json_encode(array("status" => 500, "message" => "You must be signed in to do this"));
+			exit;
+		}
+		
+		$project = new project((int)$args['id']);
+		
+		if($this->m_user->getEnrollment($project, resource::MEMBERSHIP_ADMIN)){
+			$targetUser = new user((int)$args['user_id']);
+			
+			if($targetUser->getEnrollment($project, resource::MEMBERSHIP_MENTOR)){
+				$type = resource::MEMBERSHIP_ADMIN;
+			} else {
+				$type = resource::MEMBERSHIP_MENTOR;
+			}
+			
+			$project->promoteUser($this->m_user, $targetUser, $type);
+			$return = array("status" => 200);
 		} else {
 			$return = array("status" => 500, "details" => "You do not have adequate permissions to perform this function.");
 		}

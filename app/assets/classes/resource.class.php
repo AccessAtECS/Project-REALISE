@@ -3,6 +3,7 @@
 abstract class resource extends dbo {
 
 	const MEMBERSHIP_ADMIN = 1000;
+	const MEMBERSHIP_MENTOR = 500;
 	const MEMBERSHIP_USER = 1;
 	const MEMBERSHIP_ANY = 0;
 	
@@ -78,6 +79,8 @@ abstract class resource extends dbo {
 	
 	public function promoteUser(user $currentUser, user $promotionUser, $role = resource::MEMBERSHIP_USER){
 		if(get_class($this) != "project") throw new Exception("This type of resource does not support user roles.");
+		
+		if( $role == resource::MEMBERSHIP_USER && $promotionUser->getEnrollment($this, resource::MEMBERSHIP_ADMIN) && $this->countVotes(resource::MEMBERSHIP_ADMIN) == 1 ) throw new Exception("This user is the last admin - you cannot remove them.");
 		
 		$db = db::singleton();
 		$check = $db->single("SELECT id FROM " . get_class($this) . "_user WHERE " . get_class($this) . "_id = '{$this->getId()}' AND user_id = '{$promotionUser->getId()}'");

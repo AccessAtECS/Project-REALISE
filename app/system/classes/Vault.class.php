@@ -18,7 +18,7 @@ class Vault extends SplObjectStorage {
 	}
 
 	final public function &objects($selection = null){
-		if($type == "")	return $this;
+		if($selection == null) return $this;
 		
 		$this->rewind();
 		while($this->valid()) {

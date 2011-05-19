@@ -54,11 +54,30 @@
 			
 			}, 'json');
 		});
+		
+		$('.mentor').attr('title', 'Make this user a mentor of this project').wrap($('<a>', { href: '#', click: function(){ 
+			var holder = $(this).parentsUntil('.innovator').parent();
+			var id = holder.find('input[name=id]').val();
+			
+			var URL = location.pathname + "/mentor/" + id;
+			
+			$.post(URL, function(data){
+				if(data.status == 200){
+					location.reload();			
+				} else {
+					alert(data.message);
+				}
+			
+			}, 'json');
+		} }));
+		
 	}
 
 
 	REALISE.addLoadEvent(function(){
 		bindAdd();
 	});
+
+
 
 })(jQuery, REALISE);
