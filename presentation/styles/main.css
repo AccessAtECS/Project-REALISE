@@ -628,6 +628,10 @@ input[type="submit"][disabled], input[type="button"][disabled], button[disabled]
 	word-wrap: break-word;
 }
 
+.comment .commentBody {
+	font-size: 9pt;
+}
+
 .comment a img:hover {
 	-webkit-transform: scale(1.1);
 }
