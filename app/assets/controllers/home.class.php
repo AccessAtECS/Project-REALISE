@@ -113,6 +113,12 @@ class controller_home extends controller {
 			$ossW->get();
 			
 			$timeline->add($ossW);
+
+			$accessECS = new rss('access', 'http://access.ecs.soton.ac.uk/blog/realise/feed/');
+			$accessECS->setLimit(5);
+			$accessECS->get();
+			
+			$timeline->add($accessECS);
 			
 			// Twitter
 			$realisetweets = new twitter("projectrealise");
