@@ -306,6 +306,7 @@ class controller_incubator extends controller {
 					"action" => str_replace(array("{tmpl}", "{type}"), array(util::id(new project($id))->getName(), "incubated project"), notification::NOTIFICATION_COMMENT),
 					"url" => str_replace("/comment", "", $this->getUrl()));
 				$notification->compose(new view('mail'), $action);
+				$notification->setTitle("Comment left on " . util::id(new project($id))->getName() . " incubated project on Project REALISE");
 				$notification->send();
 				
 				

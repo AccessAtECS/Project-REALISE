@@ -259,6 +259,7 @@ class controller_idea extends controller {
 					"action" => str_replace(array("{tmpl}", "{type}"), array(util::id(new idea($id))->getTitle(), "idea"), notification::NOTIFICATION_COMMENT),
 					"url" => str_replace("/comment", "", $this->getUrl()));
 				$notification->compose(new view('mail'), $action);
+				$notification->setTitle("Comment left on " . util::id(new idea($id))->getTitle() . " idea on Project REALISE");
 				$notification->send();
 				
 				echo json_encode(array("status" => 200, "html" => $html));
@@ -445,8 +446,9 @@ class controller_idea extends controller {
 				"user" => $this->m_user->getName(),
 				"body" => $_POST['overview'],
 				"action" => str_replace(array("{idea}", "{project}"), array($idea->getTitle(), $_POST['name']), notification::NOTIFICATION_INCUBATED),
-				"url" => "/incubator/" . $project_id);
+				"url" =>  BASEURL . "incubator/" . $project_id);
 			$notification->compose(new view('mail'), $action);
+			$notification->setTitle(str_replace("{project}", $idea->getTitle(), "A new project entitled " . $_POST['name'] . " has been created on Project REALISE"));
 			$notification->send();
 			
 			$this->redirect("/incubator/" . $project_id);
@@ -484,6 +486,7 @@ class controller_idea extends controller {
 				"action" => str_replace(array("{tmpl}"), array($idea->getTitle()), notification::NOTIFICATION_IDEA),
 				"url" => str_replace("new/add", $id, $this->getUrl()));
 			$notification->compose(new view('mail'), $action);
+			$notification->setTitle(str_replace("{idea}", $idea->getTitle(), "A new idea entitled {idea} has been created on Project REALISE"));
 			$notification->send();
 			
 			$this->redirect("/idea/" . $id);

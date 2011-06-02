@@ -283,6 +283,7 @@ class controller_project extends controller {
 					"action" => str_replace(array("{tmpl}", "{type}"), array(util::id(new project($id))->getName(), "project"), notification::NOTIFICATION_COMMENT),
 					"url" => str_replace("/comment", "", $this->getUrl()));
 				$notification->compose(new view('mail'), $action);
+				$notification->setTitle("Comment left on " . util::id(new project($id))->getName() . " project on Project REALISE");
 				$notification->send();
 				
 				echo json_encode(array("status" => 200, "html" => $html));

@@ -14,6 +14,7 @@ class notification {
 	private $type;
 	private $body;
 	private $headers;
+	private $title = "Someone has updated Project REALISE!";
 
 	public function __construct($type = notification::TYPE_MAILINGLIST){
 		$this->headers = 'From: "Project Realise Marketplace" <' . notification::FROM_ADDR . '>' . PHP_EOL;
@@ -23,8 +24,12 @@ class notification {
 		$this->body = $view->replaceAll($replacements);
 	}
 	
+	public function setTitle($title){
+		$this->title = $title;
+	}
+	
 	public function send(){
-		mail(SYS_MAILINGLIST_ADDR, "Someone has updated Project REALISE!", $this->body, $this->headers);
+		mail(SYS_MAILINGLIST_ADDR, $this->title, $this->body, $this->headers);
 	}
 
 
