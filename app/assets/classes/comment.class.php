@@ -115,6 +115,8 @@ class comment extends dbo {
 		// Users
 		$text = preg_replace("/[\w]*@([^\s]+)/i", "<a href='/profile/view/$1'>@$1</a>", $text);
 		
+		// Convert new lines to BR's
+		$text = nl2br($text);
 		
 		return $text;
 	}
