@@ -109,7 +109,13 @@ class comment extends dbo {
 	}
 
 	private function format($text){
+		// URL's
 		$text = preg_replace("/(((f|ht){1}tps?:\/\/)[-a-zA-Z0-9@:%_\+.~#?!&\/\/=]+)/i", "<a href='$1'>$1</a>", $text);
+		
+		// Users
+		$text = preg_replace("/[\w]*@([^\s]+)/i", "<a href='/profile/view/$1'>@$1</a>", $text);
+		
+		
 		return $text;
 	}
 	
