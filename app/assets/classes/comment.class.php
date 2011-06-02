@@ -96,7 +96,7 @@ class comment extends dbo {
 			"author" => $this->author->getName(),
 			"time" => $this->timestamp->format('l jS \of F Y, h:i'),
 			"picture" => $this->author->getPicture(),
-			"body" => $this->body
+			"body" => $this->format($this->body)
 		));
 		
 		if($currentUser->canDelete($this)){
@@ -106,6 +106,11 @@ class comment extends dbo {
 			$this->view->replace('delete', '');
 		}
 		
+	}
+
+	private function format($text){
+		$text = preg_replace("/(((f|ht){1}tps?:\/\/)[-a-zA-Z0-9@:%_\+.~#?!&\/\/=]+)/i", "<a href='$1'>$1</a>", $text);
+		return $text;
 	}
 	
 	public function get(user $curentUser){
