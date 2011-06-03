@@ -840,10 +840,6 @@ input[type="text"], textarea, input[type="password"] {
 	font-weight: bold;
 }
 
-#newComment, .comment {
-
-}
-
 #newComment {
 	margin-right:20px;
 	height:50px;
@@ -853,7 +849,10 @@ input[type="text"], textarea, input[type="password"] {
 .comment {
 	margin-right:35px;
 	margin-left:20px;
-	min-height:50px;
+}
+
+.comment {
+	height: auto;
 }
 
 .postAsUser {
