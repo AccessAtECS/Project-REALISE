@@ -34,8 +34,10 @@ abstract class controller implements viewController {
 		}		
 		
 		// Check to see if the user object is in the session.
+		if(is_object($_SESSION['user'])) unset($_SESSION['user']);
+		
 		if(isset($_SESSION['user'])){
-			$u = $_SESSION['user'];
+			$u = unserialize( $_SESSION['user'] );
 			if(get_class($u) == "user"){
 				$this->setObject("user", $u);
 			} else {
@@ -91,7 +93,7 @@ abstract class controller implements viewController {
 			$this->execute();
 			
 			// Write the user object out.
-			$_SESSION['user'] = $this->objects("user");
+			$_SESSION['user'] = serialize( $this->objects("user") );
 			
 			if(isset($this->redirectTo)) header("Location: " . $this->redirectTo);
 			
