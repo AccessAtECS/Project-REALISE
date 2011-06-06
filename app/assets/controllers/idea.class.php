@@ -334,7 +334,9 @@ class controller_idea extends controller {
 		
 		$this->viewport()->replace("overview", $_POST['idea']);
 		
-		$this->superview()->replace("additional-assets", util::newScript("/presentation/scripts/ideaAdmin.js"));
+		$scripts = util::addScripts(array("/presentation/lib/ckeditor/ckeditor.js", "/presentation/lib/ckeditor/adapters/jquery.js", "/presentation/scripts/ideaAdmin.js"));
+		
+		$this->superview()->replace("additional-assets", $scripts);
 		
 	}
 	
