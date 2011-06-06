@@ -908,9 +908,7 @@ input[type="text"], textarea, input[type="password"] {
 }
 
 p.info {
-	border-color: #e6b379;
-	border-width: 1px;
-	border-style: solid;
+	border: 1px solid #96ADC0;
 	background-color: #f8ffbf;
 	margin:2px;
 	padding:8px;

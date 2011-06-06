@@ -12,14 +12,14 @@ function REALISE(){
 		}	
 
 		
-		$('#loginShow').bind('click', function(){
+		$('#loginShow, .loginButton').bind('click', function(){
 			 $.get('/home/login', function(data){
 			 	$('#loginForm').html(data);
 			 	$('#username').focus();
 			 });
 		});
 		
-		$('#registerShow').bind('click', function(){
+		$('#registerShow, .registerButton').bind('click', function(){
 			 $.get('/home/register', function(data){
 			 	$('#contentPane').html(data);
 			 	$('#username').focus();
