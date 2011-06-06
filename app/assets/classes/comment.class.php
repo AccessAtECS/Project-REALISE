@@ -94,7 +94,7 @@ class comment extends dbo {
 		$this->view->replaceAll(array(
 			"id" => $this->getId(),
 			"author" => $this->author->getName(),
-			"time" => $this->timestamp->format('l jS \of F Y, h:i'),
+			"time" => $this->timestamp->format('l jS \of F Y, h:i a'),
 			"picture" => $this->author->getPicture(),
 			"body" => $this->format($this->body)
 		));
