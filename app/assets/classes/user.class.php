@@ -58,6 +58,7 @@ class user extends dbo {
 				if(!empty($p)){
 					$this->id = $p[0]['id'];
 				} else {
+					//echo sprintf($arrayQuery, $username, $password);
 					throw new Exception("Invalid Login", 604);
 				}
 			break;

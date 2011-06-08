@@ -5,22 +5,22 @@ class controller_incubator extends controller {
 	private $m_noRender = false;
 	private $m_currentProject;
 	private $m_projectIdea;
-	
+
 	public function renderViewport() {
 		$this->m_user = $this->objects("user");
 
-		// Select the tab	
-		util::selectTab($this->superview(), "incubator");	
+		// Select the tab
+		util::selectTab($this->superview(), "incubator");
 
 		util::userBox($this->m_user, $this->superView());
 
 		$this->bind("[0-9]+$", "renderItem");
-		
+
 		$this->bind("(?P<id>[0-9]+)/comment$", "comment"); // Comment on an idea 
 		$this->bind("(?P<id>[0-9]+)/comment/(?P<comment_id>[0-9]+)/delete", "deleteComment"); // Delete comment
-		
+
 		$this->bind("(?P<id>[0-9]+)/vote$", "vote"); // DATA - vote on an idea
-		
+
 		$this->bind("(?P<id>[0-9]+)/admin$", "renderAdmin");
 		$this->bind("(?P<id>[0-9]+)/admin/update$", "adminSave");
 		$this->bind("(?P<id>[0-9]+)/admin/promote$", "adminPromote");
@@ -30,7 +30,7 @@ class controller_incubator extends controller {
 
 		$this->bindDefault('incubatorIndex');
 	}
-	
+
 	protected function incubatorIndex(){
 		$this->setViewport(new view("incubatorIndex"));
 

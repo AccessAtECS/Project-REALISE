@@ -202,12 +202,7 @@ class controller_idea extends controller {
 		
 		$c = new view();
 		
-		if($this->m_user->getId() != null) {
-			$c->append(new view('frag.newComment'));
-		} else {
-			// User is not logged in
-			$c->append(new view('frag.needLogin'));
-		}
+		if($this->m_user->getId() != null) $c->append(new view('frag.newComment'));
 		
 		// Get comments.
 		$commentCollection = new collection(collection::TYPE_COMMENT);
