@@ -290,13 +290,17 @@ class project extends resource {
 	}
 	
 	public function getPromotionPercentage(){
-		$criteria = array($this->url, $this->license, $this->community_url, $this->scm_url, $this->repo_url);
+		$or = new opennessrating($this->id);
+		
+		return (int)$or->getScore();
+		
+		/*$criteria = array($this->url, $this->license, $this->community_url, $this->scm_url, $this->repo_url);
 		$step = ceil(100 / count($criteria));
 		$progress = 0;
 		foreach($criteria as $c){
 			if($c != "") $progress += $step;
 		}
-		return ceil($progress);
+		return ceil($progress);*/
 	}
 	
 	public function setIdea(idea $idea){

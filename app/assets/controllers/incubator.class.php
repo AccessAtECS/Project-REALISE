@@ -413,11 +413,11 @@ class controller_incubator extends controller {
 			$side->append(new view('frag.projectResources'));
 			
 			$this->superview()->replace("sideContent",  $side);
-			
-			if($this->m_currentProject->getPromotionPercentage() == 100){
-				$this->superview()->replace('promoteDisabled', '');
+
+			if($this->m_currentProject->getPromotionPercentage() > 75){
+				$this->viewport()->replace('promotedisabled', '');
 			} else {
-				$this->superview()->replace('promoteDisabled', ' disabled="disabled"');
+				$this->viewport()->replace('promotedisabled', ' disabled="disabled"');
 			}
 
 			$scripts = util::addScripts(array("/presentation/lib/ckeditor/ckeditor.js", "/presentation/lib/ckeditor/adapters/jquery.js", "/presentation/scripts/ideaAdmin.js"));
