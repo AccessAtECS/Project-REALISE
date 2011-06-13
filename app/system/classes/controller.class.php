@@ -34,7 +34,7 @@ abstract class controller implements viewController {
 		}		
 		
 		// Check to see if the user object is in the session.
-		if(is_object($_SESSION['user'])) unset($_SESSION['user']);
+		if(isset($_SESSION['user']) && is_object($_SESSION['user'])) unset($_SESSION['user']);
 		
 		if(isset($_SESSION['user'])){
 			$u = unserialize( $_SESSION['user'] );
