@@ -1067,3 +1067,73 @@ a#skip {
 #Github li#issues {
 	list-style-image: url(../images/exclamation-diamond.png);
 }
+
+.hidden {
+	display: none;
+}
+
+.holder {
+	float:left;
+	width:32%;
+	text-align: center;
+	margin:0.5%;
+	border-radius: 5px;
+}
+
+.holder a {
+	display:block;
+}
+
+.holder a {
+	padding: 8px 12px;
+	font-size: 1.5em;
+	font-weight: bold;
+	line-height: 1.4;
+	
+	color: #555;
+	cursor: pointer;
+	text-shadow: 1px 1px #fff;
+}
+
+.holder a, #exposeHolder {
+	border: 1px solid #ccc;
+	background: #E4E4E3;
+	background: -moz-linear-gradient(center top , #FFFFFF 0%, #F5F6F6 3%, #E4E4E3 100%) repeat scroll 0 0 transparent;
+	background-image: -webkit-gradient(
+    linear,
+    center top,
+    center bottom,
+    color-stop(1, rgb(228,228,227)),
+    color-stop(0.3, rgb(245,246,246)),
+    color-stop(0, rgb(255,255,255))
+	);
+	border-radius: 3px;
+
+	-moz-box-shadow: 0 1px 2px 0 #eee;
+	-webkit-box-shadow: 0 1px 2px 0 #eee;
+	box-shadow: 0 1px 2px 0 #eee;
+}
+
+.holder a:hover, .holder a.selected {
+	background: #c1c1c1;
+	background: -moz-linear-gradient(center top , #f4f4f4 0%, #e9e9e9 3%, #d3d3d3 100%) repeat scroll 0 0 transparent;
+	background-image: -webkit-gradient(
+    linear,
+    center top,
+    center bottom,
+    color-stop(1, rgb(211,211,211)),
+    color-stop(0.3, rgb(233,233,233)),
+    color-stop(0, rgb(244,244,244))
+	);
+}
+
+#exposeHolder {
+	padding:10px;
+	margin-left:5px;
+	margin-right:12px;
+	margin-bottom:20px;
+}
+
+.holder a img {
+	vertical-align:bottom;
+}

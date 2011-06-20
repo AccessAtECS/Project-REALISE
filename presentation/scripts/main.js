@@ -27,6 +27,15 @@ function REALISE(){
 		});	
 		
 		
+		$('.holder a').bind('click', function(){
+			$('.holder a.selected').removeClass('selected');
+			$(this).addClass('selected');
+			$('#exposeHolder').html( $(this).parent().find('.hidden').clone() );
+			$('#exposeHolder').children('div').show();
+		});
+		
+		$('.holder a:first').trigger('click');
+		
 		$('.tip').tipsy();
 	}
 	

@@ -12,6 +12,7 @@ class controller_home extends controller {
 
 		$this->bind('login', 'loginFrag');
 		$this->bind('register', 'registerFrag');
+		$this->bind('news', 'newsHandler');
 		$this->bind('updateImageCache', "updateImageCache");
 		// Set the default request handler
 		
@@ -95,44 +96,49 @@ class controller_home extends controller {
 		// Is the user logged in?
 		$name = $this->m_user->getName();
 		
-		if($name == ""){
-			$this->setViewport( new view("homepage") );
-			$this->detectError();
-		} else {
-			$this->setViewport( new view("userHomepage") );
-			
-			$this->viewport()->replace('name', $this->m_user->getName());
-			
-			// Build the timeline.
-			$timeline = new timeline();
-			
-			
-			// Get OSSWatch blog articles
-			$ossW = new rss('ossw', 'http://osswatch.jiscinvolve.org/wp/feed/');
-			$ossW->setLimit(5);
-			$ossW->get();
-			
-			$timeline->add($ossW);
-			
-			// Twitter
-			$realisetweets = new twitter("projectrealise");
-			$realisetweets->get();
-		
-			$timeline->add($realisetweets);
-
-			$accesstweets = new twitter("accessatecs");
-			$accesstweets->get();
-		
-			$timeline->add($accesstweets);			
-			
-			$activity = $timeline->getFormatted();
-			
-			$this->viewport()->replace('activityfeed', $activity);
-			
-
-		}
+		$this->setViewport( new view("homepage") );
+		$this->detectError();
 	
 		
+	}
+	
+	protected function newsHandler(){
+	
+			// Select the tab	
+		util::selectTab($this->superview(), "home");
+
+		// Display user box		
+		util::userBox($this->m_user, $this->superView());
+	
+		$this->setViewport( new view("userHomepage") );
+		
+		$this->viewport()->replace('name', $this->m_user->getName());
+		
+		// Build the timeline.
+		$timeline = new timeline();
+		
+		
+		// Get OSSWatch blog articles
+		$ossW = new rss('ossw', 'http://osswatch.jiscinvolve.org/wp/feed/');
+		$ossW->setLimit(5);
+		$ossW->get();
+		
+		$timeline->add($ossW);
+		
+		// Twitter
+		$realisetweets = new twitter("projectrealise");
+		$realisetweets->get();
+	
+		$timeline->add($realisetweets);
+
+		$accesstweets = new twitter("accessatecs");
+		$accesstweets->get();
+	
+		$timeline->add($accesstweets);			
+		
+		$activity = $timeline->getFormatted();
+		
+		$this->viewport()->replace('activityfeed', $activity);
 	}
 	
 	protected function updateImageCache(){
