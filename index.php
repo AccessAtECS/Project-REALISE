@@ -26,7 +26,7 @@ try {
 	 	case 404:
 			// Page is not found, load the default controller.
 			$despatcher->setSuperview($superview);
-			$despacher->request(SYS_DEFAULTCNTRLR . "/" . $request);
+			$despatcher->request(SYS_DEFAULTCNTRLR . "/" . $request);
 		break;
 		
 		default:
