@@ -30,7 +30,7 @@ class controller_project extends controller {
 	}
 	
 	protected function projectIndex(){
-		$this->setViewport(new view("incubatorIndex"));
+		$this->setViewport(new view("projectIndex"));
 
 		$search = isset($_GET['search']) ? $_GET['search'] : "";
 		$category = isset($_GET['category']) ? (int)$_GET['category'] : 0;
@@ -103,7 +103,7 @@ class controller_project extends controller {
 		$this->viewport()->replace("id", $id);
 
 		// Openness ratings
-		$or = $this->m_currentProject->getOpennessRating();
+		$or = $this->m_currentProject->getPromotionPercentage();
 		
 		if($or == null){
 			$this->viewport()->replace("openness-progress", "This project has no openness rating yet.");
@@ -111,7 +111,7 @@ class controller_project extends controller {
 			$bar = new view();
 			$bar->append("Openness Rating:");
 			$bar->append(new view("frag.pbar"));
-			$bar->replace("percentage", $or->openness);
+			$bar->replace("percentage", $or);
 			$this->viewport()->replace("openness-progress", $bar);
 		}
 

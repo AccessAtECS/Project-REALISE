@@ -291,7 +291,6 @@ class project extends resource {
 	
 	public function getPromotionPercentage(){
 		$or = new opennessrating($this->id);
-		
 		return (int)$or->getScore();
 		
 		/*$criteria = array($this->url, $this->license, $this->community_url, $this->scm_url, $this->repo_url);

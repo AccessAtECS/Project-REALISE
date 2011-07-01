@@ -110,6 +110,8 @@ class controller_home extends controller {
 		// Display user box		
 		util::userBox($this->m_user, $this->superView());
 	
+		$this->superview()->replace("sideContent", util::displayNewInnovators() );
+	
 		$this->setViewport( new view("userHomepage") );
 		
 		$this->viewport()->replace('name', $this->m_user->getName());
