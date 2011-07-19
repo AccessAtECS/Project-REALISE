@@ -25,7 +25,8 @@ class controller_home extends controller {
 		$this->bindDefault("homepageHandler");	
 		
 		$this->errors = array(
-			34 => "Please login or register before submitting an idea."
+			34 => "Please login or register before submitting an idea.",
+			35 => "Please select a suitable title and write a short description for your idea before submitting it"
 		);
 	}
 	
@@ -39,7 +40,10 @@ class controller_home extends controller {
 	
 	
 	protected function homepageHandler(){
-		$latest = new view("frag.latest");
+		$sidebar = new view();
+		
+		$sidebar->append(new view('frag.sideHelp'));
+		$sidebar->append(new view("frag.latest"));
 		
 		$latestIdea = new collection(collection::TYPE_IDEA);
 		$latestIncubated = new collection(collection::TYPE_INCUBATED);
@@ -58,30 +62,30 @@ class controller_home extends controller {
 		$project = $latestProject->get();
 
 		
-		$latest->replaceAll(array(
+		$sidebar->replaceAll(array(
 			"idea" => $idea[0]->getTitle(),
 			"idea-id" => $idea[0]->getId()	
 		));
 		
 		if(count($incubated) > 0){
-			$latest->replaceAll(array(
+			$sidebar->replaceAll(array(
 				"incubated" => $incubated[0]->getName(),
 				"incubated-id" => $incubated[0]->getId()
 			));
 		} else {
-			$latest->replaceAll(array(
+			$sidebar->replaceAll(array(
 				"incubated" => "No Incubated Projects",
 				"incubated-id" => ""
 			));
 		}
 		
-		$latest->replaceAll(array(
+		$sidebar->replaceAll(array(
 			"project" => $project[0]->getName(),
 			"project-id" => $project[0]->getId()
 		));
 
 
-		$this->superview()->replace("sideContent", $latest . util::displayNewInnovators() );
+		$this->superview()->replace("sideContent", $sidebar . util::displayNewInnovators() );
 		
 		
 		
@@ -98,6 +102,32 @@ class controller_home extends controller {
 		
 		$this->setViewport( new view("homepage") );
 		$this->detectError();
+	
+		// Build the timeline.
+		$timeline = new timeline();
+		
+		
+		// Get OSSWatch blog articles
+		$ossW = new rss('ossw', 'http://osswatch.jiscinvolve.org/wp/feed/');
+		$ossW->setLimit(5);
+		$ossW->get();
+		
+		$timeline->add($ossW);
+		
+		// Twitter
+		$realisetweets = new twitter("projectrealise");
+		$realisetweets->get();
+	
+		$timeline->add($realisetweets);
+
+		$accesstweets = new twitter("accessatecs");
+		$accesstweets->get();
+	
+		$timeline->add($accesstweets);			
+		
+		$activity = $timeline->getFormatted();
+		
+		$this->viewport()->append($activity);	
 	
 		
 	}
