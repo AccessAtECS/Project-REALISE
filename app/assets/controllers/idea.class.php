@@ -465,6 +465,11 @@ class controller_idea extends controller {
 		
 		try {
 			
+			if(empty($_POST['ideaTitle']) || empty($_POST['overview'])) {
+				header("Location: /home?e=35");
+				exit;
+			}
+			
 			$idea = new idea();
 			
 			$idea->setTitle($_POST['ideaTitle']);

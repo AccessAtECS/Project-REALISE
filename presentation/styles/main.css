@@ -1141,3 +1141,11 @@ a#skip {
 .holder a img {
 	vertical-align:bottom;
 }
+
+.answer {
+	border-bottom:1px solid #7A838E;
+	width:90%;
+	margin-left:auto;
+	margin-right:auto;
+	text-align: left;
+}
