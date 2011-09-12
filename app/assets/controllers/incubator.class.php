@@ -300,7 +300,7 @@ class controller_incubator extends controller {
 				
 				$comment_id = $comment->commit();
 				
-				$html = $comment->get();
+				$html = $comment->get($this->m_user);
 				
 				// Fire off a notification
 				
