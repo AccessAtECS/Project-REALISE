@@ -34,6 +34,8 @@ class controller_incubator extends controller {
 	protected function incubatorIndex(){
 		$this->setViewport(new view("incubatorIndex"));
 
+		$this->pageName = "- Incubator";
+
 		$search = isset($_GET['search']) ? $_GET['search'] : "";
 		$category = isset($_GET['category']) ? (int)$_GET['category'] : 0;
 
@@ -78,6 +80,7 @@ class controller_incubator extends controller {
 		// Pull out the idea from the database.
 		$this->m_currentProject = new project($id);
 
+		$this->pageName = "- " . $this->m_currentProject->getName();
 		
 		if($this->m_currentProject->getHidden() && !$this->m_user->getIsAdmin()){
 			$this->setViewport(new view("denied"));
@@ -373,6 +376,9 @@ class controller_incubator extends controller {
 			$this->viewport()->replace("chars", strlen($this->m_currentProject->getOverview()));
 	
 			$this->viewport()->replace('licenses', util::getLicense($this->m_currentProject->getLicense()));
+	
+			$this->pageName = "- " . $this->m_currentProject->getName();
+	
 	
 			$t = new view();
 			$t->set("{tag} ");

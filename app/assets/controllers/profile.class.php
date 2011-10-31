@@ -29,6 +29,8 @@ class controller_profile extends controller {
 		
 		$this->setViewport(new view("profile"));
 		
+		$this->pageName = "- Profile";
+		
 		$this->viewport()->replaceAll(array(
 			"profileImage" => $this->m_user->getPicture(),
 			"tagline" => $this->m_user->getTagline(),
@@ -100,7 +102,7 @@ class controller_profile extends controller {
 			"bio" => $user->getBio()
 		));
 		
-		
+		$this->pageName = "- Profile for " . $user->getUsername();
 
 	}
 	

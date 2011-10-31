@@ -44,6 +44,10 @@ class controller_project extends controller {
 	
 		$this->superview()->replace("sideContent", $side);	
 
+
+		// Set page name
+		$this->pageName = "- Projects";
+
 		$projects = new collection(collection::TYPE_PROJECT);
 		$projects->setLimit(24);
 		$projects->setSort("id", collection::SORT_DESC);
@@ -84,6 +88,8 @@ class controller_project extends controller {
 			$this->setViewport(new view("denied"));
 			return;
 		}
+		
+		$this->pageName = "- " . $this->m_currentProject->getName();
 		
 		$this->setViewport(new view("projectOverview"));
 		
@@ -330,6 +336,8 @@ class controller_project extends controller {
 			}
 			
 			$this->setViewport(new view('projectAdmin'));
+	
+			$this->pageName = "- " . $this->m_currentProject->getName() . " admin";
 	
 			$this->viewport()->replace("title", $this->m_currentProject->getName());
 			$this->viewport()->replace("image", $this->m_currentProject->getImage());

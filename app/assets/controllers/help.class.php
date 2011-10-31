@@ -18,6 +18,8 @@ class controller_help extends controller {
 	
 	protected function renderHelp(){
 		$this->setViewport(new view("help"));	
+		
+		$this->pageName = "- Help";
 	}
 	
 

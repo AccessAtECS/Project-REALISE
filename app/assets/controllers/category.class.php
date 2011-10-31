@@ -18,6 +18,8 @@ class controller_category extends controller {
 		$this->bind("(?P<id>[0-9]+)$", "renderCategoryList");
 
 		$this->bindDefault('categoryIndex');
+		
+		$this->pageName = "- Categories";
 	}
 	
 	
