@@ -29,6 +29,7 @@ class controller_resources extends controller {
 	protected function resourcesLanding(){
 		$this->setViewPort(new view('resources'));
 		
+		$this->pageName = "- Resources";
 		
 		$emptech_categories = $this->emptechData();
 		$this->viewport()->replace("emptech", $emptech_categories);
@@ -36,6 +37,8 @@ class controller_resources extends controller {
 	
 	protected function faq(){
 		$this->setViewPort(new view('faq'));
+		
+		$this->pageName = "- FAQ";
 	}
 
 

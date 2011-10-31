@@ -32,6 +32,8 @@ class controller_community extends controller {
 		$userList = $users->get();
 		
 
+		$this->pageName = "- Community";
+
 		$output = "";
 		
 		$template = new view("frag.innovator");

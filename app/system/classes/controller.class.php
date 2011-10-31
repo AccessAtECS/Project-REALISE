@@ -16,6 +16,8 @@ abstract class controller implements viewController {
 	private $context;
 	private $routeMap = array();
 	private $defaultRoute = "";
+	
+	protected $pageName;
 
 
 	final public function init(array $context, array $objects){
@@ -109,6 +111,7 @@ abstract class controller implements viewController {
 		$this->superview->replace('additional-assets', "");
 		$this->superview->replace('version', REALISE_VERSION);
 		$this->superview->replace('dev', (DEV) ? "DEV" : "");
+		$this->superview->replace('pagename', $this->pageName);
 
 		echo $this->superview->get();		
 	}

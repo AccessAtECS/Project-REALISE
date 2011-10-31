@@ -30,6 +30,8 @@ class controller_tag extends controller {
 		// Display the tag name on the page.
 		$this->viewport()->replace('tag', $tagName);
 		
+		$this->pageName = "- things tagged $tagName";
+		
 		// Find the tag in the database.
 		try {
 		$tag = new tag($tagName, tag::TYPE_NAME);

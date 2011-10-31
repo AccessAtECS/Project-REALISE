@@ -39,6 +39,8 @@ class controller_idea extends controller {
 	protected function renderIdeasLab(){
 		$this->setViewport(new view("ideasLab"));
 
+		$this->pageName = "- Ideas";
+
 		$side = new view('frag.filters');
 		$side->append(new view('ideaLinks'));
 		$side->append(new view('frag.sideInfo'));
@@ -106,6 +108,8 @@ class controller_idea extends controller {
 		} else {
 			$this->setViewport(new view("ideaOverview"));
 		}
+		
+		$this->pageName = "- " . $this->m_currentIdea->getName();
 		
 		// Information on this idea
 		$this->viewport()->replace("title", $this->m_currentIdea->getTitle());
@@ -362,6 +366,8 @@ class controller_idea extends controller {
 			"image" => $idea->getImage(),
 			"voteCount" => $idea->countVotes()
 		));
+		
+		$this->pageName = "- " . $idea->getName();
 		
 		$this->viewport()->replace("categories", util::getCategories($idea->getCategory()));
 		
