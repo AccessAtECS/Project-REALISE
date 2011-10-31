@@ -201,7 +201,7 @@ img {
 
 
 .smGrey {
-	color: #bdbdbd;
+	color: #415473;
 	font-size: 8pt;
 	
 }
@@ -639,7 +639,7 @@ input[type="submit"][disabled], input[type="button"][disabled], button[disabled]
 .feedItem .time {
 	font-size: 8pt;
 	font-style: italic;
-	color: #818181;
+	color: #3e3e3e;
 }
 
 .postComment .author {
