@@ -1137,3 +1137,20 @@ a#skip {
 	margin-right:auto;
 	text-align: left;
 }
+
+#dfd {
+	float:left;
+	margin-top:25px;
+	font-size: 9pt;
+	margin-left:15px;
+}
+
+#dfd img {
+	float:left;
+}
+
+#dfd span {
+	float:left;
+	margin-top:47px;
+	margin-right:5px;
+}
