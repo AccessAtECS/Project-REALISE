@@ -1154,3 +1154,7 @@ a#skip {
 	margin-top:47px;
 	margin-right:5px;
 }
+
+#incubateList li {
+	padding:5px;
+}
