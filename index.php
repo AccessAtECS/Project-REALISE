@@ -10,11 +10,11 @@ try {
 	$superview = new view('superview');
 	
 	// Create a new despatcher object.
-	$despatcher = new despatcher(function_exists('getRuntimeObjects') ? getRuntimeObjects() : array());
+	$despacher = new despatcher(function_exists('getRuntimeObjects') ? getRuntimeObjects() : array());
 
 	// Set the superview
-	$despatcher->setSuperview($superview);
-	$despatcher->request($request);
+	$despacher->setSuperview($superview);
+	$despacher->request($request);
 	
 } catch(Exception $e){
 	
@@ -25,8 +25,8 @@ try {
 	switch( $e->getCode() ){ 
 	 	case 404:
 			// Page is not found, load the default controller.
-			$despatcher->setSuperview($superview);
-			$despatcher->request(SYS_DEFAULTCNTRLR . "/" . $request);
+			$despacher->setSuperview($superview);
+			$despacher->request(SYS_DEFAULTCNTRLR . "/" . $request);
 		break;
 		
 		default:
