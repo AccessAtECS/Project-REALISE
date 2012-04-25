@@ -41,6 +41,15 @@
 			return $output;
 		}
 		
+		public static function displayOpennessSections(){
+		
+			$template = new view("frag.opennessSections");
+			$output = $template->get();
+			
+			return $output;
+		}
+
+		
 		public static function flatButtons($buttons){
 			$button = new view();
 			$o = new view();
