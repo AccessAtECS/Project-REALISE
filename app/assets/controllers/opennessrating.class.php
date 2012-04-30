@@ -25,26 +25,40 @@ class controller_opennessrating extends controller {
 		$this->bindDefault('opennessIndex');
 	}
 		
-	protected function opennessIndex(){
-		$this->setViewport(new view("openness"));
+	protected function opennessIndex(){		
+		$id = isset($_GET['id']) ? $_GET['id'] : "";
 		
 		$this->pageName = "- Openness Rating";
+		
+		$this->setViewport(new view("openness"));
+		$this->viewport()->replace("id", $id);
+		
 	}
 	
 	protected function opennessInfo(){
 		$this->pageName = "- Openness Rating - Project Information";
-		
+			
 		$this->setViewport(new view("openness-info"));
+		$questions = $this->getQuestions("info");
 		
-		$template = new view("openness-info");
+		$q = new view();
 		
-		$questions = $this->view->questions = $this->getQuestions("info");
+		foreach($questions[0] as $question){
 		
-		$template->replace("questions", $questions[0][0]['question']);
+		$template = new view('frag.opennessQuestionText');
+		$template->replace("question", $question['question']);
+		$template->replace("sub_question", $question['sub_question']);
+		$template->replace("section", $question['section']);
+		$template->replace("question_id", $question['id']);
 		
-		$output = $template->get();
 		
-		$this->viewport()->replace("layout", $output);
+		$q->append
+	
+
+		
+		}
+
+		$this->viewport()->replace("questions", $q);
 		
 	}
 	
