@@ -45,27 +45,78 @@ class controller_opennessrating extends controller {
 		
 		foreach($questions[0] as $question){
 		
-		$template = new view('frag.opennessQuestionText');
-		$template->replace("question", $question['question']);
-		$template->replace("sub_question", $question['sub_question']);
-		$template->replace("section", $question['section']);
-		$template->replace("question_id", $question['id']);
-		
-		
-		$q->append
-	
+			$template = new view('frag.opennessQuestionText');
+			$template->replace("question", $question['question']);
+			$template->replace("sub_question", $question['sub_question']);
+			$template->replace("section", $question['section']);
+			$template->replace("question_id", $question['id']);
 
-		
+			$q->append($template->get());
 		}
 
 		$this->viewport()->replace("questions", $q);
-		
 	}
 	
 	protected function opennessLegal(){
 		$this->pageName = "- Openness Rating - Legal";
 		
 		$this->setViewport(new view("openness-legal"));
+		$questions = $this->getQuestions("legal");
+		
+		$q = new view();
+			
+		foreach($questions[0] as $question){	
+		
+			switch ($question['type']){
+			
+				case 'drop':
+					$template = new view('frag.opennessQuestionDrop');
+					$template->replace("question", $question['question']);
+					$template->replace("sub_question", $question['sub_question']);
+					$template->replace("section", $question['section']);
+					$template->replace("question_id", $question['id']);
+
+					$answers = $this->getAnswers($question['id']);
+					$a = new view();
+					
+					foreach($answers[0] as $answer){
+
+						$answerFrag = new view('frag.opennessAnswerDrop');
+						$answerFrag->replace("answer", $answer['answer']);
+						$answerFrag->replace("answer_id", $answer['id']);
+						$a->append($answerFrag->get());
+
+					}
+					
+					$answerFrag->replace("options", $a);
+					$answerFrag->reset();
+					
+				break;
+				
+				case 'text':
+					$template = new view('frag.opennessQuestionText');
+					$template->replace("question", $question['question']);
+					$template->replace("sub_question", $question['sub_question']);
+					$template->replace("section", $question['section']);
+					$template->replace("question_id", $question['id']);
+				break;
+				
+				case 'multi-select':
+
+				break;
+				
+				case 'scale':
+
+				break;
+				
+				default:
+					echo "";
+			}
+			
+			$q->append($template->get());
+		}
+
+		$this->viewport()->replace("questions", $q);		
 	}	
 	
 	protected function opennessStandards(){
@@ -98,7 +149,15 @@ class controller_opennessrating extends controller {
 		$results = $this->db->select(array("*"), "open_question", array(array("", "section", "=", $section)))->run();
 		
 		return $results;
-	}	
+	}
+
+	protected function getAnswers($question_id){
+		
+		$this->db = db::singleton();
+		$results = $this->db->select(array("*"), "open_answer", array(array("", "open_question_id", "=", $question_id)))->run();
+		
+		return $results;
+	}		
 	
 	
 	
