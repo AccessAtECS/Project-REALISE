@@ -1169,11 +1169,13 @@ a#skip {
 
 .openness-submit {
 	margin-top: 30px;
+	font-family: 'Helvetica Neue', Helvetica, 'Lucida Grande', 'Lucida Sans', 'Lucida Sans Unicode',Arial, sans-serif !important;
 }
 
 .openness-button {
 	margin-left: 15px;
 	margin-top: 20px;
+	font-family: 'Helvetica Neue', Helvetica, 'Lucida Grande', 'Lucida Sans', 'Lucida Sans Unicode',Arial, sans-serif;
 }
 
 .openness-button a{
