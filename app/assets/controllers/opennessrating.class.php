@@ -21,6 +21,7 @@ class controller_opennessrating extends controller {
 		$this->bind('knowledge', 'opennessKnowledge');
 		$this->bind('governance', 'opennessGovernance');
 		$this->bind('market', 'opennessMarket');
+		$this->bind('completed', 'opennessEnd');
 		
 		$this->bind('submitInfo', 'infoProcess');
 		$this->bind('submitLegal', 'legalProcess');
@@ -37,12 +38,13 @@ class controller_opennessrating extends controller {
 		$this->superview()->replace("sidecontent_pageid", $id);
 		
 		$this->pageName = "- Openness Rating";
-		$this->setViewport(new view("openness"));
+		$this->setViewport(new view("openness"));		
 		$this->viewport()->replace("id", $id);
 	}
 	
 	protected function opennessInfo(){
 		$id = isset($_GET['id']) ? $_GET['id'] : "";
+		$id = $this->testProjectId($id);
 		$this->superview()->replace("sidecontent_pageid", $id);
 	
 		$this->pageName = "- Openness Rating - Project Information";
@@ -53,6 +55,7 @@ class controller_opennessrating extends controller {
 	
 	protected function opennessLegal(){
 		$id = isset($_GET['id']) ? $_GET['id'] : "";
+		$id = $this->testProjectId($id);
 		$this->superview()->replace("sidecontent_pageid", $id);
 	
 		$this->pageName = "- Openness Rating - Legal";
@@ -63,6 +66,7 @@ class controller_opennessrating extends controller {
 	
 	protected function opennessStandards(){
 		$id = isset($_GET['id']) ? $_GET['id'] : "";
+		$id = $this->testProjectId($id);
 		$this->superview()->replace("sidecontent_pageid", $id);
 	
 		$this->pageName = "- Openness Rating - Data Formats and Standards";
@@ -73,6 +77,7 @@ class controller_opennessrating extends controller {
 	
 	protected function opennessKnowledge(){
 		$id = isset($_GET['id']) ? $_GET['id'] : "";
+		$id = $this->testProjectId($id);
 		$this->superview()->replace("sidecontent_pageid", $id);
 	
 		$this->pageName = "- Openness Rating - Knowledge";
@@ -83,6 +88,7 @@ class controller_opennessrating extends controller {
 	
 	protected function opennessGovernance(){
 		$id = isset($_GET['id']) ? $_GET['id'] : "";
+		$id = $this->testProjectId($id);
 		$this->superview()->replace("sidecontent_pageid", $id);
 	
 		$this->pageName = "- Openness Rating - Governance";
@@ -93,6 +99,7 @@ class controller_opennessrating extends controller {
 	
 	protected function opennessMarket(){
 		$id = isset($_GET['id']) ? $_GET['id'] : "";
+		$id = $this->testProjectId($id);
 		$this->superview()->replace("sidecontent_pageid", $id);
 	
 		$this->pageName = "- Openness Rating - Market";
@@ -101,51 +108,13 @@ class controller_opennessrating extends controller {
 		$this->createQuestions($id, "market");
 	}
 	
-	protected function infoProcess(){
+	protected function opennessEnd(){		
+		$id = isset($_GET['id']) ? $_GET['id'] : "";
+		$this->superview()->replace("sidecontent_pageid", $id);
 		
-		$project_id = $_POST['project_id'];
-		$q = $this->getQuestionId("info");
-		$i = 1;
-		
-		foreach($q[0] as $n){
-			
-			$answer_id = $i;
-			$value = $_POST[$i];
-			//does answer for this project exist
-			
-			//if yes delete it first
-			
-			//if no or deleted - create new answer record
-			$this->createAnswer($answer_id, $project_id, $value);	
-			$i++;
-		}
-
-		$this->redirect("/opennessrating/legal/?id=".$project_id);
-	}
-
-	protected function legalProcess(){
-		echo("legal process");
-		exit;
-	}
-	
-	protected function standardsProcess(){
-		echo("standards process");
-		exit;
-	}
-	
-	protected function knowledgeProcess(){
-		echo("knowledge process");
-		exit;
-	}
-	
-	protected function governanceProcess(){
-		echo("governance process");
-		exit;
-	}
-	
-	protected function marketProcess(){
-		echo("market process");
-		exit;
+		$this->pageName = "- Openness Rating Completed";
+		$this->setViewport(new view("openness-end"));		
+		$this->viewport()->replace("id", $id);
 	}
 	
 	protected function createQuestions($project_id, $section){
@@ -180,8 +149,16 @@ class controller_opennessrating extends controller {
 							$answerFrag = new view('frag.opennessAnswerDrop');
 							$answerFrag->replace("answer", $answer['answer']);
 							$answerFrag->replace("answer_id", $answer['id']);
+							
+							//has answer been selected before
+							$value = $this->viewAnswer($project_id, $question['id']);
+							
+							if($answer['id'] == $value[0]){
+								$answerFrag->replace("select-".$value[0], "selected");
+							}
+							
 							$a->append($answerFrag->get());
-						}					
+						}
 						$template->replace("options", $a);						
 					break;
 					
@@ -200,7 +177,7 @@ class controller_opennessrating extends controller {
 								$template->replace("value", "");
 							}
 							else {
-								$template->replace("value", $value);
+								$template->replace("value", $value[0]);
 							}							
 							$q->append($template->get());
 						}
@@ -223,7 +200,18 @@ class controller_opennessrating extends controller {
 							$answerFrag->replace("answer", $answer['answer']);
 							$answerFrag->replace("answer_id", $answer['id']);
 							$answerFrag->replace("section", $question['section']);
+							$answerFrag->replace("question_id", $question['id']);
+							
+							$value = $this->viewAnswer($project_id, $question['id']);
+							
+							if(empty($value)){}
+							else{
+								if(in_array($answer['id'], $value)){
+									$answerFrag->replace("checked", 'checked="yes"');
+								}
+							}	
 							$a->append($answerFrag->get());
+							
 						}					
 						$template->replace("options", $a);
 						
@@ -246,10 +234,20 @@ class controller_opennessrating extends controller {
 							$answerFrag->replace("answer_id", $answer['id']);
 							$answerFrag->replace("section", $question['section']);
 							$answerFrag->replace("number", $i);
+							$answerFrag->replace("question_id", $question['id']);
 							$template->replace("answer_id",$answer['id']);
 							$template->replace("answer".$i,$i);
-							$a->append($answerFrag->get());
 							
+							$value = $this->viewAnswer($project_id, $question['id']);
+							
+							if(empty($value)){}
+							else{
+								if(in_array($answer['id'], $value)){
+									$answerFrag->replace("checked", 'checked="yes"');
+								}
+							}								
+							
+							$a->append($answerFrag->get());
 							$i++;
 						}
 						$template->replace("answers", $a);
@@ -271,6 +269,57 @@ class controller_opennessrating extends controller {
 		}		
 	}
 	
+	protected function infoProcess(){
+		$this->process("info", "legal");
+	}
+
+	protected function legalProcess(){
+		$this->process("legal", "standards");
+	}
+	
+	protected function standardsProcess(){
+		$this->process("standards", "knowledge");
+	}
+	
+	protected function knowledgeProcess(){
+		$this->process("knowledge", "governance");
+	}
+	
+	protected function governanceProcess(){
+		$this->process("governance", "market");
+	}
+	
+	protected function marketProcess(){
+		$this->process("market", "end");
+	}
+	
+	protected function process($section, $next_section){
+		$project_id = $this->getProjectId();
+		$project_id = $this->testProjectId($project_id);
+		$q = $this->getQuestionId($section);
+		// $question_id = first question for that section
+		//questions are assumed to be in id order
+		$question_id = $q[0][0]['id'];
+
+		foreach($q[0] as $question){
+		
+			$value = $_POST[$section."-".$question_id];
+			
+			//does answer for this project exist - if so delete it (indicated by true/false field)
+			$this->doesProjectAnswerExist($project_id, $question['id'], true);
+			//then create new answer
+			$this->createAnswer($question_id, $project_id, $value);	
+			$question_id++;
+		}
+		
+		if($next_section == "end"){
+			$this->redirect("/opennessrating/completed/?id=".$project_id);
+		}
+		else{
+			$this->redirect("/opennessrating/".$next_section."/?id=".$project_id);
+		}
+	}	
+	
 	protected function getQuestions($section){
 		$this->db = db::singleton();
 		$result = $this->db->select(array("*"), "open_question", array(array("", "section", "=", $section)))->run();
@@ -289,21 +338,83 @@ class controller_opennessrating extends controller {
 		return $result;
 	}
 	
-	protected function createAnswer($answer_id, $project_id, $value = NULL){
+	protected function getProjectId(){
+		return $_POST['project_id'];
+	}
+	
+	protected function testProjectId($id){
 		$this->db = db::singleton();
-		
-		try {
-			$result = $this->db->insert(array("answer_id" => $answer_id, "project_id" => $project_id, "value" => $value), "open_project_has_answer")->run();
+		$result = $this->db->select(array("id"), "project", array(array("", "id", "=", $id)))->run();
+		if($id == NULL OR empty($result)){
+			echo "Invalid project ID.";
+			exit;
+		}
+		else {
+			return $id;
+		}
+	}
+	
+	protected function createAnswer($question_id, $project_id, $value = NULL){
+		$this->db = db::singleton();
+		$result = $this->db->select(array("type"), "open_question", array(array("", "id", "=", $question_id)))->run();
+
+		try{
+			switch ( $result[0][0]['type']){
+				case 'drop':
+				case 'text':
+				case 'scale':
+					$result = $this->db->insert(array("question_id" => $question_id, "project_id" => $project_id, "value" => $value), "open_project_has_answer")->run();
+				break;
+				
+				case 'multi-select':
+					foreach($value as $v){
+						$result = $this->db->insert(array("question_id" => $question_id, "project_id" => $project_id, "value" => $v), "open_project_has_answer")->run();
+					}
+				break;
+
+				}
 		} catch (Exception $e){
-			echo "error";
+			echo "Unable to create answers in database. Please try again later.";
 			exit;
 		}
 	}
 	
-	protected function viewAnswer($project_id, $question_id){
+	protected function viewAnswer($project_id, $question_id){	
 		$this->db = db::singleton();
-		$result = $this->db->select(array("value"), "open_project_has_answer", array(array("", "project_id", "=", $project_id)), "AND answer_id = ".$question_id)->run();		
-		return $result[0][0]['value'];
+		$result = $this->db->select(array("value"), "open_project_has_answer", array(array("", "project_id", "=", $project_id)), "AND question_id = ".$question_id)->run();
+	
+		$a = array();		
+		if(empty($result)){}
+		else{
+			foreach($result[0] as $r){
+				array_push($a, $r['value']);
+			}
+			return $a;
+		}
+	}
+	
+	protected function doesProjectAnswerExist($project_id, $question_id, $delete){
+		$this->db = db::singleton();
+		$result = $this->db->select(array("id"), "open_project_has_answer", array(array("", "project_id", "=", $project_id)), "AND question_id = ".$question_id)->run();		
+		
+		if(empty($result)){}
+		else {
+			$project_answer_id = $result[0][0]['id'];
+		
+			if($delete == true){
+				$this->deleteProjectAnswer($project_answer_id);
+			}
+		}
+	}
+	
+	protected function deleteProjectAnswer($project_answer_id){
+		$this->db = db::singleton();
+		try{
+			$result = $this->db->delete("open_project_has_answer", array(array("","id",$project_answer_id)))->run();
+		}catch(Exception $e){
+			echo "Database error. Please try again later.";
+			exit;
+		}
 	}
 	
 }
