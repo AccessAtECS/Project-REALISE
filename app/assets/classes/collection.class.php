@@ -182,6 +182,10 @@ class collection {
 		return $this->m_foundRows;
 	}
 	
+	public function getType(){
+		return $this->m_type;
+	}
+	
 	public function __toString(){
 		return $this->get();
 	}
