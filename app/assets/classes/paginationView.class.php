@@ -2,18 +2,21 @@
 
 	private $linkView;
 	private $total = 0;
-	private $pageLimit = 9;
+	private $pageLimit = 0;
 	private $pages;
 	private $currentPage;
 	
 	private $resourceType;
 
-	public function __construct(collection $data, $currentPage){
+	public function __construct(collection $data, $currentPage, $limit){
 		parent::__construct();
+		
+		$this->pageLimit = $limit;
 		
 		$this->total = $data->getFoundRows();
 		$this->pages = ceil($this->total / $this->pageLimit);
 		$this->currentPage = $currentPage;
+		
 		
 		$this->linkView = new view('frag.pageLink');
 		
@@ -23,11 +26,11 @@
 			break;
 			
 			case collection::TYPE_PROJECT:
-				$this->resourceType = "incubator";
+				$this->resourceType = "project";
 			break;
 			
 			case collection::TYPE_INCUBATED:
-				$this->resourceType = "project";
+				$this->resourceType = "incubator";
 			break;
 			
 		}
