@@ -8,6 +8,8 @@ class controller_idea extends controller {
 	private $m_noRender = false;
 	private $m_owner = false;
 	
+	private $m_pageLimit = 9;
+	
 	public function renderViewport() {
 		$this->m_user = $this->objects("user");
 
@@ -17,27 +19,35 @@ class controller_idea extends controller {
 		util::userBox($this->m_user, $this->superView());
 		
 		
-		$this->bind("new$", "newIdea"); // Add a new idea (form)
-		$this->bind("new/add", "addIdea"); // Add a new idea (process)
+		$this->bind("^new$", "newIdea"); // Add a new idea (form)
+		$this->bind("^new/add", "addIdea"); // Add a new idea (process)
 		
-		$this->bind("[0-9]+$", "renderIdea"); // View a specific idea.
-		$this->bind("[0-9]+/vote$", "vote"); // DATA - vote on an idea
+		$this->bind("^[0-9]+$", "renderIdea"); // View a specific idea.
+		$this->bind("^[0-9]+/vote$", "vote"); // DATA - vote on an idea
 		
-		$this->bind("(?P<id>[0-9]+)/comment$", "comment"); // Comment on an idea
-		$this->bind("(?P<id>[0-9]+)/comment/(?P<comment_id>[0-9]+)/delete", "deleteComment"); // Delete comment
+		$this->bind("^(?P<id>[0-9]+)/comment$", "comment"); // Comment on an idea
+		$this->bind("^(?P<id>[0-9]+)/comment/(?P<comment_id>[0-9]+)/delete", "deleteComment"); // Delete comment
 		
-		$this->bind("(?P<id>[0-9]+)/incubate$", "incubateIdea"); // Display the incubate form.
-		$this->bind("(?P<id>[0-9]+)/incubate/confirm", "processIncubation"); // Make a new project with this info set to incubated.
+		$this->bind("^(?P<id>[0-9]+)/incubate$", "incubateIdea"); // Display the incubate form.
+		$this->bind("^(?P<id>[0-9]+)/incubate/confirm", "processIncubation"); // Make a new project with this info set to incubated.
 		
-		$this->bind("(?P<id>[0-9]+)/admin$", "ideaAdmin"); // Administer an idea.
-		$this->bind("(?P<id>[0-9]+)/admin/update$", "adminSave"); // Administer an idea.
+		$this->bind("^(?P<id>[0-9]+)/admin$", "ideaAdmin"); // Administer an idea.
+		$this->bind("^(?P<id>[0-9]+)/admin/update$", "adminSave"); // Administer an idea.
 		
+		// Bind pages
+		$this->bind("^page/(?P<id>[0-9]+)", "renderIdeasLab");
 
 		$this->bindDefault('renderIdeasLab');
 	}
 	
-	protected function renderIdeasLab(){
+	protected function renderIdeasLab($args = NULL){
 		$this->setViewport(new view("ideasLab"));
+		
+		// Get the pageID, otherwise set to 1.
+		$pageId = isset($args['id']) ? (int)$args['id'] : 1;
+		
+		// We need to start at 0 in the database, really.
+		$pageId--;
 
 		$this->pageName = "- Ideas";
 
@@ -51,7 +61,7 @@ class controller_idea extends controller {
 		$category = isset($_GET['category']) ? (int)$_GET['category'] : 0;
 		
 		$ideas = new collection(collection::TYPE_IDEA);
-		$ideas->setLimit(23);
+		$ideas->setLimit($pageId * $this->m_pageLimit, $this->m_pageLimit);
 		$ideas->setSort("id", collection::SORT_DESC);
 
 		// If the user is filtering add the search query to the SQL object.
@@ -64,10 +74,12 @@ class controller_idea extends controller {
 		
 		if($category != 0) $ideas->setQuery(array($operator, "category_id", "=", $category));
 		
+		if(!$this->m_user->getIsAdmin()) $ideas->setQuery(array($operator, "hidden", "=", 0));
+		
 		$o = new view();
 		
 		$ideaArray = $ideas->get();
-		
+
 		// Check if there are no results
 		if(count($ideaArray) == 0){
 			$o = new view('frag.noresults');
@@ -81,10 +93,48 @@ class controller_idea extends controller {
 			$template = new resourceView($idea, $this->m_user);
 			$o->append( $template->get() );
 		}
-		
+
 		$this->viewport()->replace("recentIdeas", $o);
 	
 		if($this->m_user->getIsAdmin()) $this->superview()->replace("additional-assets", util::newScript("/presentation/scripts/admin.js"));
+		
+		
+		// Pagination
+		$totalRecords = $ideas->getFoundRows();
+		$pages = ceil($totalRecords / $this->m_pageLimit);
+		
+		if($pages == 1) {
+			$this->viewport()->replace('pages', '');
+		} else {
+			$p = new view();
+			$link = new view('frag.pageLink');
+			
+			// Previous link
+			if($pageId != 0){
+				$link->replace('description', '&laquo;')->replace('link', '/idea/page/' . $pageId);
+				$p->append($link);
+				$link->reset();
+			}
+			
+			// Pages
+			for($i=1; $i<=$pages;$i++){
+				// Is this the current page?
+				$class = ($i==$pageId+1) ? "selected" : "";
+				$link->replace('description', $i)->replace('link', '/idea/page/' . $i)->replace('class', $class);
+				$p->append($link);
+				$link->reset();
+			}
+			
+			// Next link
+			if($pageId+1 != $pages){
+				$link->replace('description', '&raquo;')->replace('link', '/idea/page/' . ($pageId+2));
+				$p->append($link);
+				$link->reset();
+			}
+			
+			// Append to viewport
+			$this->viewport()->replace('pages', $p);
+		}
 	
 	}
 	
