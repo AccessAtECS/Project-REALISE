@@ -100,42 +100,8 @@ class controller_idea extends controller {
 		
 		
 		// Pagination
-		$totalRecords = $ideas->getFoundRows();
-		$pages = ceil($totalRecords / $this->m_pageLimit);
-		
-		if($pages == 1) {
-			$this->viewport()->replace('pages', '');
-		} else {
-			$p = new view();
-			$link = new view('frag.pageLink');
-			
-			// Previous link
-			if($pageId != 0){
-				$link->replace('description', '&laquo;')->replace('link', '/idea/page/' . $pageId);
-				$p->append($link);
-				$link->reset();
-			}
-			
-			// Pages
-			for($i=1; $i<=$pages;$i++){
-				// Is this the current page?
-				$class = ($i==$pageId+1) ? "selected" : "";
-				$link->replace('description', $i)->replace('link', '/idea/page/' . $i)->replace('class', $class);
-				$p->append($link);
-				$link->reset();
-			}
-			
-			// Next link
-			if($pageId+1 != $pages){
-				$link->replace('description', '&raquo;')->replace('link', '/idea/page/' . ($pageId+2));
-				$p->append($link);
-				$link->reset();
-			}
-			
-			// Append to viewport
-			$this->viewport()->replace('pages', $p);
-		}
-	
+		$pagination = new paginationView($ideas, $pageId);
+		$this->viewport()->replace('pages', $pagination);
 	}
 	
 	protected function renderIdea(){
