@@ -5,6 +5,8 @@ class controller_incubator extends controller {
 	private $m_noRender = false;
 	private $m_currentProject;
 	private $m_projectIdea;
+	
+	private $m_pageLimit = 9;
 
 	public function renderViewport() {
 		$this->m_user = $this->objects("user");
@@ -14,25 +16,33 @@ class controller_incubator extends controller {
 
 		util::userBox($this->m_user, $this->superView());
 
-		$this->bind("[0-9]+$", "renderItem");
+		$this->bind("^[0-9]+$", "renderItem");
 
-		$this->bind("(?P<id>[0-9]+)/comment$", "comment"); // Comment on an idea 
-		$this->bind("(?P<id>[0-9]+)/comment/(?P<comment_id>[0-9]+)/delete", "deleteComment"); // Delete comment
+		$this->bind("^(?P<id>[0-9]+)/comment$", "comment"); // Comment on an idea 
+		$this->bind("^(?P<id>[0-9]+)/comment/(?P<comment_id>[0-9]+)/delete", "deleteComment"); // Delete comment
 
-		$this->bind("(?P<id>[0-9]+)/vote$", "vote"); // DATA - vote on an idea
+		$this->bind("^(?P<id>[0-9]+)/vote$", "vote"); // DATA - vote on an idea
 
-		$this->bind("(?P<id>[0-9]+)/admin$", "renderAdmin");
-		$this->bind("(?P<id>[0-9]+)/admin/update$", "adminSave");
-		$this->bind("(?P<id>[0-9]+)/admin/promote$", "adminPromote");
-		$this->bind("(?P<id>[0-9]+)/admin/addMembers$", "addMembers");
-		$this->bind("(?P<id>[0-9]+)/admin/demoteMember$", "demoteMember");
+		$this->bind("^(?P<id>[0-9]+)/admin$", "renderAdmin");
+		$this->bind("^(?P<id>[0-9]+)/admin/update$", "adminSave");
+		$this->bind("^(?P<id>[0-9]+)/admin/promote$", "adminPromote");
+		$this->bind("^(?P<id>[0-9]+)/admin/addMembers$", "addMembers");
+		$this->bind("^(?P<id>[0-9]+)/admin/demoteMember$", "demoteMember");
 
+		// Bind pages
+		$this->bind("^page/(?P<id>[0-9]+)", "incubatorIndex");
 
 		$this->bindDefault('incubatorIndex');
 	}
 
-	protected function incubatorIndex(){
+	protected function incubatorIndex($args = NULL){
 		$this->setViewport(new view("incubatorIndex"));
+
+		// Get the pageID, otherwise set to 1.
+		$pageId = isset($args['id']) ? (int)$args['id'] : 1;
+		
+		// We need to start at 0 in the database, really.
+		$pageId--;
 
 		$this->pageName = "- Incubator";
 
@@ -40,7 +50,7 @@ class controller_incubator extends controller {
 		$category = isset($_GET['category']) ? (int)$_GET['category'] : 0;
 
 		$projects = new collection(collection::TYPE_INCUBATED);
-		$projects->setLimit(24);
+		$projects->setLimit($pageId * $this->m_pageLimit, $this->m_pageLimit);
 		$projects->setSort("id", collection::SORT_DESC);
 
 		// If the user is filtering add the search query to the SQL object.
@@ -49,6 +59,8 @@ class controller_incubator extends controller {
 		}
 		
 		if($category != 0) $projects->setQuery(array("AND", "category_id", "=", $category));
+		
+		if(!$this->m_user->getIsAdmin()) $projects->setQuery(array("AND", "hidden", "=", 0));
 		
 		$render = new view();
 		
@@ -72,6 +84,10 @@ class controller_incubator extends controller {
 		$this->superview()->replace("sideContent", $side);
 		
 		if($this->m_user->getIsAdmin()) $this->superview()->replace("additional-assets", util::newScript("/presentation/scripts/admin.js"));
+		
+		// Pagination
+		$pagination = new paginationView($projects, $pageId, $this->m_pageLimit);
+		$this->viewport()->replace('pages', $pagination);
 	}
 	
 	protected function renderItem(){

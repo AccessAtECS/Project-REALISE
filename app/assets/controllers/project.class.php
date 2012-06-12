@@ -5,6 +5,8 @@ class controller_project extends controller {
 	private $m_noRender = false;
 	private $m_currentProject;
 	
+	private $m_pageLimit = 9;
+	
 	public function renderViewport() {
 		$this->m_user = $this->objects("user");
 
@@ -26,11 +28,20 @@ class controller_project extends controller {
 		$this->bind("^(?P<id>[0-9]+)/admin/demoteMember$", "demoteMember");
 		$this->bind("^(?P<id>[0-9]+)/admin/mentor/(?P<user_id>[0-9]+)$", "mentor");
 
+		// Bind pages
+		$this->bind("^page/(?P<id>[0-9]+)", "projectIndex");
+
 		$this->bindDefault('projectIndex');
 	}
 	
-	protected function projectIndex(){
+	protected function projectIndex($args = NULL){
 		$this->setViewport(new view("projectIndex"));
+
+		// Get the pageID, otherwise set to 1.
+		$pageId = isset($args['id']) ? (int)$args['id'] : 1;
+		
+		// We need to start at 0 in the database, really.
+		$pageId--;
 
 		$search = isset($_GET['search']) ? $_GET['search'] : "";
 		$category = isset($_GET['category']) ? (int)$_GET['category'] : 0;
@@ -49,13 +60,15 @@ class controller_project extends controller {
 		$this->pageName = "- Projects";
 
 		$projects = new collection(collection::TYPE_PROJECT);
-		$projects->setLimit(24);
+		$projects->setLimit($pageId * $this->m_pageLimit, $this->m_pageLimit);
 		$projects->setSort("id", collection::SORT_DESC);
 		
 		// If the user is filtering add the search query to the SQL object.
 		if(!empty($search)){
 			$projects->setQuery(array("AND", "name", "LIKE", "%" . $search . "%"));
 		}
+		
+		if(!$this->m_user->getIsAdmin()) $projects->setQuery(array("AND", "hidden", "=", 0));
 		
 		if($category != 0) $projects->setQuery(array("AND", "category_id", "=", $category));
 				
@@ -75,6 +88,10 @@ class controller_project extends controller {
 		$this->viewport()->replace("recentIdeas", $o);
 		
 		if($this->m_user->getIsAdmin()) $this->superview()->replace("additional-assets", util::newScript("/presentation/scripts/admin.js"));
+		
+		// Pagination
+		$pagination = new paginationView($projects, $pageId, $this->m_pageLimit);
+		$this->viewport()->replace('pages', $pagination);
 	}
 	
 	protected function renderItem(){

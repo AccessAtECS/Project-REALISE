@@ -100,7 +100,7 @@ class controller_idea extends controller {
 		
 		
 		// Pagination
-		$pagination = new paginationView($ideas, $pageId);
+		$pagination = new paginationView($ideas, $pageId, $this->m_pageLimit);
 		$this->viewport()->replace('pages', $pagination);
 	}
 	
