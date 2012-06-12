@@ -7,6 +7,8 @@ class collection {
 	private $m_sort = "";
 	private $m_limit = "";
 	private $m_query = array();
+	
+	private $m_foundRows = 0;
 
 	const SORT_DESC = 1;
 	const SORT_ASC = 2;
@@ -32,7 +34,7 @@ class collection {
 	}
 
 	public function setLimit($first, $last = ""){
-		$this->m_limit = ($last == "") ? " LIMIT $first" : "LIMIT $first, $last";
+		$this->m_limit = ($last == "") ? " LIMIT $first" : " LIMIT $first, $last";
 	}
 
 	public function setSort($fieldName, $sortID){
@@ -63,10 +65,15 @@ class collection {
 		
 		switch($this->m_type){
 			case collection::TYPE_IDEA:
-				$db->select(array("id"), "idea", $this->m_query, $this->m_sort . $this->m_limit);
+				$db->select(array("id"), "idea", $this->m_query, $this->m_sort . $this->m_limit, "SELECT SQL_CALC_FOUND_ROWS %s FROM %s %s %s");
+				$db->queuedQuery("SELECT FOUND_ROWS();");
 				$output = $db->runBatch();
+
 				if(empty($output)) return array();
-				
+
+				// Set the found rows.
+				$this->m_foundRows = $output[1][0]['FOUND_ROWS()'];
+
 				foreach($output[0] as $idea){
 					array_push($this->m_returnArray, new idea($idea['id']));
 				}
@@ -74,9 +81,14 @@ class collection {
 			
 			case collection::TYPE_INCUBATED:
 				$this->m_query = array_merge(array(array("", "incubated", "=", 1)), $this->m_query);
-				$db->select(array("id"), "project", $this->m_query, $this->m_sort . $this->m_limit);
+				$db->select(array("id"), "project", $this->m_query, $this->m_sort . $this->m_limit, "SELECT SQL_CALC_FOUND_ROWS %s FROM %s %s %s");
+				$db->queuedQuery("SELECT FOUND_ROWS();");
 				$output = $db->runBatch();
+				
 				if(empty($output)) return array();
+				
+				// Set the found rows.
+				$this->m_foundRows = $output[1][0]['FOUND_ROWS()'];
 				
 				foreach($output[0] as $project){
 					array_push($this->m_returnArray, new project($project['id']));
@@ -85,9 +97,14 @@ class collection {
 			
 			case collection::TYPE_PROJECT:
 				$this->m_query = array_merge(array(array("", "incubated", "=", 0)), $this->m_query);
-				$db->select(array("id"), "project", $this->m_query, $this->m_sort . $this->m_limit);
+				$db->select(array("id"), "project", $this->m_query, $this->m_sort . $this->m_limit, "SELECT SQL_CALC_FOUND_ROWS %s FROM %s %s %s");
+				$db->queuedQuery("SELECT FOUND_ROWS();");
 				$output = $db->runBatch();
+				
 				if(empty($output)) return array();
+				
+				// Set the found rows.
+				$this->m_foundRows = $output[1][0]['FOUND_ROWS()'];
 				
 				foreach($output[0] as $project){
 					array_push($this->m_returnArray, new project($project['id']));
@@ -159,6 +176,10 @@ class collection {
 		}
 		
 		return $this->m_returnArray;
+	}
+	
+	public function getFoundRows(){
+		return $this->m_foundRows;
 	}
 	
 	public function __toString(){
