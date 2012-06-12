@@ -1158,3 +1158,28 @@ a#skip {
 #incubateList li {
 	padding:5px;
 }
+
+.question-multi-select li{
+	list-style:none;
+}
+
+.question-scale .table_rightlabel, .question-scale .table_leftlabel{
+	width: 150px
+}
+
+.openness-submit {
+	margin-top: 30px;
+	font-family: 'Helvetica Neue', Helvetica, 'Lucida Grande', 'Lucida Sans', 'Lucida Sans Unicode',Arial, sans-serif !important;
+}
+
+.openness-button {
+	margin-left: 15px;
+	margin-top: 20px;
+	font-family: 'Helvetica Neue', Helvetica, 'Lucida Grande', 'Lucida Sans', 'Lucida Sans Unicode',Arial, sans-serif;
+}
+
+.openness-button a{
+	color: white;
+	font-size: 130%;
+	padding: 3px 3px 3px 3px;
+}
