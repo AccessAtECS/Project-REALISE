@@ -19,6 +19,48 @@
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+abstract class DBType {
+	protected $val;
+	
+	public function __toString() {
+		return $this->val;
+	}
+	
+	public function sanitise() {
+		$db = db::singleton();
+		return $db->real_escape_string($this->val);
+	}
+}
+
+class DBInt extends DBType { 
+	public function __construct($val) { 
+		if(!is_integer($val)) throw new Exception("Value is not an integer!", 9001);
+		$this->val = $val;
+	} 
+}
+
+class DBString extends DBType { 
+	public function __construct($val) { 
+		if(is_string($val)) throw new Exception("Value is not a string!", 9002);
+		$this->val = "'$val'";
+	} 
+}
+
+class DBFunction extends DBType { 
+	public function __construct($val) { 
+		// MySQL function names seem to be between 2 and 15 characters, should be uppercase, and only a few contain numbers.
+		// Also, we are not yet real_escape_string-ing the contents of the function. Or the function name.
+		if(!preg_match("/^[A-Z_0-25]{2,15}\(.*\)$/", $val)) throw new Exception("Value is not a function!", 9003);
+		$this->val = $val;
+	} 
+}
+
+class DBNull extends DBType {
+	public function __construct() {
+		$this->val = "NULL";
+	}
+};
+
 class db extends mysqli {
 	
 	// Holds an instance of the class
@@ -96,7 +138,7 @@ class db extends mysqli {
 	 * @ $additionals = not required. Any additional bits of SQL you wish to have after the common bit.
 	*/
 
-	public function select($fields = array(), $table, $conditions = array(), $additionals = ""){
+	public function select($fields = array(), $table, $conditions = array(), $additionals = "", $format = "SELECT %s FROM %s %s %s"){
 				
 		$fieldsList = "";
 		$tablesList = "";
@@ -135,7 +177,7 @@ class db extends mysqli {
 		}
 		
 		// Push the query to the class array queries.
-		$currentQuery = "SELECT {$fieldsList} FROM {$tablesList} {$conditionsList} {$additionals}";
+		$currentQuery = sprintf($format, $fieldsList, $tablesList, $conditionsList, $additionals);
 		
 		$this->queries[] = $currentQuery;
 		$this->currentQuery = $currentQuery;
@@ -173,14 +215,19 @@ class db extends mysqli {
 		foreach($fields as $field => $data) {
 			// Sanitise, sanitise, sanitise
 			$field = $this->real_escape_string($field);
-			$data = $this->real_escape_string($data);
+			
+			// Convert NULLs to DBNull types
+			if($data == "NULL") $data = new DBNull();
+			
+			// Sanitise anything that isn't a DBType
+			$data = $this->sanitiseData($data);
 			
 			// Append to the list of fields
 			$fieldsList .= "{$comma}`{$field}`";
 			
-			// Append to the list of values. Numbers and NULLs don't get quotes around them.
-			$valuesList .= (is_string($data) and strtoupper($data) != "NULL") ? "{$comma}'{$data}'" : $comma.$data;
-			
+			// Append to the list of values. Objects don't get quotes around them.
+			$valuesList .= $comma.$data;
+			//var_dump(array($data, is_object($data)));
 			// Sets comma to be a comma, so the first item in the list won't have a comma before it
 			$comma = ", ";
 		}
@@ -212,7 +259,7 @@ class db extends mysqli {
 		// For each update field output to the string in the format $key = '$data',. This will allow multiple fields to be updated.
 		$comma = "";
 		foreach($fields as $field => $value) {
-			$fieldsList .= "{$comma}{$field} = '{$this->real_escape_string($value)}'";
+			$fieldsList .= "{$comma}{$field} = {$this->sanitiseData($value)}";
 			$comma = ", ";
 		}
 
@@ -220,7 +267,7 @@ class db extends mysqli {
 		foreach($conditions as $i => $value){
 			if($i != 0) $conditionsList .= " {$value[0]}";
 			// TODO: ARG! This 'conditions' arr doesn't appear to contain the operator, unlike in INSERT. This assumes the op is always '='
-			$conditionsList .= " {$value[1]} = '{$this->real_escape_string($value[2])}'";
+			$conditionsList .= " {$value[1]} = {$this->sanitiseData($value[2])}";
 		}
 		
 		// Format query, append additionals and push to query list
@@ -246,14 +293,14 @@ class db extends mysqli {
 	public function delete($table, $conditions = array(), $additionals = ""){
 		
 		// SEB: Is this a good idea or not? Nice safety net, but is it really practical?
-		if(empty($conditions)) throw new Exception("No conditions were specified for the delete operation");
+		if(empty($conditions)) throw new Exception("No conditions were specified for the delete operation", 9004);
 		
 		$conditionsList = "";
 		
-		// For each of the conditional conditions that the user has entered append them to the SQL string.
+		// For each of the conditions that the user has entered, append them to the SQL string.
 		foreach($conditions as $i => $value){
 			if($i != 0) $conditionsList .= " {$value[0]}";
-			$conditionsList .= " {$value[1]} = '{$this->real_escape_string($value[2])}'";
+			$conditionsList .= " {$value[1]} = {$this->sanitiseData($value[2])}";
 		}
 		
 		// Push the query to the class array queries.
@@ -274,13 +321,20 @@ class db extends mysqli {
 	
 	public function single($query){
 		$result = parent::query($query);
-		if($this->error) throw new exception($this->error, $this->errno); 
+		if($this->error) throw new Exception($this->error, $this->errno); 
 
 		$out = array();
 		if(is_bool($result)) {
 				$out[] = "";
 		} else {
-			while($row = $result->fetch_assoc()) $out[] = $row;
+			while($row = $result->fetch_assoc()) {
+				$row = array_map(function($v){ 
+					if(is_numeric($v)) return (int)$v;
+					return $v;
+				}, $row);
+				
+				$out[] = $row;
+			}
 		}
 		return $out;
 	}
@@ -308,7 +362,14 @@ class db extends mysqli {
 			if(is_bool($res) == true) {
 				$out[$queryId] = "";
 			} else {
-				while($row = $res->fetch_assoc()) $out[$queryId][] = $row;
+				while($row = $res->fetch_assoc()) {
+					$row = array_map(function($v){ 
+						if(is_numeric($v)) return (int)$v;
+						return $v;
+					}, $row);
+				
+					$out[$queryId][] = $row;
+				}
 			}
 		}
 		
@@ -316,5 +377,10 @@ class db extends mysqli {
 		
 		// Return the output to the caller.
 		return $out;
-	} 
+	}
+	
+	// Sanitises data for MySQL queries. Adds apostrophes around data where needed. This should not be used for field names.
+	public function sanitiseData($val) {
+		return is_object($val) ? $val->sanitise() : "'{$this->real_escape_string($val)}'";
+	}
 }
