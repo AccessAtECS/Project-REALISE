@@ -13,7 +13,7 @@ class controller_opennessrating extends controller {
 
 		util::userBox($this->m_user, $this->superView());
 		
-		$this->superview()->replace("sideContent", util::displayOpennessSections()); 
+		$this->superview()->replace("sideContent", util::displayOpennessSections());
 		
 		$this->bind('info', 'opennessInfo');
 		$this->bind('legal', 'opennessLegal');
@@ -35,7 +35,13 @@ class controller_opennessrating extends controller {
 		
 	protected function opennessIndex(){		
 		$id = isset($_GET['id']) ? $_GET['id'] : "";
+		$id = $this->testProjectId($id);
 		$this->superview()->replace("sidecontent_pageid", $id);
+		
+		$openness = $this->getOpennessRating($id);
+		$colour = $this->ratingColour($openness);
+		$this->superview()->replace("openness-rating", $openness);
+		$this->superview()->replace("alert-colour", $colour);
 		
 		$this->pageName = "- Openness Rating";
 		$this->setViewport(new view("openness"));		
@@ -46,12 +52,19 @@ class controller_opennessrating extends controller {
 		$id = isset($_GET['id']) ? $_GET['id'] : "";
 		$id = $this->testProjectId($id);
 		$this->superview()->replace("sidecontent_pageid", $id);
+		
+		$openness = $this->getOpennessRating($id);
+		$colour = $this->ratingColour($openness);
+		$this->superview()->replace("openness-rating", $openness);
+		$this->superview()->replace("alert-colour", $colour);
+		
 		$pageName = "Openness Rating - Project Information";
 		
 		$this->pageName = "- ".$pageName;
 		$this->setViewport(new view("openness-info"));
 		$this->viewport()->replace("project_id", $id);	
 		$this->viewport()->replace("page-name", $pageName);
+		$this->viewport()->append($this->helpJS());
 		$this->createQuestions($id, "info");
 	}
 	
@@ -59,12 +72,19 @@ class controller_opennessrating extends controller {
 		$id = isset($_GET['id']) ? $_GET['id'] : "";
 		$id = $this->testProjectId($id);
 		$this->superview()->replace("sidecontent_pageid", $id);
+		
+		$openness = $this->getOpennessRating($id);
+		$colour = $this->ratingColour($openness);
+		$this->superview()->replace("openness-rating", $openness);
+		$this->superview()->replace("alert-colour", $colour);
+		
 		$pageName = "Openness Rating - Legal";
 		
 		$this->pageName = "- ".$pageName;
 		$this->setViewport(new view("openness-legal"));
 		$this->viewport()->replace("project_id", $id);
 		$this->viewport()->replace("page-name", $pageName);
+		$this->viewport()->append($this->helpJS());
 		$this->createQuestions($id, "legal");
 	}	
 	
@@ -72,12 +92,19 @@ class controller_opennessrating extends controller {
 		$id = isset($_GET['id']) ? $_GET['id'] : "";
 		$id = $this->testProjectId($id);
 		$this->superview()->replace("sidecontent_pageid", $id);
+		
+		$openness = $this->getOpennessRating($id);
+		$colour = $this->ratingColour($openness);
+		$this->superview()->replace("openness-rating", $openness);
+		$this->superview()->replace("alert-colour", $colour);
+		
 		$pageName = "Openness Rating - Data Formats and Standards";
 		
 		$this->pageName = "- ".$pageName;
 		$this->setViewport(new view("openness-standards"));
 		$this->viewport()->replace("project_id", $id);
 		$this->viewport()->replace("page-name", $pageName);
+		$this->viewport()->append($this->helpJS());
 		$this->createQuestions($id, "standards");
 	}	
 	
@@ -85,12 +112,19 @@ class controller_opennessrating extends controller {
 		$id = isset($_GET['id']) ? $_GET['id'] : "";
 		$id = $this->testProjectId($id);
 		$this->superview()->replace("sidecontent_pageid", $id);
+		
+		$openness = $this->getOpennessRating($id);
+		$colour = $this->ratingColour($openness);
+		$this->superview()->replace("openness-rating", $openness);
+		$this->superview()->replace("alert-colour", $colour);
+		
 		$pageName = "Openness Rating - Knowledge";
 		
 		$this->pageName = "- ".$pageName;
 		$this->setViewport(new view("openness-knowledge"));
 		$this->viewport()->replace("project_id", $id);
 		$this->viewport()->replace("page-name", $pageName);
+		$this->viewport()->append($this->helpJS());
 		$this->createQuestions($id, "knowledge");
 	}
 	
@@ -98,12 +132,19 @@ class controller_opennessrating extends controller {
 		$id = isset($_GET['id']) ? $_GET['id'] : "";
 		$id = $this->testProjectId($id);
 		$this->superview()->replace("sidecontent_pageid", $id);
+		
+		$openness = $this->getOpennessRating($id);
+		$colour = $this->ratingColour($openness);
+		$this->superview()->replace("openness-rating", $openness);
+		$this->superview()->replace("alert-colour", $colour);
+		
 		$pageName = "Openness Rating - Governance";
 		
 		$this->pageName = "- ".$pageName;
 		$this->setViewport(new view("openness-governance"));
 		$this->viewport()->replace("project_id", $id);
 		$this->viewport()->replace("page-name", $pageName);
+		$this->viewport()->append($this->helpJS());
 		$this->createQuestions($id, "governance");
 	}
 	
@@ -111,12 +152,19 @@ class controller_opennessrating extends controller {
 		$id = isset($_GET['id']) ? $_GET['id'] : "";
 		$id = $this->testProjectId($id);
 		$this->superview()->replace("sidecontent_pageid", $id);
+		
+		$openness = $this->getOpennessRating($id);
+		$colour = $this->ratingColour($openness);
+		$this->superview()->replace("openness-rating", $openness);
+		$this->superview()->replace("alert-colour", $colour);
+		
 		$pageName = "Openness Rating - Market";
 		
 		$this->pageName = "- ".$pageName;
 		$this->setViewport(new view("openness-market"));
 		$this->viewport()->replace("project_id", $id);
 		$this->viewport()->replace("page-name", $pageName);
+		$this->viewport()->append($this->helpJS());
 		$this->createQuestions($id, "market");
 	}
 	
@@ -124,13 +172,22 @@ class controller_opennessrating extends controller {
 		$id = isset($_GET['id']) ? $_GET['id'] : "";
 		$id = $this->testProjectId($id);
 		$this->superview()->replace("sidecontent_pageid", $id);
+		
+		$openness = $this->getOpennessRating($id);
+		$colour = $this->ratingColour($openness);
+		$this->superview()->replace("openness-rating", $openness);
+		$this->superview()->replace("alert-colour", $colour);
+		
 		$pageName = "Openness Rating - Complete";
 		
 		$this->pageName = "- ".$pageName;
 		$this->setViewport(new view("openness-end"));
 		$this->viewport()->replace("id", $id);
+		
 		$openness = $this->getOpennessRating($id);
+		$colour = $this->ratingColour($openness);
 		$this->viewport()->replace("openness-rating", $openness);
+		$this->viewport()->replace("alert-colour", $colour);
 	}
 	
 	protected function createQuestions($project_id, $section){
@@ -150,6 +207,8 @@ class controller_opennessrating extends controller {
 						$template->replace("sub_question", $question['sub_question']);
 						$template->replace("section", $question['section']);
 						$template->replace("question_id", $question['id']);
+						$help = $this->helpText($question['id'], $question['help']);
+						$template->replace("info", $help);
 
 						$answers = $this->getAnswers($question['id']);
 						$a = new view();
@@ -186,6 +245,8 @@ class controller_opennessrating extends controller {
 							$template->replace("sub_question", $question['sub_question']);
 							$template->replace("section", $question['section']);
 							$template->replace("question_id", $question['id']);
+							$help = $this->helpText($question['id'], $question['help']);
+							$template->replace("info", $help);
 
 							$value = $this->viewAnswer($project_id, $question['id']);
 							
@@ -207,6 +268,8 @@ class controller_opennessrating extends controller {
 						$template->replace("sub_question", $question['sub_question']);
 						$template->replace("section", $question['section']);
 						$template->replace("question_id", $question['id']);
+						$help = $this->helpText($question['id'], $question['help']);
+						$template->replace("info", $help);
 
 						$answers = $this->getAnswers($question['id']);
 						$a = new view();
@@ -240,6 +303,8 @@ class controller_opennessrating extends controller {
 						$template->replace("question", $question['question']);
 						$template->replace("sub_question", $question['sub_question']);
 						$template->replace("question_id", $question['id']);
+						$help = $this->helpText($question['id'], $question['help']);
+						$template->replace("info", $help);
 
 						$answers = $this->getAnswers($question['id']);
 						$a = new view();
@@ -435,6 +500,14 @@ class controller_opennessrating extends controller {
 		}
 	}
 	
+	protected function helpText($questionID, $text){	
+		$icon = '<a href="#" class="info-toggle"><img src="/presentation/images/information.png" /></a>';
+		$close = '<button type="button" class="close" data-dismiss="alert">x</button>';
+
+		$box = '<div class="alert alert-info" id="help-text-'.$questionID.'" style="display: none;">'.$text.'</div>';
+		return $icon.$box;
+	}
+	
 	protected function calculateOpenness($project_id){
 		//dont know value
 		$dn = 0;
@@ -478,9 +551,40 @@ class controller_opennessrating extends controller {
 	
 	protected function getOpennessRating($project_id){
 		$result = $this->db->select(array("openness_rating"), "project", array(array("", "id", "=", $project_id)))->run();
-		return $result[0][0]['openness_rating']."%";
+		$result = $result[0][0]['openness_rating'];
+		
+		if($result == NULL){
+			$result = 0;
+		}
+		return $result."%";
 	}
 	
+	protected function ratingColour($rating){
+		$colour = "";
+		
+		if($rating >= 75){
+			$colour = "alert-success";
+		}
+		else if($rating < 75 && $rating > 30){
+			$colour = "alert-block";
+		}
+		else if($rating < 30){
+			$colour = "alert-error";
+		}
+		
+		return $colour;
+	}
+
+	protected function helpJS(){
+		$js = '
+		<script type="text/javascript">$(".info-toggle").click(function () {
+			$(this).parentsUntil("div.question").parent().find(".alert").toggle();
+			});
+		</script>';
+		
+		return $js;
+	}
+		
 }
 
 ?>

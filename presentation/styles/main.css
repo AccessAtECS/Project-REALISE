@@ -1184,6 +1184,11 @@ a#skip {
 	padding: 3px 3px 3px 3px;
 }
 
+#openness-complete{
+	font-size: 130%;
+	font-weight: bold;
+}
+
 #pagination {
 	clear: both;
 	width: 100%;
