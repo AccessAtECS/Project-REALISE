@@ -561,14 +561,16 @@ class controller_opennessrating extends controller {
 	
 	protected function ratingColour($rating){
 		$colour = "";
+		$OR_pass = 75;
+		$OR_ok = 30
 		
 		if($rating >= 75){
 			$colour = "alert-success";
 		}
-		else if($rating < 75 && $rating > 30){
+		else if($rating < $OR_pass && $rating > $OR_ok){
 			$colour = "alert-block";
 		}
-		else if($rating < 30){
+		else if($rating < $OR_ok){
 			$colour = "alert-error";
 		}
 		
