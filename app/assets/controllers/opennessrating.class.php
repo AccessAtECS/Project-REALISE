@@ -42,7 +42,7 @@ class controller_opennessrating extends controller {
 		$this->superview()->replace("sidecontent_pageid", $id);
 		
 		$openness = $OR->getOpennessRating($id);
-		$this->superview()->replace("openness-report", $openness);
+		$this->superview()->replace("openness-rating", $openness);
 		$this->superview()->replace("alert-colour", $OR->ratingColour($openness));
 		
 		$this->pageName = "- Openness Rating";
