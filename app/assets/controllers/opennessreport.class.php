@@ -32,18 +32,24 @@ class controller_opennessreport extends controller {
 	
 	protected function reportInfo(){
 		$id = isset($_GET['id']) ? $_GET['id'] : "";
-		$id = $this->testProjectId($id);
+		$OR = new opennessRating();
+		
+		$id = $OR->testProjectId($id);
 		$this->superview()->replace("sidecontent_pageid", $id);
 		
+		$openness = $OR->getOpennessRating($id);
+		$this->superview()->replace("openness-rating", $openness);
+		$this->superview()->replace("alert-colour", $OR->ratingColour($openness));
+				
 		$pageName = "Openness Rating - Project Information - Report For Project 29";
-		
+
 		$this->pageName = "- ".$pageName;
 		$this->setViewport(new view("openness-info"));
 		$this->viewport()->replace("project_id", $id);
 		$this->viewport()->replace("page-name", $pageName);
 		$this->createQuestions($id, "info", TRUE);
 	}
-	
+
 	protected function reportLegal(){
 		
 	}

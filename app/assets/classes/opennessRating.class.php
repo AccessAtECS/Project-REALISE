@@ -8,6 +8,166 @@ class opennessRating {
 		$this->_db = db::singleton();
 	}
 	
+	public function createQuestions($project_id, $section){
+		$OR = new opennessRating(); 
+		$questions = $OR->getQuestions($section);
+		
+		$q = new view();
+		
+		try{
+			foreach($questions[0] as $question){	
+			
+				switch ($question['type']){
+				
+					case 'drop':
+						$template = new view('frag.opennessQuestionDrop');
+						$template->replace("question", $question['question']);
+						$template->replace("sub_question", $question['sub_question']);
+						$template->replace("section", $question['section']);
+						$template->replace("question_id", $question['id']);
+						$help = $this->helpText($question['id'], $question['help']);
+						$template->replace("info", $help);
+
+						$answers = $this->getAnswers($question['id']);
+						$a = new view();
+						
+						if($question['has_dont_know_answer'] == "1"){
+							$answerDN = new view('frag.opennessAnswerDrop');
+							$answerDN->replace("answer", "Don't know");
+							$answerDN->replace("answer_id", "dn");
+							$a->append($answerDN->get());
+						}
+					
+						foreach($answers[0] as $answer){
+							$answerFrag = new view('frag.opennessAnswerDrop');
+							$answerFrag->replace("answer", $answer['answer']);
+							$answerFrag->replace("answer_id", $answer['id']);
+							
+							//has answer been selected before
+							$value = $this->viewAnswer($project_id, $question['id']);
+							
+							if($answer['id'] == $value[0]){
+								$answerFrag->replace("select-".$value[0], "selected");
+							}
+							
+							$a->append($answerFrag->get());
+						}
+						$template->replace("options", $a);						
+					break;
+					
+					case 'text':
+						foreach($questions[0] as $question){
+						
+							$template = new view('frag.opennessQuestionText');
+							$template->replace("question", $question['question']);
+							$template->replace("sub_question", $question['sub_question']);
+							$template->replace("section", $question['section']);
+							$template->replace("question_id", $question['id']);
+							$help = $this->helpText($question['id'], $question['help']);
+							$template->replace("info", $help);
+
+							$value = $this->viewAnswer($project_id, $question['id']);
+							
+							if(empty($value)){
+								$template->replace("value", "");
+							}
+							else {
+								$template->replace("value", $value[0]);
+							}							
+							$q->append($template->get());
+						}
+
+						return $q;
+					break;
+					
+					case 'multi-select':
+						$template = new view('frag.opennessQuestionMultiSelect');
+						$template->replace("question", $question['question']);
+						$template->replace("sub_question", $question['sub_question']);
+						$template->replace("section", $question['section']);
+						$template->replace("question_id", $question['id']);
+						$help = $this->helpText($question['id'], $question['help']);
+						$template->replace("info", $help);
+
+						$answers = $this->getAnswers($question['id']);
+						$a = new view();
+					
+						foreach($answers[0] as $answer){
+							$answerFrag = new view('frag.opennessAnswerMultiSelect');
+							$answerFrag->replace("answer", $answer['answer']);
+							$answerFrag->replace("answer_id", $answer['id']);
+							$answerFrag->replace("section", $question['section']);
+							$answerFrag->replace("question_id", $question['id']);
+							
+							$value = $this->viewAnswer($project_id, $question['id']);
+							
+							if(empty($value)){}
+							else{
+								if(in_array($answer['id'], $value)){
+									$answerFrag->replace("checked", 'checked="yes"');
+								}
+							}	
+							$a->append($answerFrag->get());
+							
+						}					
+						$template->replace("options", $a);
+						
+					break;
+					
+					case 'scale':
+						$i = 0;
+						
+						$template = new view('frag.opennessQuestionScale');
+						$template->replace("question", $question['question']);
+						$template->replace("sub_question", $question['sub_question']);
+						$template->replace("question_id", $question['id']);
+						$help = $this->helpText($question['id'], $question['help']);
+						$template->replace("info", $help);
+
+						$answers = $this->getAnswers($question['id']);
+						$a = new view();
+					
+						foreach($answers[0] as $answer){
+							$answerFrag = new view('frag.opennessAnswerScale');
+							$answerFrag->replace("answer", $answer['answer']);
+							$answerFrag->replace("answer_id", $answer['id']);
+							$answerFrag->replace("section", $question['section']);
+							$answerFrag->replace("number", $i);
+							$answerFrag->replace("question_id", $question['id']);
+							$template->replace("answer_id",$answer['id']);
+							$template->replace("answer".$i,$i);
+							
+							$value = $this->viewAnswer($project_id, $question['id']);
+							
+							if(empty($value)){}
+							else{
+								if(in_array($answer['id'], $value)){
+									$answerFrag->replace("checked", 'checked="yes"');
+								}
+							}								
+							
+							$a->append($answerFrag->get());
+							$i++;
+						}
+						$template->replace("answers", $a);
+						$i = 0;
+					break;
+					
+					default:
+						echo "default question";
+				}
+				
+				$q->append($template->get());
+			}
+
+			return $q;	
+			
+		} catch(Exception $e){
+			echo "Unable to render openness rating question list. Please try again later.";
+			exit;
+		}		
+	}
+	
 	public function process($section, $next_section){
 		$project_id = $this->getProjectId();
 		$project_id = $this->testProjectId($project_id);
