@@ -561,7 +561,7 @@ class controller_opennessrating extends controller {
 	
 	protected function ratingColour($rating){
 		$colour = "";
-		$OR_pass = 75;
+		$OR_pass = SYS_OPENNESS_THRESHOLD;
 		$OR_ok = 30;
 		
 		if($rating >= $OR_pass){

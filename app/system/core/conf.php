@@ -32,4 +32,6 @@ define('SYS_RESTFORMATS', serialize(array(
 	"json"
 )));
 
+define("SYS_OPENNESS_THRESHOLD", 75);
+
 ?>

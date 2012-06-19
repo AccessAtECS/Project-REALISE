@@ -2,9 +2,12 @@
 	<img src="{image}" align="right" alt="{title} image" id="ideaImage" />
 	<h1>Project Administration for {title}</h1>
 
-    <div id="ORcontainer" style="width:200px; margin-top:10px; float:right; clear: right;">
-		{openness-progress}
-    </div>
+	    <div id="pbarHolder">
+		    <div class="pbar"><div class="pbar_progress" style="width:{percentage}%"></div></div>
+		    <div class="projectPercentage">{percentage}%</div>
+			<p class="info" style="font-size:14pt; margin-bottom:10px;"><a href="/opennessrating/?id={id}">Get an openness rating</a></p>
+			<br /><br /><br />
+	    </div>
 
 	<form action="admin/update" method="post" enctype="multipart/form-data">
 		<p id="overviewHolder">

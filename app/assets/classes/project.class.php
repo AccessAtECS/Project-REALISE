@@ -17,6 +17,7 @@ class project extends resource {
 	private $scm_url = "";
 	private $repo_url = "";
 	private $hidden;
+	private $openness_rating;
 	
 	const ROLE_ANY = 0;
 	const ROLE_USER = 1;
@@ -36,6 +37,7 @@ class project extends resource {
 		$this->description = stripslashes($p[0]['description']);
 		if(isset($p[0]['image'])) $this->image = $p[0]['image'];
 		$this->category = new category((int)$p[0]['category_id']);
+		$this->openness_rating = $p[0]['openness_rating'];
 		
 		$this->hidden = (BOOL) $p[0]['hidden'];
 		
@@ -281,25 +283,9 @@ class project extends resource {
 		$this->hidden = (BOOL)$h;
 	}
 	
-	public function getPromotionStatus(){
-		if(!$this->incubated) return false;
-		
-		//if($this->licence != "" && $this->description != "")
-		
-		return false;
-	}
-	
 	public function getPromotionPercentage(){
-		$or = new opennessrating($this->id);
-		return (int)$or->getScore();
+		return (int)$this->openness_rating;
 		
-		/*$criteria = array($this->url, $this->license, $this->community_url, $this->scm_url, $this->repo_url);
-		$step = ceil(100 / count($criteria));
-		$progress = 0;
-		foreach($criteria as $c){
-			if($c != "") $progress += $step;
-		}
-		return ceil($progress);*/
 	}
 	
 	public function setIdea(idea $idea){

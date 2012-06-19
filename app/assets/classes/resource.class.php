@@ -159,60 +159,6 @@ abstract class resource extends dbo {
 
 		return $votes[0]['count'];
 	}
-	
-	private function getORating(){
-		// First, see if we have a cached version (this is an expensive routine to run otherwise)
-		
-		$objectCache = new cache(get_class($this) . $this->getId(), cache::REQUEST_DATA, resource::CACHE_TIMEOUT);
-		
-		if($objectCache->has()){
-			$cachedValue = $objectCache->get();
-			if(is_object($cachedValue) && get_class($cachedValue) == "openness") $this->setOpennessRating($cachedValue);
-		} else {
-		
-			$service = Zend_Gdata_Spreadsheets::AUTH_SERVICE_NAME;
-			$client = Zend_Gdata_ClientLogin::getHttpClient(GDATA_USERNAME, GDATA_PASS, $service);
-			$spreadsheetService = new Zend_Gdata_Spreadsheets($client);
-			
-			$query = new Zend_Gdata_Spreadsheets_ListQuery();
-			$query->setSpreadsheetKey("tSS03UB1fQi6HgSZo6PWiMg");
-			$query->setWorksheetId("od2");
-			$query->setReverse('true');
-			$query->setSpreadsheetQuery('_cn6ca = "' . $this->getName() . '"');
-			
-			$listFeed = $spreadsheetService->getListFeed($query);
-			
-			if(count($listFeed->entries) > 0){
-			
-				$rowData = $listFeed->entries[0]->getCustom();
-				
-				$or = new openness();
-				
-				foreach($rowData as $customEntry) {
-					$or->set($customEntry->getColumnName(), $customEntry->getText());
-				}
-				
-				$this->setOpennessRating($or);
-			
-			} else {
-				$this->openness = false;
-				$or = "";
-			}
-			
-			$objectCache->put($or);
-		}
-	}
-	
-	private function setOpennessRating(openness $or){
-		$this->openness = $or;
-	}
-	
-	public function getOpennessRating(){
-		if($this->openness == null) $this->getORating();
-		return $this->openness;
-	}
-
-
 }
 
 ?>

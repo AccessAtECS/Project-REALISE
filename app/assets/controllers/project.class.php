@@ -370,17 +370,13 @@ class controller_project extends controller {
 			$this->viewport()->replace('licenses', util::getLicense($this->m_currentProject->getLicense()));
 	
 			// Openness ratings
-			$or = $this->m_currentProject->getOpennessRating();
+			$or = $this->m_currentProject->getPromotionPercentage();
 			
 			if($or == null){
 				$this->viewport()->replace("openness-progress", new view('frag.noRating'));
 			} else {
-				$bar = new view();
-				$bar->append("Openness Rating:");
-				$bar->append(new view("frag.pbar"));
-				$bar->replace("percentage", $or->openness);
-				$this->viewport()->replace("openness-progress", $bar);
-			}	
+				$this->viewport()->replace('percentage', $this->m_currentProject->getPromotionPercentage());
+			}
 	
 			$t = new view();
 			$t->set("{tag} ");

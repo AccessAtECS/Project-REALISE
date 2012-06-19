@@ -436,7 +436,7 @@ class controller_incubator extends controller {
 			
 			$this->superview()->replace("sideContent",  $side);
 
-			if($this->m_currentProject->getPromotionPercentage() > 75){
+			if($this->m_currentProject->getPromotionPercentage() > SYS_OPENNESS_THRESHOLD){
 				$this->viewport()->replace('promotedisabled', '');
 			} else {
 				$this->viewport()->replace('promotedisabled', ' disabled="disabled"');
@@ -491,7 +491,7 @@ class controller_incubator extends controller {
 		$this->m_currentProject = new project((int)$id);
 		
 		try {
-			if($this->m_currentProject->getPromotionPercentage() == 100){
+			if($this->m_currentProject->getPromotionPercentage() >= SYS_OPENNESS_THRESHOLD){
 			
 				$this->m_currentProject->setIncubated(0);
 				$this->m_currentProject->commit();
