@@ -3,7 +3,8 @@
 class controller_opennessrating extends controller {
 
 	private $m_user;
-
+	private $m_currentProject;
+	
 	public function renderViewport() {
 		
 		$this->m_user = $this->objects("user");
@@ -34,10 +35,10 @@ class controller_opennessrating extends controller {
 	}
 		
 	protected function opennessIndex(){		
-		$OR = new opennessRating();
-		
 		$id = isset($_GET['id']) ? $_GET['id'] : "";
-		$id = $OR->testProjectId($id);
+		$this->auth($id);
+		$OR = new opennessRating();
+
 		$this->superview()->replace("sidecontent_pageid", $id);
 		
 		$openness = $OR->getOpennessRating($id);
@@ -50,9 +51,10 @@ class controller_opennessrating extends controller {
 	}
 	
 	protected function opennessInfo(){
-		$OR = new opennessRating(); 
-	
 		$id = isset($_GET['id']) ? $_GET['id'] : "";
+		$this->auth($id);
+		$OR = new opennessRating();
+
 		$id = $OR->testProjectId($id);
 		$this->superview()->replace("sidecontent_pageid", $id);
 		
@@ -71,9 +73,10 @@ class controller_opennessrating extends controller {
 	}
 	
 	protected function opennessLegal(){
-		$OR = new opennessRating(); 
-	
 		$id = isset($_GET['id']) ? $_GET['id'] : "";
+		$this->auth($id);
+		$OR = new opennessRating();
+
 		$id = $OR->testProjectId($id);
 		$this->superview()->replace("sidecontent_pageid", $id);
 		
@@ -92,9 +95,10 @@ class controller_opennessrating extends controller {
 	}	
 	
 	protected function opennessStandards(){
-		$OR = new opennessRating(); 
-	
 		$id = isset($_GET['id']) ? $_GET['id'] : "";
+		$this->auth($id);
+		$OR = new opennessRating();
+
 		$id = $OR->testProjectId($id);
 		$this->superview()->replace("sidecontent_pageid", $id);
 		
@@ -113,9 +117,10 @@ class controller_opennessrating extends controller {
 	}	
 	
 	protected function opennessKnowledge(){
-		$OR = new opennessRating(); 
-		
 		$id = isset($_GET['id']) ? $_GET['id'] : "";
+		$this->auth($id);
+		$OR = new opennessRating();
+
 		$id = $OR->testProjectId($id);
 		$this->superview()->replace("sidecontent_pageid", $id);
 		
@@ -134,9 +139,10 @@ class controller_opennessrating extends controller {
 	}
 	
 	protected function opennessGovernance(){
-		$OR = new opennessRating(); 
-	
 		$id = isset($_GET['id']) ? $_GET['id'] : "";
+		$this->auth($id);
+		$OR = new opennessRating();
+
 		$id = $OR->testProjectId($id);
 		$this->superview()->replace("sidecontent_pageid", $id);
 		
@@ -155,9 +161,10 @@ class controller_opennessrating extends controller {
 	}
 	
 	protected function opennessMarket(){
-		$OR = new opennessRating(); 
-		
 		$id = isset($_GET['id']) ? $_GET['id'] : "";
+		$this->auth($id);
+		$OR = new opennessRating();
+
 		$id = $$OR->testProjectId($id);
 		$this->superview()->replace("sidecontent_pageid", $id);
 		
@@ -176,9 +183,10 @@ class controller_opennessrating extends controller {
 	}
 	
 	protected function opennessEnd(){
-		$OR = new opennessRating(); 
-	
 		$id = isset($_GET['id']) ? $_GET['id'] : "";
+		$this->auth($id);
+		$OR = new opennessRating();
+
 		$id = $OR->testProjectId($id);
 		$this->superview()->replace("sidecontent_pageid", $id);
 		
@@ -391,6 +399,17 @@ class controller_opennessrating extends controller {
 		$OR = new opennessRating(); 
 		$redirectURL = $OR->process("market", "end");
 		$this->redirect($redirectURL);
+	}
+	
+	private function auth($id){
+		$this->m_currentProject = new project((int)$id);
+		
+		if( !$this->m_user->getEnrollment($this->m_currentProject, resource::MEMBERSHIP_ADMIN) ){
+			echo("You do not have permission to access the openness rating of this project");
+			exit;			
+		}
+		
+		$OR = new opennessRating();
 	}
 }
 
