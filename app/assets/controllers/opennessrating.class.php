@@ -8,7 +8,7 @@ class controller_opennessrating extends controller {
 		
 		$this->m_user = $this->objects("user");
 		
-		// Select the tab	
+		// Select the tab
 		util::selectTab($this->superview(), "");	
 
 		util::userBox($this->m_user, $this->superView());
@@ -34,14 +34,15 @@ class controller_opennessrating extends controller {
 	}
 		
 	protected function opennessIndex(){		
+		$OR = new opennessRating();
+		
 		$id = isset($_GET['id']) ? $_GET['id'] : "";
-		$id = $this->testProjectId($id);
+		$id = $OR->testProjectId($id);
 		$this->superview()->replace("sidecontent_pageid", $id);
 		
-		$openness = $this->getOpennessRating($id);
-		$colour = $this->ratingColour($openness);
+		$openness = $OR->getOpennessRating($id);
 		$this->superview()->replace("openness-rating", $openness);
-		$this->superview()->replace("alert-colour", $colour);
+		$this->superview()->replace("alert-colour", $OR->ratingColour($openness));
 		
 		$this->pageName = "- Openness Rating";
 		$this->setViewport(new view("openness"));		
@@ -49,14 +50,15 @@ class controller_opennessrating extends controller {
 	}
 	
 	protected function opennessInfo(){
+		$OR = new opennessRating(); 
+	
 		$id = isset($_GET['id']) ? $_GET['id'] : "";
-		$id = $this->testProjectId($id);
+		$id = $OR->testProjectId($id);
 		$this->superview()->replace("sidecontent_pageid", $id);
 		
-		$openness = $this->getOpennessRating($id);
-		$colour = $this->ratingColour($openness);
+		$openness = $OR->getOpennessRating($id);
 		$this->superview()->replace("openness-rating", $openness);
-		$this->superview()->replace("alert-colour", $colour);
+		$this->superview()->replace("alert-colour", $OR->ratingColour($openness));
 		
 		$pageName = "Openness Rating - Project Information";
 		
@@ -64,19 +66,20 @@ class controller_opennessrating extends controller {
 		$this->setViewport(new view("openness-info"));
 		$this->viewport()->replace("project_id", $id);	
 		$this->viewport()->replace("page-name", $pageName);
-		$this->viewport()->append($this->helpJS());
+		$this->viewport()->append($OR->helpJS());
 		$this->createQuestions($id, "info");
 	}
 	
 	protected function opennessLegal(){
+		$OR = new opennessRating(); 
+	
 		$id = isset($_GET['id']) ? $_GET['id'] : "";
-		$id = $this->testProjectId($id);
+		$id = $OR->testProjectId($id);
 		$this->superview()->replace("sidecontent_pageid", $id);
 		
-		$openness = $this->getOpennessRating($id);
-		$colour = $this->ratingColour($openness);
+		$openness = $OR->getOpennessRating($id);
 		$this->superview()->replace("openness-rating", $openness);
-		$this->superview()->replace("alert-colour", $colour);
+		$this->superview()->replace("alert-colour", $OR->ratingColour($openness));
 		
 		$pageName = "Openness Rating - Legal";
 		
@@ -84,19 +87,20 @@ class controller_opennessrating extends controller {
 		$this->setViewport(new view("openness-legal"));
 		$this->viewport()->replace("project_id", $id);
 		$this->viewport()->replace("page-name", $pageName);
-		$this->viewport()->append($this->helpJS());
+		$this->viewport()->append($OR->helpJS());
 		$this->createQuestions($id, "legal");
 	}	
 	
 	protected function opennessStandards(){
+		$OR = new opennessRating(); 
+	
 		$id = isset($_GET['id']) ? $_GET['id'] : "";
-		$id = $this->testProjectId($id);
+		$id = $OR->testProjectId($id);
 		$this->superview()->replace("sidecontent_pageid", $id);
 		
-		$openness = $this->getOpennessRating($id);
-		$colour = $this->ratingColour($openness);
+		$openness = $OR->getOpennessRating($id);
 		$this->superview()->replace("openness-rating", $openness);
-		$this->superview()->replace("alert-colour", $colour);
+		$this->superview()->replace("alert-colour", $OR->ratingColour($openness));
 		
 		$pageName = "Openness Rating - Data Formats and Standards";
 		
@@ -104,19 +108,20 @@ class controller_opennessrating extends controller {
 		$this->setViewport(new view("openness-standards"));
 		$this->viewport()->replace("project_id", $id);
 		$this->viewport()->replace("page-name", $pageName);
-		$this->viewport()->append($this->helpJS());
+		$this->viewport()->append($OR->helpJS());
 		$this->createQuestions($id, "standards");
 	}	
 	
 	protected function opennessKnowledge(){
+		$OR = new opennessRating(); 
+		
 		$id = isset($_GET['id']) ? $_GET['id'] : "";
-		$id = $this->testProjectId($id);
+		$id = $OR->testProjectId($id);
 		$this->superview()->replace("sidecontent_pageid", $id);
 		
-		$openness = $this->getOpennessRating($id);
-		$colour = $this->ratingColour($openness);
+		$openness = $OR->getOpennessRating($id);
 		$this->superview()->replace("openness-rating", $openness);
-		$this->superview()->replace("alert-colour", $colour);
+		$this->superview()->replace("alert-colour", $OR->ratingColour($openness));
 		
 		$pageName = "Openness Rating - Knowledge";
 		
@@ -124,19 +129,20 @@ class controller_opennessrating extends controller {
 		$this->setViewport(new view("openness-knowledge"));
 		$this->viewport()->replace("project_id", $id);
 		$this->viewport()->replace("page-name", $pageName);
-		$this->viewport()->append($this->helpJS());
+		$this->viewport()->append($OR->helpJS());
 		$this->createQuestions($id, "knowledge");
 	}
 	
 	protected function opennessGovernance(){
+		$OR = new opennessRating(); 
+	
 		$id = isset($_GET['id']) ? $_GET['id'] : "";
-		$id = $this->testProjectId($id);
+		$id = $OR->testProjectId($id);
 		$this->superview()->replace("sidecontent_pageid", $id);
 		
-		$openness = $this->getOpennessRating($id);
-		$colour = $this->ratingColour($openness);
+		$openness = $OR->getOpennessRating($id);
 		$this->superview()->replace("openness-rating", $openness);
-		$this->superview()->replace("alert-colour", $colour);
+		$this->superview()->replace("alert-colour", $OR->ratingColour($openness));
 		
 		$pageName = "Openness Rating - Governance";
 		
@@ -144,19 +150,20 @@ class controller_opennessrating extends controller {
 		$this->setViewport(new view("openness-governance"));
 		$this->viewport()->replace("project_id", $id);
 		$this->viewport()->replace("page-name", $pageName);
-		$this->viewport()->append($this->helpJS());
+		$this->viewport()->append($OR->helpJS());
 		$this->createQuestions($id, "governance");
 	}
 	
 	protected function opennessMarket(){
+		$OR = new opennessRating(); 
+		
 		$id = isset($_GET['id']) ? $_GET['id'] : "";
-		$id = $this->testProjectId($id);
+		$id = $$OR->testProjectId($id);
 		$this->superview()->replace("sidecontent_pageid", $id);
 		
-		$openness = $this->getOpennessRating($id);
-		$colour = $this->ratingColour($openness);
+		$openness = $OR->getOpennessRating($id);
 		$this->superview()->replace("openness-rating", $openness);
-		$this->superview()->replace("alert-colour", $colour);
+		$this->superview()->replace("alert-colour", $OR->ratingColour($openness));
 		
 		$pageName = "Openness Rating - Market";
 		
@@ -164,35 +171,35 @@ class controller_opennessrating extends controller {
 		$this->setViewport(new view("openness-market"));
 		$this->viewport()->replace("project_id", $id);
 		$this->viewport()->replace("page-name", $pageName);
-		$this->viewport()->append($this->helpJS());
+		$this->viewport()->append($$OR->helpJS());
 		$this->createQuestions($id, "market");
 	}
 	
-	protected function opennessEnd(){		
+	protected function opennessEnd(){
+		$OR = new opennessRating(); 
+	
 		$id = isset($_GET['id']) ? $_GET['id'] : "";
-		$id = $this->testProjectId($id);
+		$id = $OR->testProjectId($id);
 		$this->superview()->replace("sidecontent_pageid", $id);
 		
-		$openness = $this->getOpennessRating($id);
-		$colour = $this->ratingColour($openness);
+		$openness = $OR->getOpennessRating($id);
 		$this->superview()->replace("openness-rating", $openness);
-		$this->superview()->replace("alert-colour", $colour);
+		$this->superview()->replace("alert-colour", $OR->ratingColour($openness));
 		
 		$pageName = "Openness Rating - Complete";
 		
 		$this->pageName = "- ".$pageName;
 		$this->setViewport(new view("openness-end"));
 		$this->viewport()->replace("id", $id);
-		
-		$openness = $this->getOpennessRating($id);
+
 		$colour = $this->ratingColour($openness);
 		$this->viewport()->replace("openness-rating", $openness);
 		$this->viewport()->replace("alert-colour", $colour);
 	}
 	
 	protected function createQuestions($project_id, $section){
-	
-		$questions = $this->getQuestions($section);
+		$OR = new opennessRating(); 
+		$questions = $OR->getQuestions($section);
 		
 		$q = new view();
 		
@@ -207,10 +214,10 @@ class controller_opennessrating extends controller {
 						$template->replace("sub_question", $question['sub_question']);
 						$template->replace("section", $question['section']);
 						$template->replace("question_id", $question['id']);
-						$help = $this->helpText($question['id'], $question['help']);
+						$help = $OR->helpText($question['id'], $question['help']);
 						$template->replace("info", $help);
 
-						$answers = $this->getAnswers($question['id']);
+						$answers = $OR->getAnswers($question['id']);
 						$a = new view();
 						
 						if($question['has_dont_know_answer'] == "1"){
@@ -226,7 +233,7 @@ class controller_opennessrating extends controller {
 							$answerFrag->replace("answer_id", $answer['id']);
 							
 							//has answer been selected before
-							$value = $this->viewAnswer($project_id, $question['id']);
+							$value = $OR->viewAnswer($project_id, $question['id']);
 							
 							if($answer['id'] == $value[0]){
 								$answerFrag->replace("select-".$value[0], "selected");
@@ -245,10 +252,10 @@ class controller_opennessrating extends controller {
 							$template->replace("sub_question", $question['sub_question']);
 							$template->replace("section", $question['section']);
 							$template->replace("question_id", $question['id']);
-							$help = $this->helpText($question['id'], $question['help']);
+							$help = $OR->helpText($question['id'], $question['help']);
 							$template->replace("info", $help);
 
-							$value = $this->viewAnswer($project_id, $question['id']);
+							$value = $OR->viewAnswer($project_id, $question['id']);
 							
 							if(empty($value)){
 								$template->replace("value", "");
@@ -268,10 +275,10 @@ class controller_opennessrating extends controller {
 						$template->replace("sub_question", $question['sub_question']);
 						$template->replace("section", $question['section']);
 						$template->replace("question_id", $question['id']);
-						$help = $this->helpText($question['id'], $question['help']);
+						$help = $OR->helpText($question['id'], $question['help']);
 						$template->replace("info", $help);
 
-						$answers = $this->getAnswers($question['id']);
+						$answers = $OR->getAnswers($question['id']);
 						$a = new view();
 					
 						foreach($answers[0] as $answer){
@@ -281,7 +288,7 @@ class controller_opennessrating extends controller {
 							$answerFrag->replace("section", $question['section']);
 							$answerFrag->replace("question_id", $question['id']);
 							
-							$value = $this->viewAnswer($project_id, $question['id']);
+							$value = $OR->viewAnswer($project_id, $question['id']);
 							
 							if(empty($value)){}
 							else{
@@ -303,10 +310,10 @@ class controller_opennessrating extends controller {
 						$template->replace("question", $question['question']);
 						$template->replace("sub_question", $question['sub_question']);
 						$template->replace("question_id", $question['id']);
-						$help = $this->helpText($question['id'], $question['help']);
+						$help = $OR->helpText($question['id'], $question['help']);
 						$template->replace("info", $help);
 
-						$answers = $this->getAnswers($question['id']);
+						$answers = $OR->getAnswers($question['id']);
 						$a = new view();
 					
 						foreach($answers[0] as $answer){
@@ -319,7 +326,7 @@ class controller_opennessrating extends controller {
 							$template->replace("answer_id",$answer['id']);
 							$template->replace("answer".$i,$i);
 							
-							$value = $this->viewAnswer($project_id, $question['id']);
+							$value = $OR->viewAnswer($project_id, $question['id']);
 							
 							if(empty($value)){}
 							else{
@@ -351,242 +358,40 @@ class controller_opennessrating extends controller {
 	}
 	
 	protected function infoProcess(){
-		$this->process("info", "legal");
+		$OR = new opennessRating(); 
+		$redirectURL = $OR->process("info", "legal");
+		$this->redirect($redirectURL);
 	}
 
 	protected function legalProcess(){
-		$this->process("legal", "standards");
+		$OR = new opennessRating(); 
+		$redirectURL = $OR->process("legal", "standards");
+		$this->redirect($redirectURL);
 	}
 	
 	protected function standardsProcess(){
-		$this->process("standards", "knowledge");
+		$OR = new opennessRating(); 
+		$redirectURL = $OR->process("standards", "knowledge");
+		$this->redirect($redirectURL);
 	}
 	
 	protected function knowledgeProcess(){
-		$this->process("knowledge", "governance");
+		$OR = new opennessRating(); 
+		$redirectURL = $OR->process("knowledge", "governance");
+		$this->redirect($redirectURL);
 	}
 	
 	protected function governanceProcess(){
-		$this->process("governance", "market");
+		$OR = new opennessRating(); 
+		$redirectURL = $OR->process("governance", "market");
+		$this->redirect($redirectURL);
 	}
 	
 	protected function marketProcess(){
-		$this->process("market", "end");
+		$OR = new opennessRating(); 
+		$redirectURL = $OR->process("market", "end");
+		$this->redirect($redirectURL);
 	}
-	
-	protected function process($section, $next_section){
-		$project_id = $this->getProjectId();
-		$project_id = $this->testProjectId($project_id);
-		$q = $this->getQuestionId($section);
-		// $question_id = first question for that section
-		//questions are assumed to be in id order
-		$question_id = $q[0][0]['id'];
-
-		foreach($q[0] as $question){
-		
-			$value = $_POST[$section."-".$question_id];
-			
-			//does answer for this project exist - if so delete it (indicated by true/false field)
-			$this->doesProjectAnswerExist($project_id, $question['id'], TRUE);
-			//then create new answer
-			$this->createAnswer($question_id, $project_id, $value);	
-			$question_id++;
-		}
-		
-		if($next_section == "end"){
-			$this->redirect("/opennessrating/completed/?id=".$project_id);
-		}
-		else{
-			$this->redirect("/opennessrating/".$next_section."/?id=".$project_id);
-		}
-		
-		$this->calculateOpenness($project_id);
-	}	
-	
-	protected function getQuestions($section){
-		$this->db = db::singleton();
-		$result = $this->db->select(array("*"), "open_question", array(array("", "section", "=", $section)))->run();
-		return $result;
-	}
-
-	protected function getAnswers($question_id){
-		$this->db = db::singleton();
-		$result = $this->db->select(array("*"), "open_answer", array(array("", "open_question_id", "=", $question_id)))->run();
-		return $result;
-	}		
-	
-	protected function getQuestionId($section){
-		$this->db = db::singleton();
-		$result = $this->db->select(array("id"), "open_question", array(array("", "section", "=", $section)))->run();
-		return $result;
-	}
-	
-	protected function getProjectId(){
-		return $_POST['project_id'];
-	}
-	
-	protected function testProjectId($id){
-		$this->db = db::singleton();
-		$result = $this->db->select(array("id"), "project", array(array("", "id", "=", $id)))->run();
-		if($id == NULL OR empty($result)){
-			echo "Invalid project ID.";
-			exit;
-		}
-		else {
-			return $id;
-		}
-	}
-	
-	protected function createAnswer($question_id, $project_id, $value = NULL){
-		$this->db = db::singleton();
-		$result = $this->db->select(array("type"), "open_question", array(array("", "id", "=", $question_id)))->run();
-
-		try{
-			switch ( $result[0][0]['type']){
-				case 'drop':
-				case 'text':
-				case 'scale':
-					$result = $this->db->insert(array("question_id" => $question_id, "project_id" => $project_id, "value" => $value), "open_project_has_answer")->run();
-				break;
-				
-				case 'multi-select':
-					foreach($value as $v){
-						$result = $this->db->insert(array("question_id" => $question_id, "project_id" => $project_id, "value" => $v), "open_project_has_answer")->run();
-					}
-				break;
-
-				}
-		} catch (Exception $e){
-			echo "Unable to create answers in database. Please try again later.";
-			exit;
-		}
-	}
-	
-	protected function viewAnswer($project_id, $question_id){	
-		$this->db = db::singleton();
-		$result = $this->db->select(array("value"), "open_project_has_answer", array(array("", "project_id", "=", $project_id)), "AND question_id = ".$question_id)->run();
-	
-		$a = array();		
-		if(empty($result)){}
-		else{
-			foreach($result[0] as $r){
-				array_push($a, $r['value']);
-			}
-			return $a;
-		}
-	}
-	
-	protected function doesProjectAnswerExist($project_id, $question_id, $delete){
-		$this->db = db::singleton();
-		$result = $this->db->select(array("id"), "open_project_has_answer", array(array("", "project_id", "=", $project_id)), "AND question_id = ".$question_id)->run();		
-		
-		if(empty($result)){}
-		else {
-			$project_answer_id = $result[0][0]['id'];
-		
-			if($delete == TRUE){
-				$this->deleteProjectAnswer($project_answer_id);
-			}
-		}
-	}
-	
-	protected function deleteProjectAnswer($project_answer_id){
-		$this->db = db::singleton();
-		try{
-			$result = $this->db->delete("open_project_has_answer", array(array("","id",$project_answer_id)))->run();
-		}catch(Exception $e){
-			echo "Database error. Please try again later.";
-			exit;
-		}
-	}
-	
-	protected function helpText($questionID, $text){	
-		$icon = '<a href="#" class="info-toggle"><img src="/presentation/images/information.png" /></a>';
-		$close = '<button type="button" class="close" data-dismiss="alert">x</button>';
-
-		$box = '<div class="alert alert-info" id="help-text-'.$questionID.'" style="display: none;">'.$text.'</div>';
-		return $icon.$box;
-	}
-	
-	protected function calculateOpenness($project_id){
-		//dont know value
-		$dn = 0;
-		$score = 0;
-		
-		$max_score = $this->db->select(array("SUM(max_score) AS max_score"), "open_question")->run();	
-		$max_score = $max_score[0][0]['max_score'];
-		
-		$result = $this->db->single("SELECT open_question.id, open_question.max_score, open_project_has_answer.value, open_answer.value AS score FROM open_question
-						LEFT JOIN open_project_has_answer ON (open_question.id = open_project_has_answer.question_id) 
-						LEFT JOIN open_answer ON (open_answer.id = open_project_has_answer.value) 
-						WHERE open_project_has_answer.project_id = ".$project_id);
-		
-		foreach($result as $r){
-			$qs = $r['score'];
-			$qms = $r['max_score'];
-		
-			if($qs == "dn"){
-				$score += $dn;
-			}
-			else if($qs >= $qms){
-				$score += $qms;
-			}
-			else if($qs < $qms){
-				$score += $qs;
-			}
-		}
-		
-		//calcualate percentagt score
-		$rating = ($score/$max_score)*100;
-
-		//insert openness rating
-		try{
-			$result = $this->db->update(array("openness_rating" => $rating), "project", array(array("", "id", $project_id)))->run();
-		}catch(Exception $e){
-			echo "Database error. Please try again later.";
-			exit;
-		}
-
-	}
-	
-	protected function getOpennessRating($project_id){
-		$result = $this->db->select(array("openness_rating"), "project", array(array("", "id", "=", $project_id)))->run();
-		$result = $result[0][0]['openness_rating'];
-		
-		if($result == NULL){
-			$result = 0;
-		}
-		return $result."%";
-	}
-	
-	protected function ratingColour($rating){
-		$colour = "";
-		$OR_pass = SYS_OPENNESS_THRESHOLD;
-		$OR_ok = 30;
-		
-		if($rating >= $OR_pass){
-			$colour = "alert-success";
-		}
-		else if($rating < $OR_pass && $rating > $OR_ok){
-			$colour = "alert-block";
-		}
-		else if($rating < $OR_ok){
-			$colour = "alert-error";
-		}
-		
-		return $colour;
-	}
-
-	protected function helpJS(){
-		$js = '
-		<script type="text/javascript">$(".info-toggle").click(function () {
-			$(this).parentsUntil("div.question").parent().find(".alert").toggle();
-			});
-		</script>';
-		
-		return $js;
-	}
-		
 }
 
 ?>
