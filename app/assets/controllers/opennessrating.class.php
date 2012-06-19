@@ -42,7 +42,7 @@ class controller_opennessrating extends controller {
 		$this->superview()->replace("sidecontent_pageid", $id);
 		
 		$openness = $OR->getOpennessRating($id);
-		$this->superview()->replace("openness-rating", $openness);
+		$this->superview()->replace("openness-report", $openness);
 		$this->superview()->replace("alert-colour", $OR->ratingColour($openness));
 		
 		$this->pageName = "- Openness Rating";
@@ -69,7 +69,8 @@ class controller_opennessrating extends controller {
 		$this->viewport()->replace("project_id", $id);	
 		$this->viewport()->replace("page-name", $pageName);
 		$this->viewport()->append($OR->helpJS());
-		$this->createQuestions($id, "info");
+		$q = $OR->createQuestions($id, "info");
+		$this->viewport()->replace("questions", $q);
 	}
 	
 	protected function opennessLegal(){
@@ -91,7 +92,8 @@ class controller_opennessrating extends controller {
 		$this->viewport()->replace("project_id", $id);
 		$this->viewport()->replace("page-name", $pageName);
 		$this->viewport()->append($OR->helpJS());
-		$this->createQuestions($id, "legal");
+		$q = $OR->createQuestions($id, "legal");
+		$this->viewport()->replace("questions", $q);
 	}	
 	
 	protected function opennessStandards(){
@@ -113,7 +115,8 @@ class controller_opennessrating extends controller {
 		$this->viewport()->replace("project_id", $id);
 		$this->viewport()->replace("page-name", $pageName);
 		$this->viewport()->append($OR->helpJS());
-		$this->createQuestions($id, "standards");
+		$q = $OR->createQuestions($id, "standards");
+		$this->viewport()->replace("questions", $q);
 	}	
 	
 	protected function opennessKnowledge(){
@@ -135,7 +138,8 @@ class controller_opennessrating extends controller {
 		$this->viewport()->replace("project_id", $id);
 		$this->viewport()->replace("page-name", $pageName);
 		$this->viewport()->append($OR->helpJS());
-		$this->createQuestions($id, "knowledge");
+		$q = $OR->createQuestions($id, "knowledge");
+		$this->viewport()->replace("questions", $q);
 	}
 	
 	protected function opennessGovernance(){
@@ -157,7 +161,8 @@ class controller_opennessrating extends controller {
 		$this->viewport()->replace("project_id", $id);
 		$this->viewport()->replace("page-name", $pageName);
 		$this->viewport()->append($OR->helpJS());
-		$this->createQuestions($id, "governance");
+		$q = $OR->createQuestions($id, "governance");
+		$this->viewport()->replace("questions", $q);
 	}
 	
 	protected function opennessMarket(){
@@ -165,7 +170,7 @@ class controller_opennessrating extends controller {
 		$this->auth($id);
 		$OR = new opennessRating();
 
-		$id = $$OR->testProjectId($id);
+		$id = $OR->testProjectId($id);
 		$this->superview()->replace("sidecontent_pageid", $id);
 		
 		$openness = $OR->getOpennessRating($id);
@@ -178,8 +183,9 @@ class controller_opennessrating extends controller {
 		$this->setViewport(new view("openness-market"));
 		$this->viewport()->replace("project_id", $id);
 		$this->viewport()->replace("page-name", $pageName);
-		$this->viewport()->append($$OR->helpJS());
-		$this->createQuestions($id, "market");
+		$this->viewport()->append($OR->helpJS());
+		$q = $OR->createQuestions($id, "market");
+		$this->viewport()->replace("questions", $q);
 	}
 	
 	protected function opennessEnd(){
@@ -204,167 +210,7 @@ class controller_opennessrating extends controller {
 		$this->viewport()->replace("openness-rating", $openness);
 		$this->viewport()->replace("alert-colour", $colour);
 	}
-	
-	protected function createQuestions($project_id, $section){
-		$OR = new opennessRating(); 
-		$questions = $OR->getQuestions($section);
 		
-		$q = new view();
-		
-		try{
-			foreach($questions[0] as $question){	
-			
-				switch ($question['type']){
-				
-					case 'drop':
-						$template = new view('frag.opennessQuestionDrop');
-						$template->replace("question", $question['question']);
-						$template->replace("sub_question", $question['sub_question']);
-						$template->replace("section", $question['section']);
-						$template->replace("question_id", $question['id']);
-						$help = $OR->helpText($question['id'], $question['help']);
-						$template->replace("info", $help);
-
-						$answers = $OR->getAnswers($question['id']);
-						$a = new view();
-						
-						if($question['has_dont_know_answer'] == "1"){
-							$answerDN = new view('frag.opennessAnswerDrop');
-							$answerDN->replace("answer", "Don't know");
-							$answerDN->replace("answer_id", "dn");
-							$a->append($answerDN->get());
-						}
-					
-						foreach($answers[0] as $answer){
-							$answerFrag = new view('frag.opennessAnswerDrop');
-							$answerFrag->replace("answer", $answer['answer']);
-							$answerFrag->replace("answer_id", $answer['id']);
-							
-							//has answer been selected before
-							$value = $OR->viewAnswer($project_id, $question['id']);
-							
-							if($answer['id'] == $value[0]){
-								$answerFrag->replace("select-".$value[0], "selected");
-							}
-							
-							$a->append($answerFrag->get());
-						}
-						$template->replace("options", $a);						
-					break;
-					
-					case 'text':
-						foreach($questions[0] as $question){
-						
-							$template = new view('frag.opennessQuestionText');
-							$template->replace("question", $question['question']);
-							$template->replace("sub_question", $question['sub_question']);
-							$template->replace("section", $question['section']);
-							$template->replace("question_id", $question['id']);
-							$help = $OR->helpText($question['id'], $question['help']);
-							$template->replace("info", $help);
-
-							$value = $OR->viewAnswer($project_id, $question['id']);
-							
-							if(empty($value)){
-								$template->replace("value", "");
-							}
-							else {
-								$template->replace("value", $value[0]);
-							}							
-							$q->append($template->get());
-						}
-
-						$this->viewport()->replace("questions", $q);
-					break;
-					
-					case 'multi-select':
-						$template = new view('frag.opennessQuestionMultiSelect');
-						$template->replace("question", $question['question']);
-						$template->replace("sub_question", $question['sub_question']);
-						$template->replace("section", $question['section']);
-						$template->replace("question_id", $question['id']);
-						$help = $OR->helpText($question['id'], $question['help']);
-						$template->replace("info", $help);
-
-						$answers = $OR->getAnswers($question['id']);
-						$a = new view();
-					
-						foreach($answers[0] as $answer){
-							$answerFrag = new view('frag.opennessAnswerMultiSelect');
-							$answerFrag->replace("answer", $answer['answer']);
-							$answerFrag->replace("answer_id", $answer['id']);
-							$answerFrag->replace("section", $question['section']);
-							$answerFrag->replace("question_id", $question['id']);
-							
-							$value = $OR->viewAnswer($project_id, $question['id']);
-							
-							if(empty($value)){}
-							else{
-								if(in_array($answer['id'], $value)){
-									$answerFrag->replace("checked", 'checked="yes"');
-								}
-							}	
-							$a->append($answerFrag->get());
-							
-						}					
-						$template->replace("options", $a);
-						
-					break;
-					
-					case 'scale':
-						$i = 0;
-						
-						$template = new view('frag.opennessQuestionScale');
-						$template->replace("question", $question['question']);
-						$template->replace("sub_question", $question['sub_question']);
-						$template->replace("question_id", $question['id']);
-						$help = $OR->helpText($question['id'], $question['help']);
-						$template->replace("info", $help);
-
-						$answers = $OR->getAnswers($question['id']);
-						$a = new view();
-					
-						foreach($answers[0] as $answer){
-							$answerFrag = new view('frag.opennessAnswerScale');
-							$answerFrag->replace("answer", $answer['answer']);
-							$answerFrag->replace("answer_id", $answer['id']);
-							$answerFrag->replace("section", $question['section']);
-							$answerFrag->replace("number", $i);
-							$answerFrag->replace("question_id", $question['id']);
-							$template->replace("answer_id",$answer['id']);
-							$template->replace("answer".$i,$i);
-							
-							$value = $OR->viewAnswer($project_id, $question['id']);
-							
-							if(empty($value)){}
-							else{
-								if(in_array($answer['id'], $value)){
-									$answerFrag->replace("checked", 'checked="yes"');
-								}
-							}								
-							
-							$a->append($answerFrag->get());
-							$i++;
-						}
-						$template->replace("answers", $a);
-						$i = 0;
-					break;
-					
-					default:
-						echo "default question";
-				}
-				
-				$q->append($template->get());
-			}
-
-			$this->viewport()->replace("questions", $q);	
-			
-		} catch(Exception $e){
-			echo "Unable to render openness rating question list. Please try again later.";
-			exit;
-		}		
-	}
-	
 	protected function infoProcess(){
 		$OR = new opennessRating(); 
 		$redirectURL = $OR->process("info", "legal");

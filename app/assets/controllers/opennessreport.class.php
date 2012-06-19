@@ -27,10 +27,6 @@ class controller_opennessreport extends controller {
 	}
 
 	protected function reportIndex(){
-		
-	}
-	
-	protected function reportInfo(){
 		$id = isset($_GET['id']) ? $_GET['id'] : "";
 		$OR = new opennessRating();
 		
@@ -41,33 +37,156 @@ class controller_opennessreport extends controller {
 		$this->superview()->replace("openness-rating", $openness);
 		$this->superview()->replace("alert-colour", $OR->ratingColour($openness));
 				
-		$pageName = "Openness Rating - Project Information - Report For Project 29";
+		$this->pageName = "- Openness Rating";
+		$pageName = "Project Information - Openness Report For Project ".$id;
+		$this->setViewport(new view("openness-report"));
+		$this->viewport()->replace("page-name", $pageName);
+		$this->viewport()->replace("page-name", $id);
+		$this->viewport()->replace("id", $id);
+	}
+	
+	protected function reportInfo(){
+		$id = isset($_GET['id']) ? $_GET['id'] : "";
+		$OR = new opennessRating();
+		$report = new opennessReport();
+		
+		$id = $OR->testProjectId($id);
+		$this->superview()->replace("sidecontent_pageid", $id);
+		
+		$openness = $OR->getOpennessRating($id);
+		$this->superview()->replace("openness-rating", $openness);
+		$this->superview()->replace("alert-colour", $OR->ratingColour($openness));
+				
+		$pageName = "Project Information - Openness Report For Project ".$id;
 
 		$this->pageName = "- ".$pageName;
-		$this->setViewport(new view("openness-info"));
+		$this->setViewport(new view("openness-report-pages"));
 		$this->viewport()->replace("project_id", $id);
 		$this->viewport()->replace("page-name", $pageName);
-		$this->createQuestions($id, "info", TRUE);
+		$q = $OR->createQuestions($id, "info", TRUE);
+		$this->viewport()->replace("questions", $q);
+		$button = $report->button($id, "legal");
+		$this->viewport()->replace("next-button", $button);
 	}
 
 	protected function reportLegal(){
+		$id = isset($_GET['id']) ? $_GET['id'] : "";
+		$OR = new opennessRating();
+		$report = new opennessReport();
 		
+		$id = $OR->testProjectId($id);
+		$this->superview()->replace("sidecontent_pageid", $id);
+		
+		$openness = $OR->getOpennessRating($id);
+		$this->superview()->replace("openness-rating", $openness);
+		$this->superview()->replace("alert-colour", $OR->ratingColour($openness));
+				
+		$pageName = "Legal - Openness Report For Project ".$id;
+		
+		$this->pageName = "- ".$pageName;
+		$this->setViewport(new view("openness-report-pages"));
+		$this->viewport()->replace("project_id", $id);
+		$this->viewport()->replace("page-name", $pageName);
+		$q = $OR->createQuestions($id, "legal", TRUE);
+		$this->viewport()->replace("questions", $q);
+		$button = $report->button($id, "standards");
+		$this->viewport()->replace("next-button", $button);
 	}
 	
 	protected function reportStandards(){
+		$id = isset($_GET['id']) ? $_GET['id'] : "";
+		$OR = new opennessRating();
+		$report = new opennessReport();
 		
+		$id = $OR->testProjectId($id);
+		$this->superview()->replace("sidecontent_pageid", $id);
+		
+		$openness = $OR->getOpennessRating($id);
+		$this->superview()->replace("openness-rating", $openness);
+		$this->superview()->replace("alert-colour", $OR->ratingColour($openness));
+				
+		$pageName = "Legal - Openness Report For Project ".$id;
+
+		$this->pageName = "- ".$pageName;
+		$this->setViewport(new view("openness-report-pages"));
+		$this->viewport()->replace("project_id", $id);
+		$this->viewport()->replace("page-name", $pageName);
+		$q = $OR->createQuestions($id, "standards", TRUE);
+		$this->viewport()->replace("questions", $q);
+		$button = $report->button($id, "knowledge");
+		$this->viewport()->replace("next-button", $button);
 	}
 	
 	protected function reportKnowledge(){
+		$id = isset($_GET['id']) ? $_GET['id'] : "";
+		$OR = new opennessRating();
+		$report = new opennessReport();
 		
+		$id = $OR->testProjectId($id);
+		$this->superview()->replace("sidecontent_pageid", $id);
+		
+		$openness = $OR->getOpennessRating($id);
+		$this->superview()->replace("openness-rating", $openness);
+		$this->superview()->replace("alert-colour", $OR->ratingColour($openness));
+				
+		$pageName = "Legal - Openness Report For Project ".$id;
+
+		$this->pageName = "- ".$pageName;
+		$this->setViewport(new view("openness-report-pages"));
+		$this->viewport()->replace("project_id", $id);
+		$this->viewport()->replace("page-name", $pageName);
+		$q = $OR->createQuestions($id, "knowledge", TRUE);
+		$this->viewport()->replace("questions", $q);
+		$button = $report->button($id, "governance");
+		$this->viewport()->replace("next-button", $button);
 	}
 	
 	protected function reportGovernance(){
+		$id = isset($_GET['id']) ? $_GET['id'] : "";
+		$OR = new opennessRating();
+		$report = new opennessReport();
 		
+		$id = $OR->testProjectId($id);
+		$this->superview()->replace("sidecontent_pageid", $id);
+		
+		$openness = $OR->getOpennessRating($id);
+		$this->superview()->replace("openness-rating", $openness);
+		$this->superview()->replace("alert-colour", $OR->ratingColour($openness));
+				
+		$pageName = "Legal - Openness Report For Project ".$id;
+
+		$this->pageName = "- ".$pageName;
+		$this->setViewport(new view("openness-report-pages"));
+		$this->viewport()->replace("project_id", $id);
+		$this->viewport()->replace("page-name", $pageName);
+		$q = $OR->createQuestions($id, "governance", TRUE);
+		$this->viewport()->replace("questions", $q);
+		$button = $report->button($id, "market");
+		$this->viewport()->replace("next-button", $button);
 	}
 	
 	protected function reportMarket(){
+		$id = isset($_GET['id']) ? $_GET['id'] : "";
+		$OR = new opennessRating();
+		$report = new opennessReport();
 		
+		$id = $OR->testProjectId($id);
+		$this->superview()->replace("sidecontent_pageid", $id);
+		
+		$openness = $OR->getOpennessRating($id);
+		$this->superview()->replace("openness-rating", $openness);
+		$this->superview()->replace("alert-colour", $OR->ratingColour($openness));
+				
+		$pageName = "Legal - Openness Report For Project ".$id;
+
+		$this->pageName = "- ".$pageName;
+		$this->setViewport(new view("openness-report-pages"));
+		$this->viewport()->replace("project_id", $id);
+		$this->viewport()->replace("page-name", $pageName);
+		$q = $OR->createQuestions($id, "market", TRUE);
+		$this->viewport()->replace("questions", $q);
+		$button = $report->button($id, "end");
+		$this->viewport()->replace("next-button", $button);
 	}
 
 }

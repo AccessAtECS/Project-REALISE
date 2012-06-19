@@ -8,9 +8,8 @@ class opennessRating {
 		$this->_db = db::singleton();
 	}
 	
-	public function createQuestions($project_id, $section){
-		$OR = new opennessRating(); 
-		$questions = $OR->getQuestions($section);
+	public function createQuestions($project_id, $section, $report = FALSE){
+		$questions = $this->getQuestions($section);
 		
 		$q = new view();
 		
@@ -22,11 +21,19 @@ class opennessRating {
 					case 'drop':
 						$template = new view('frag.opennessQuestionDrop');
 						$template->replace("question", $question['question']);
-						$template->replace("sub_question", $question['sub_question']);
 						$template->replace("section", $question['section']);
 						$template->replace("question_id", $question['id']);
 						$help = $this->helpText($question['id'], $question['help']);
-						$template->replace("info", $help);
+						
+						if($report == TRUE){
+							$template->replace("disabled", 'disabled="disabled"');
+							$template->replace("sub_question", "");
+							$template->replace("info", "");
+						}
+						else {
+							$template->replace("sub_question", $question['sub_question']);
+							$template->replace("info", $help);
+						}
 
 						$answers = $this->getAnswers($question['id']);
 						$a = new view();
@@ -60,11 +67,19 @@ class opennessRating {
 						
 							$template = new view('frag.opennessQuestionText');
 							$template->replace("question", $question['question']);
-							$template->replace("sub_question", $question['sub_question']);
 							$template->replace("section", $question['section']);
 							$template->replace("question_id", $question['id']);
 							$help = $this->helpText($question['id'], $question['help']);
-							$template->replace("info", $help);
+							
+							if($report == TRUE){
+								$template->replace("disabled", 'disabled="disabled"');
+								$template->replace("sub_question", "");
+								$template->replace("info", "");
+							}
+							else {
+								$template->replace("sub_question", $question['sub_question']);
+								$template->replace("info", $help);
+							}
 
 							$value = $this->viewAnswer($project_id, $question['id']);
 							
@@ -83,12 +98,19 @@ class opennessRating {
 					case 'multi-select':
 						$template = new view('frag.opennessQuestionMultiSelect');
 						$template->replace("question", $question['question']);
-						$template->replace("sub_question", $question['sub_question']);
 						$template->replace("section", $question['section']);
 						$template->replace("question_id", $question['id']);
 						$help = $this->helpText($question['id'], $question['help']);
-						$template->replace("info", $help);
-
+						
+						if($report == TRUE){
+							$template->replace("sub_question", "");
+							$template->replace("info", "");
+						}
+						else {
+							$template->replace("sub_question", $question['sub_question']);
+							$template->replace("info", $help);
+						}
+												
 						$answers = $this->getAnswers($question['id']);
 						$a = new view();
 					
@@ -106,7 +128,12 @@ class opennessRating {
 								if(in_array($answer['id'], $value)){
 									$answerFrag->replace("checked", 'checked="yes"');
 								}
-							}	
+							}
+							
+							if($report == TRUE){
+								$answerFrag->replace("disabled", 'disabled="disabled"');
+							}
+							
 							$a->append($answerFrag->get());
 							
 						}					
@@ -119,10 +146,17 @@ class opennessRating {
 						
 						$template = new view('frag.opennessQuestionScale');
 						$template->replace("question", $question['question']);
-						$template->replace("sub_question", $question['sub_question']);
 						$template->replace("question_id", $question['id']);
 						$help = $this->helpText($question['id'], $question['help']);
-						$template->replace("info", $help);
+						
+						if($report == TRUE){
+							$template->replace("sub_question", "");
+							$template->replace("info", "");
+						}
+						else {
+							$template->replace("sub_question", $question['sub_question']);
+							$template->replace("info", $help);
+						}
 
 						$answers = $this->getAnswers($question['id']);
 						$a = new view();
@@ -136,6 +170,10 @@ class opennessRating {
 							$answerFrag->replace("question_id", $question['id']);
 							$template->replace("answer_id",$answer['id']);
 							$template->replace("answer".$i,$i);
+							
+							if($report == TRUE){
+								$answerFrag->replace("disabled", 'disabled="disabled"');
+							}
 							
 							$value = $this->viewAnswer($project_id, $question['id']);
 							
@@ -337,7 +375,7 @@ class opennessRating {
 		return $result;
 	}
 	
-		public function getOpennessRating($project_id){
+	public function getOpennessRating($project_id){
 		$result = $this->_db->select(array("openness_rating"), "project", array(array("", "id", "=", $project_id)))->run();
 		$result = $result[0][0]['openness_rating'];
 		
