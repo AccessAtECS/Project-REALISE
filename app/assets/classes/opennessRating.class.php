@@ -25,12 +25,14 @@ class opennessRating {
 						$template->replace("question_id", $question['id']);
 						$help = $this->helpText($question['id'], $question['help']);
 						
+						//if showing report removed sub question text and info button
 						if($report == TRUE){
 							$template->replace("disabled", 'disabled="disabled"');
 							$template->replace("sub_question", "");
 							$template->replace("info", "");
 						}
 						else {
+							$template->replace("disabled", '');
 							$template->replace("sub_question", $question['sub_question']);
 							$template->replace("info", $help);
 						}
@@ -71,12 +73,14 @@ class opennessRating {
 							$template->replace("question_id", $question['id']);
 							$help = $this->helpText($question['id'], $question['help']);
 							
+							//if showing report removed sub question text and info button
 							if($report == TRUE){
 								$template->replace("disabled", 'disabled="disabled"');
 								$template->replace("sub_question", "");
 								$template->replace("info", "");
 							}
 							else {
+								$template->replace("disabled", '');
 								$template->replace("sub_question", $question['sub_question']);
 								$template->replace("info", $help);
 							}
@@ -102,6 +106,7 @@ class opennessRating {
 						$template->replace("question_id", $question['id']);
 						$help = $this->helpText($question['id'], $question['help']);
 						
+						//if showing report removed sub question text and info button
 						if($report == TRUE){
 							$template->replace("sub_question", "");
 							$template->replace("info", "");
@@ -133,6 +138,9 @@ class opennessRating {
 							if($report == TRUE){
 								$answerFrag->replace("disabled", 'disabled="disabled"');
 							}
+							else {
+								$template->replace("disabled", '');
+							}
 							
 							$a->append($answerFrag->get());
 							
@@ -149,6 +157,7 @@ class opennessRating {
 						$template->replace("question_id", $question['id']);
 						$help = $this->helpText($question['id'], $question['help']);
 						
+						//if showing report removed sub question text and info button
 						if($report == TRUE){
 							$template->replace("sub_question", "");
 							$template->replace("info", "");
@@ -173,6 +182,9 @@ class opennessRating {
 							
 							if($report == TRUE){
 								$answerFrag->replace("disabled", 'disabled="disabled"');
+							}
+							else {
+								$template->replace("disabled", '');
 							}
 							
 							$value = $this->viewAnswer($project_id, $question['id']);
@@ -210,6 +222,7 @@ class opennessRating {
 		$project_id = $this->getProjectId();
 		$project_id = $this->testProjectId($project_id);
 		$q = $this->getQuestionId($section);
+		
 		// $question_id = first question for that section
 		//questions are assumed to be in id order
 		$question_id = $q[0][0]['id'];
@@ -260,12 +273,13 @@ class opennessRating {
 	}
 	
 	private function doesProjectAnswerExist($project_id, $question_id, $delete){
-		$result = $this->_db->select(array("id"), "open_project_has_answer", array(array("", "project_id", "=", $project_id)), "AND question_id = ".$question_id)->run();		
+		$result = $this->_db->select(array("id"), "open_project_has_answer", array(array("", "project_id", "=", $project_id)), "AND question_id = ".$question_id)->run();
 		
-		if(empty($result)){}
-		else {
-			$project_answer_id = $result[0][0]['id'];
+		if(empty($result)) return;
 		
+		foreach($result[0] as $r){
+			$project_answer_id = $r['id'];
+
 			if($delete == TRUE){
 				$this->deleteProjectAnswer($project_answer_id);
 			}
@@ -339,21 +353,51 @@ class opennessRating {
 		//dont know value
 		$dn = 0;
 		$score = 0;
+		$text_score = 5; //each text box answer gives 5 points
+		$multi_select_score = 1; //each mutli-select answer gives 1 point to a maximum available for the question
+		$ignore_answer_array = array();
 		
 		$max_score = $this->_db->select(array("SUM(max_score) AS max_score"), "open_question")->run();	
 		$max_score = $max_score[0][0]['max_score'];
 		
-		$result = $this->_db->single("SELECT open_question.id, open_question.max_score, open_project_has_answer.value, open_answer.value AS score FROM open_question
+		$result = $this->_db->single("SELECT open_question.id AS question_id, open_question.max_score, open_project_has_answer.value, open_answer.value AS score, open_question.type, open_answer.id AS answer_id
+						FROM open_question
 						LEFT JOIN open_project_has_answer ON (open_question.id = open_project_has_answer.question_id) 
 						LEFT JOIN open_answer ON (open_answer.id = open_project_has_answer.value) 
 						WHERE open_project_has_answer.project_id = ".$project_id);
-
 		
 		foreach($result as $r){
-			$qs = $r['score'];
-			$qms = $r['max_score'];
-		
-			if($qs == "dn"){
+			$qs = $r['score']; //question score
+			$qms = $r['max_score']; //question max score
+			
+			//calcualtes special text fields
+			if($r['type'] == "text" && strlen($r['value'])>2 && !empty($r['value'])){
+				$score += $text_score;
+			}
+			//calculates multi select answer
+			if($r['type'] == "multi-select"){
+				
+				if(!in_array($r['answer_id'],$ignore_answer_array)){
+				
+					$answer_list = $this->_db->single("SELECT id AS answer_id FROM open_answer WHERE open_question_id = ".$r['question_id']);				
+					$count = $this->_db->single("SELECT COUNT(*) AS count FROM open_project_has_answer WHERE question_id = ".$r['question_id']);
+					
+					//if there are more answers than the question max score
+					if($count[0]['count'] > $qms){
+						$score += $qms;
+						//if max score is reached ignore the other answers for that question
+						foreach($answer_list as $a){
+							array_push($ignore_answer_array, $a['answer_id']);
+						}
+					}
+					//otherwise give 1 point for the answer
+					else {
+						$score += $multi_select_score;
+					}
+				}
+			}
+			//calcualtes don't know answers
+			else if($qs == "dn"){
 				$score += $dn;
 			}
 			else if($qs >= $qms){
@@ -366,7 +410,7 @@ class opennessRating {
 		
 		//calcualate percentagt score
 		$rating = ($score/$max_score)*100;
-
+		
 		//insert openness rating
 		try{
 			$result = $this->_db->update(array("openness_rating" => $rating), "project", array(array("", "id", $project_id)))->run();
@@ -396,7 +440,7 @@ class opennessRating {
 	}
 	
 	public function helpText($questionID, $text){	
-		$icon = '<a href="#" class="info-toggle"><img src="/presentation/images/information.png" /></a>';
+		$icon = '<a href="#" class="info-toggle"><img src="/presentation/images/information.png" alt="question '.$questionID.' help information"/></a>';
 		$close = '<button type="button" class="close" data-dismiss="alert">x</button>';
 
 		$box = '<div class="alert alert-info" id="help-text-'.$questionID.'" style="display: none;">'.$text.'</div>';

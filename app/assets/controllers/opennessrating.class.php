@@ -206,7 +206,7 @@ class controller_opennessrating extends controller {
 		$this->setViewport(new view("openness-end"));
 		$this->viewport()->replace("id", $id);
 
-		$colour = $this->ratingColour($openness);
+		$colour = $OR->ratingColour($openness);
 		$this->viewport()->replace("openness-rating", $openness);
 		$this->viewport()->replace("alert-colour", $colour);
 	}
