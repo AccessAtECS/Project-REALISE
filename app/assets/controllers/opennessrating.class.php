@@ -31,6 +31,8 @@ class controller_opennessrating extends controller {
 		$this->bind('submitGovernance', 'governanceProcess');
 		$this->bind('submitMarket', 'marketProcess');
 		
+		$this->bind('resetOpenness', 'resetOpenness');
+		
 		$this->bindDefault('opennessIndex');
 	}
 		
@@ -247,15 +249,49 @@ class controller_opennessrating extends controller {
 		$this->redirect($redirectURL);
 	}
 	
+	protected function resetOpenness(){
+		$OR = new opennessRating();
+		$id = $OR->getProjectId();
+		$this->auth($id);
+		$OR->testProjectId($id);
+		
+		$deleted = $this->deleteOpenness($id);
+		
+		$openness = "0%";
+		$this->superview()->replace("sidecontent_pageid", $id);
+		$this->superview()->replace("openness-rating", $openness);
+		$this->superview()->replace("alert-colour", $OR->ratingColour($openness));
+			
+		$pageName = "Openness Rating Deleted";
+			
+		$this->pageName = "- ".$pageName;
+		$this->setViewport(new view("openness-deleted"));
+		$this->viewport()->replace("id", $id);
+	
+		$colour = $OR->ratingColour($openness);
+		$this->viewport()->replace("openness-rating", $openness);
+		$this->viewport()->replace("alert-colour", $colour);
+	}
+	
 	private function auth($id){
 		$this->m_currentProject = new project((int)$id);
 		
 		if( !$this->m_user->getEnrollment($this->m_currentProject, resource::MEMBERSHIP_ADMIN) ){
 			echo("You do not have permission to access the openness rating of this project");
-			exit;			
+			exit;
 		}
-		
-		$OR = new opennessRating();
+	}
+	
+	private function deleteOpenness($id){
+		$this->db = db::singleton();
+
+		try{
+			$this->db->single("DELETE FROM open_project_has_answer WHERE project_id = ".$id);
+			$this->db->single("UPDATE project SET openness_rating = 0 WHERE id =". $id);
+		} catch (Exception $e){
+			echo "It was not possible to perform this action. Please try again later.";
+			exit;
+		}
 	}
 }
 

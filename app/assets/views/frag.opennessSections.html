@@ -15,4 +15,11 @@
 	<div class="alert {alert-colour}" id="openness-complete">
 		Current openness rating score:  {openness-rating}
 	</div>
+	
+	<div id="openness-reset">
+		<form method="post" action="/opennessrating/resetOpenness">
+			<input id="id" class="inputtext" type="hidden" value="{sidecontent_pageid}" name="project_id">
+			<input type="submit" value="Reset Openness Rating" class="openness-submit">
+		</form>
+	</div>
 </div>
