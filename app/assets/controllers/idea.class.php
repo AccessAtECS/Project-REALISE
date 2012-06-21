@@ -494,11 +494,15 @@ class controller_idea extends controller {
 			
 			$idea = new idea();
 			
+			$category = new category((int)$_POST['category']);
+			$categoryName = $category->getName();
+			
 			$idea->setTitle($_POST['ideaTitle']);
 			$idea->setOverview($_POST['overview']);
 			$idea->setDescription($_POST['description']);
 			$idea->setOwner($this->m_user);
-			$idea->setCategory(new category((int)$_POST['category']));
+			$idea->setCategory($category);
+			$idea->addImage(NULL, $categoryName); //sets default image based on category
 			
 			$id = $idea->commit();
 			

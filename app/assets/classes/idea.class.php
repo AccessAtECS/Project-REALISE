@@ -124,6 +124,34 @@ class idea extends resource {
 			echo $e->getMessage();
 		}
 	}
+	
+	public function setDefaultImage($category){
+		
+		//format string first
+		$category = strtolower($category);
+		$category = str_replace(" ", "-", $category);
+		$category = str_replace("/", "", $category);
+
+		$siteLoc = "presentation/images/categories/";
+		$folderLoc = SYS_ROOTDIR.$siteLoc;
+		$imageServerLoc = $folderLoc.$category.".png";
+		
+		if(file_exists($imageServerLoc)){
+			$this->image = "/".$siteLoc.$category.".png";
+		}
+		else{
+			$this->image = "/".$siteLoc."uncategorised.png";
+		}
+	}
+	
+	public function addImage($image = NULL, $category = NULL){
+		if(!empty($image)){
+			$this->setImage($image);
+		}
+		else if(!empty($category)){
+			$this->setDefaultImage($category);
+		}
+	}
 
 	public function getId(){
 		return $this->id;
