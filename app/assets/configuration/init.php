@@ -25,6 +25,6 @@ function getRuntimeObjects(){
 
 
 // User defined constants for the app
-define("REALISE_VERSION", "1.3.5 (r1282)");
+define("REALISE_VERSION", "1.4.0 (r1367)");
 
 ?>
