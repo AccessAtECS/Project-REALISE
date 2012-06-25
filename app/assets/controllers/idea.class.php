@@ -446,6 +446,9 @@ class controller_idea extends controller {
 		
 			$project = new project();
 			
+			$category = new category((int)$_POST['category']);
+			$categoryName = $category->getName();
+			
 			$project->setName($_POST['name']);
 			$project->setOverview($_POST['overview']);
 			$project->setDescription($_POST['description']);
@@ -453,8 +456,8 @@ class controller_idea extends controller {
 			$project->setCategory(new category((int)$_POST['category']));
 			
 			$project_id = $project->commit();
-
-			$project->setImage($_FILES['image']);
+			
+			$project->addImage($_FILES['image'], $categoryName); //sets default image based on category or image is selected
 			
 			$project->commit();
 

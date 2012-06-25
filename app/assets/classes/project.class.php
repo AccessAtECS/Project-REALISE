@@ -235,6 +235,37 @@ class project extends resource {
 		}
 	}
 	
+	public function setDefaultImage($category){
+		
+		//format string first
+		$category = strtolower($category);
+		$category = str_replace(" ", "-", $category);
+		$category = str_replace("/", "", $category);
+
+		$siteLoc = "presentation/images/categories/";
+		$folderLoc = SYS_ROOTDIR.$siteLoc;
+		$imageServerLoc = $folderLoc.$category.".png";
+		
+		if(file_exists($imageServerLoc)){
+			$this->image = "/".$siteLoc.$category.".png";
+		}
+		else{
+			$this->image = "/".$siteLoc."uncategorised.png";
+		}
+	}
+	
+	public function addImage($image = NULL, $category = NULL){
+		
+		echo($image['size']);
+		
+		if($image['size'] != '0'){
+			$this->setImage($image);
+		}
+		else if($image['size'] == '0'){
+			$this->setDefaultImage($category);
+		}
+	}
+	
 	public function getImage(){
 		return !empty($this->image) ? $this->image : $this->defaultImage;
 	}
