@@ -237,7 +237,7 @@ class controller_incubator extends controller {
 		
 		$repo = $this->m_currentProject->getRepoUrl();
 		
-		if(strstr($repo, "github.com")){
+		if(strstr($repo, "github-.com")){
 			
 			// Check to see if we have a cached version
 			$objectCache = new cache("github-" . $this->m_currentProject->getId(), cache::REQUEST_DATA, 10);
