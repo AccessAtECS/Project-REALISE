@@ -1215,3 +1215,7 @@ a#skip {
 #pagination .pageLink.selected {
 	background: #ecf4ff;
 }
+
+.question-text a{
+	text-decoration: underline;
+}

@@ -106,13 +106,14 @@ class controller_home extends controller {
 		// Build the timeline.
 		$timeline = new timeline();
 		
-		
+		/*
 		// Get OSSWatch blog articles
 		$ossW = new rss('ossw', 'http://osswatch.jiscinvolve.org/wp/feed/');
 		$ossW->setLimit(5);
 		$ossW->get();
 		
 		$timeline->add($ossW);
+		*/
 		
 		// Twitter
 		$realisetweets = new twitter("projectrealise");
@@ -149,13 +150,14 @@ class controller_home extends controller {
 		// Build the timeline.
 		$timeline = new timeline();
 		
-		
+		/*
 		// Get OSSWatch blog articles
 		$ossW = new rss('ossw', 'http://osswatch.jiscinvolve.org/wp/feed/');
 		$ossW->setLimit(5);
 		$ossW->get();
 		
 		$timeline->add($ossW);
+		*/
 		
 		// Twitter
 		$realisetweets = new twitter("projectrealise");
