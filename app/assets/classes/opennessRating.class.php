@@ -28,14 +28,13 @@ class opennessRating {
 						//if showing report removed sub question text and info button
 						if($report == TRUE){
 							$template->replace("disabled", 'disabled="disabled"');
-							$template->replace("sub_question", "");
-							$template->replace("info", "");
 						}
 						else {
 							$template->replace("disabled", '');
-							$template->replace("sub_question", $question['sub_question']);
-							$template->replace("info", $help);
 						}
+						
+						$template->replace("sub_question", $question['sub_question']);
+						$template->replace("info", $help);
 
 						$answers = $this->getAnswers($question['id']);
 						$a = new view();
@@ -76,15 +75,14 @@ class opennessRating {
 							//if showing report removed sub question text and info button
 							if($report == TRUE){
 								$template->replace("disabled", 'disabled="disabled"');
-								$template->replace("sub_question", "");
-								$template->replace("info", "");
 							}
 							else {
 								$template->replace("disabled", '');
-								$template->replace("sub_question", $question['sub_question']);
-								$template->replace("info", $help);
 							}
-
+							
+							$template->replace("sub_question", $question['sub_question']);
+							$template->replace("info", $help);
+							
 							$value = $this->viewAnswer($project_id, $question['id']);
 							
 							if(empty($value)){
@@ -107,14 +105,10 @@ class opennessRating {
 						$help = $this->helpText($question['id'], $question['help']);
 						
 						//if showing report removed sub question text and info button
-						if($report == TRUE){
-							$template->replace("sub_question", "");
-							$template->replace("info", "");
-						}
-						else {
-							$template->replace("sub_question", $question['sub_question']);
-							$template->replace("info", $help);
-						}
+						if($report == TRUE){}
+						
+						$template->replace("sub_question", $question['sub_question']);
+						$template->replace("info", $help);
 												
 						$answers = $this->getAnswers($question['id']);
 						$a = new view();
@@ -158,15 +152,11 @@ class opennessRating {
 						$help = $this->helpText($question['id'], $question['help']);
 						
 						//if showing report removed sub question text and info button
-						if($report == TRUE){
-							$template->replace("sub_question", "");
-							$template->replace("info", "");
-						}
-						else {
-							$template->replace("sub_question", $question['sub_question']);
-							$template->replace("info", $help);
-						}
-
+						if($report == TRUE){}
+						
+						$template->replace("sub_question", $question['sub_question']);
+						$template->replace("info", $help);
+						
 						$answers = $this->getAnswers($question['id']);
 						$a = new view();
 					
