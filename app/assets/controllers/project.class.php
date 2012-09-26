@@ -121,7 +121,11 @@ class controller_project extends controller {
 		$this->viewport()->replace("licence", $this->m_currentProject->getLicense()->getName());
 		$this->viewport()->replace("license-url", $this->m_currentProject->getLicense()->getUrl());
 		
-		$this->checkGithub();
+		
+		// Removed checking git hub for last updated etc as api has changed
+		//$this->checkGithub();
+		// Still need to remove placeholder
+		$this->viewport()->replace("remote-project", "");
 		
 		$this->viewport()->replace("id", $id);
 
@@ -161,7 +165,7 @@ class controller_project extends controller {
 		if($tags == "") $tags = "None";
 		
 		$this->viewport()->replace("tags", $tags);
-	
+		
 		// Comments
 		
 		$c = new view();
@@ -243,7 +247,7 @@ class controller_project extends controller {
 		$assets .= util::newScript("/presentation/scripts/project.js");
 		
 		$this->superview()->replace("additional-assets", $assets);
-				
+		
 	}
 
 	private function checkGithub(){
