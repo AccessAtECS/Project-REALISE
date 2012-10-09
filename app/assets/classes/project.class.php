@@ -16,7 +16,7 @@ class project extends resource {
 	private $community_url = "";
 	private $scm_url = "";
 	private $repo_url = "";
-	private $hidden;
+	private $hidden = false;
 	private $openness_rating;
 	
 	const ROLE_ANY = 0;

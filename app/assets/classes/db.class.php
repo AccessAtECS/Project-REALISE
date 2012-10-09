@@ -217,7 +217,7 @@ class db extends mysqli {
 			$field = $this->real_escape_string($field);
 			
 			// Convert NULLs to DBNull types
-			if($data == "NULL") $data = new DBNull();
+			if($data === null) $data = new DBNull();
 			
 			// Sanitise anything that isn't a DBType
 			$data = $this->sanitiseData($data);

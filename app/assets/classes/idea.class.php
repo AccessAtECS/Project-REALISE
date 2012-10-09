@@ -11,7 +11,7 @@ class idea extends resource {
 	private $tags;
 	private $category;
 	private $comments;
-	private $hidden;
+	private $hidden = false;
 	
 	public function __construct($id = null) {
 		if($id == null) return;
