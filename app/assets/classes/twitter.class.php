@@ -7,9 +7,9 @@ class twitter extends feed {
 	private $m_name;
 	private $m_link;
 	
-	
+
 	public function __construct($name){
-		$this->m_url = "http://twitter.com/status/user_timeline/" . $name . ".json?count=5";
+		$this->m_url = "http://api.twitter.com/1/statuses/" . $name . "_timeline.json?count=5";
 		$this->m_link = "http://twitter.com/$name/status/";
 		$this->m_name = $name;
 	}
