@@ -116,6 +116,7 @@ class controller_home extends controller {
 		*/
 		
 		// Twitter
+		/*
 		$realisetweets = new twitter("projectrealise");
 		$realisetweets->get();
 	
@@ -129,7 +130,7 @@ class controller_home extends controller {
 		$activity = $timeline->getFormatted();
 		
 		$this->viewport()->append($activity);	
-	
+		*/
 		
 	}
 	
