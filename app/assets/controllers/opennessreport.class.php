@@ -63,6 +63,7 @@ class controller_opennessreport extends controller {
 		$this->setViewport(new view("openness-report-pages"));
 		$this->viewport()->replace("project_id", $id);
 		$this->viewport()->replace("page-name", $pageName);
+		$this->viewport()->append($OR->helpJS());
 		$q = $OR->createQuestions($id, "info", TRUE);
 		$this->viewport()->replace("questions", $q);
 		$button = $report->button($id, "legal");
@@ -87,6 +88,7 @@ class controller_opennessreport extends controller {
 		$this->setViewport(new view("openness-report-pages"));
 		$this->viewport()->replace("project_id", $id);
 		$this->viewport()->replace("page-name", $pageName);
+		$this->viewport()->append($OR->helpJS());
 		$q = $OR->createQuestions($id, "legal", TRUE);
 		$this->viewport()->replace("questions", $q);
 		$button = $report->button($id, "standards");
@@ -111,6 +113,7 @@ class controller_opennessreport extends controller {
 		$this->setViewport(new view("openness-report-pages"));
 		$this->viewport()->replace("project_id", $id);
 		$this->viewport()->replace("page-name", $pageName);
+		$this->viewport()->append($OR->helpJS());
 		$q = $OR->createQuestions($id, "standards", TRUE);
 		$this->viewport()->replace("questions", $q);
 		$button = $report->button($id, "knowledge");
@@ -135,6 +138,7 @@ class controller_opennessreport extends controller {
 		$this->setViewport(new view("openness-report-pages"));
 		$this->viewport()->replace("project_id", $id);
 		$this->viewport()->replace("page-name", $pageName);
+		$this->viewport()->append($OR->helpJS());
 		$q = $OR->createQuestions($id, "knowledge", TRUE);
 		$this->viewport()->replace("questions", $q);
 		$button = $report->button($id, "governance");
@@ -159,6 +163,7 @@ class controller_opennessreport extends controller {
 		$this->setViewport(new view("openness-report-pages"));
 		$this->viewport()->replace("project_id", $id);
 		$this->viewport()->replace("page-name", $pageName);
+		$this->viewport()->append($OR->helpJS());
 		$q = $OR->createQuestions($id, "governance", TRUE);
 		$this->viewport()->replace("questions", $q);
 		$button = $report->button($id, "market");
@@ -183,6 +188,7 @@ class controller_opennessreport extends controller {
 		$this->setViewport(new view("openness-report-pages"));
 		$this->viewport()->replace("project_id", $id);
 		$this->viewport()->replace("page-name", $pageName);
+		$this->viewport()->append($OR->helpJS());
 		$q = $OR->createQuestions($id, "market", TRUE);
 		$this->viewport()->replace("questions", $q);
 		$button = $report->button($id, "end");
