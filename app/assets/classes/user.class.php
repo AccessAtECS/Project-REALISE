@@ -8,7 +8,7 @@ class user extends dbo {
 	private $picture = "";
 	private $defaultPicture = "/presentation/images/avatar.png";
 	private $email = "";
-	private $emailPublic = false;
+	private $emailPublic = 0;
 	private $username = "";
 	private $hash = "";
 	private $admin = 0;
@@ -88,7 +88,7 @@ class user extends dbo {
 			$this->username = $p[0]['username'];
 			$this->hash = $p[0]['hash'];
 			$this->admin = $p[0]['admin'];
-			$this->emailPublic = (BOOL)$p[0]['emailPublic'];
+			$this->emailPublic = (int)$p[0]['emailPublic'];
 			$this->bio = $p[0]['bio'];
 			
 			$this->getGroups();
@@ -106,9 +106,9 @@ class user extends dbo {
 		$data['email'] = $this->email;
 		$data['username'] = $this->username;
 		$data['hash'] = $this->hash;
-		$data['emailPublic'] = (int)$this->emailPublic;
+		//$data['emailPublic'] = (int)$this->emailPublic;
 		$data['bio'] = $this->bio;
-				
+		
 		$db = db::singleton();
 		$check = $db->single("SELECT id FROM user WHERE id = '{$this->id}'");
 		if(empty($check)) {
@@ -250,7 +250,7 @@ class user extends dbo {
 	}
 	
 	public function setEmailPublic($visibility){
-		$this->emailPublic = (BOOL)$visibility;
+		$this->emailPublic = (int)$visibility;
 	}
 	
 	public function getEmailIsPublic(){
