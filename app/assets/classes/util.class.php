@@ -30,6 +30,7 @@
 				$template->replace("tagline", $innovator->getTagline());
 				
 				$template->replace("src", $innovator->getPicture());
+				$template->replace("innovations", "");
 				
 				$template->replace("img-size", 30);
 				

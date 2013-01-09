@@ -102,6 +102,27 @@ class controller_profile extends controller {
 			"bio" => $user->getBio()
 		));
 		
+		$projects = $user->displayProjects();
+		if(!empty($projects)){
+			$this->viewport()->replace("projects", $user->displayProjects());
+			$this->viewport()->replace("display-projects", "block");
+		}
+		else $this->viewport()->replace("display-projects", "none");
+		
+		$incubated = $user->displayIncubated();
+		if(!empty($incubated)){
+			$this->viewport()->replace("incubated", $user->displayIncubated());
+			$this->viewport()->replace("display-incubated", "block");
+		}
+		else $this->viewport()->replace("display-incubated", "none");
+		
+		$ideas = $user->displayIdeas();
+		if(!empty($ideas)){
+			$this->viewport()->replace("ideas", $user->displayIdeas());
+			$this->viewport()->replace("display-ideas", "block");
+		}
+		else $this->viewport()->replace("display-ideas", "none");
+		
 		$this->pageName = "- Profile for " . $user->getUsername();
 
 	}

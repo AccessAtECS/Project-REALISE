@@ -325,7 +325,7 @@ class user extends dbo {
 	public function getInnovations(){		
 		$ideasIcons = "";
 		$incubatedIcons = "";
-		$projecIcons = "";
+		$projectIcons = "";
 		$maxCount = 10;
 		
 		$i = 0;		
@@ -342,17 +342,59 @@ class user extends dbo {
 		}
 		$i = 0;
 		foreach($this->getProjects()as $p){
-			$projecIcons .= '<img src="/presentation/images/briefcase-small.png" alt="this user has a project"/>';
+			$projectIcons .= '<img src="/presentation/images/briefcase-small.png" alt="this user has a project"/>';
 			$i++;
 			if($i == $maxCount) break;
 		}
 		
-		return $ideasIcons.$incubatedIcons.$projecIcons;
+		return $ideasIcons.$incubatedIcons.$projectIcons;
+	}
+	
+	public function displayIdeas(){
+		$projects = null;
+		
+		foreach($this->getIdeas() as $p){
+			$project = new view('frag.profileProject');
+			$project->replace("image", $p['image']);
+			$project->replace("url", "/idea/".$p['id']);
+			$project->replace("name", $p['title']);
+			$project->replace("description", $p['overview']);
+			$projects.=$project->get();
+		}
+		return $projects;
+	}
+	
+	public function displayIncubated(){
+		$projects = null;
+		
+		foreach($this->getIncubated() as $p){
+			$project = new view('frag.profileProject');
+			$project->replace("image", $p['image']);
+			$project->replace("url", "/incubator/".$p['id']);
+			$project->replace("name", $p['name']); 
+			$project->replace("description", $p['overview']);
+			$projects.=$project->get();
+		}
+		return $projects;
+	}
+	
+	public function displayProjects(){
+		$projects = null;
+		
+		foreach($this->getProjects() as $p){
+			$project = new view('frag.profileProject');
+			$project->replace("image", $p['image']);
+			$project->replace("url", "/project/".$p['id']);
+			$project->replace("name", $p['name']);
+			$project->replace("description", $p['overview']);
+			$projects.=$project->get();
+		}
+		return $projects;
 	}
 	
 	public function getIdeas(){
 		$db = db::singleton();
-		$result = $db->single("SELECT * FROM idea LEFT JOIN idea_user ON idea.id=idea_user.idea_id WHERE idea_user.user_id={$this->getId()} AND hidden = 0");
+		$result = $db->single("SELECT * FROM idea WHERE user_id={$this->getId()} AND hidden = 0");
 		return $result;
 	}
 	

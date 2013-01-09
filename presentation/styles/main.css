@@ -1226,3 +1226,27 @@ a#skip {
 	float: left;
 	clear: both;
 }
+
+.profile-project {
+	background-color: #EEF3F7;
+	border: 1px dotted #B2B7BB;
+	margin: 5px;
+	padding: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	margin-right: 15px;
+	margin-bottom: 10px;
+	clear: both;
+}
+
+.profile-project-info {
+	float: left;
+}
+
+.profile-project img {
+	display: block;
+	float: left;
+	line-height: 60px;
+	border-radius: 5px;
+}

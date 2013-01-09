@@ -1,9 +1,25 @@
 <div id="profile" class="innerContent">
 	<div class="img" style="width:80px; float:left; margin-right: 10px;"><img src="{picture}" height="80" width="80" /></div>
 	<div style="float:left">
-		<h1>{username} ({name})</h1>
+		<h1>{name} ({username})</h1>
 		<p class="italic">{tagline}</p>
 	</div>
 	<span class="dividingLine"></span>
 	{bio}
+	
+	<div style="display:{display-projects};">
+		<h1>Projects</h1>
+		{projects}
+	</div>
+	
+	<div style="display:{display-incubated};">
+		<h1>Incubated Ideas</h1>
+		{incubated}
+	</div>
+	
+	<div style="display:{display-ideas};">
+		<h1>Ideas</h1>
+		{ideas}
+	</div>
+	
 </div>
