@@ -1219,3 +1219,10 @@ a#skip {
 .question-text a{
 	text-decoration: underline;
 }
+
+.innovations {
+	padding-top: 20px;
+	padding-left: 2px;
+	float: left;
+	clear: both;
+}

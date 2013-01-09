@@ -322,4 +322,50 @@ class user extends dbo {
 		return (BOOL)$res[0]['user_exists'];
 	}
 	
+	public function getInnovations(){		
+		$ideasIcons = "";
+		$incubatedIcons = "";
+		$projecIcons = "";
+		$maxCount = 10;
+		
+		$i = 0;		
+		foreach($this->getIdeas() as $p){
+			$ideasIcons .= '<img src="/presentation/images/lightbulb-small.png" alt="this user has an idea"/>';
+			$i++;
+			if($i == $maxCount) break;
+		}
+		$i = 0;
+		foreach($this->getIncubated()as $p){
+			$incubatedIcons .= '<img src="/presentation/images/plant-small.png" alt="this user has an incubated idea"/>';
+			$i++;
+			if($i == $maxCount) break;
+		}
+		$i = 0;
+		foreach($this->getProjects()as $p){
+			$projecIcons .= '<img src="/presentation/images/briefcase-small.png" alt="this user has a project"/>';
+			$i++;
+			if($i == $maxCount) break;
+		}
+		
+		return $ideasIcons.$incubatedIcons.$projecIcons;
+	}
+	
+	public function getIdeas(){
+		$db = db::singleton();
+		$result = $db->single("SELECT * FROM idea LEFT JOIN idea_user ON idea.id=idea_user.idea_id WHERE idea_user.user_id={$this->getId()} AND hidden = 0");
+		return $result;
+	}
+	
+	public function getIncubated(){
+		$db = db::singleton();
+		$result = $db->single("SELECT * FROM project LEFT JOIN project_user ON project.id=project_user.project_id WHERE project_user.user_id={$this->getId()} AND incubated = 1 AND hidden = 0");
+		return $result;
+	}
+	
+	public function getProjects(){
+		$db = db::singleton();
+		$result = $db->single("SELECT * FROM project LEFT JOIN project_user ON project.id=project_user.project_id WHERE project_user.user_id={$this->getId()} AND incubated = 0 AND hidden = 0");
+		return $result;
+	}
+	
 }

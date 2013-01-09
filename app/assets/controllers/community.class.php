@@ -44,11 +44,14 @@ class controller_community extends controller {
 			} else {
 				$template->replace("name", "<a href='/profile/view/" . $innovator->getUsername() . "'>" . $innovator->getName() . "</a>");
 			}
+			if($innovator->getInnovations() != NULL){
+				$template->replace("innovations", $innovator->getInnovations());
+			} else {
+				$template->replace("innovations", "");
+			}
 			
 			$template->replace("tagline", $innovator->getTagline());
-				
 			$template->replace("src", $innovator->getPicture());
-			
 			$template->replace("img-size", 80);
 			
 			$output .= $template->get();
