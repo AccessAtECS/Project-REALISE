@@ -8,7 +8,7 @@ class user extends dbo {
 	private $picture = "";
 	private $defaultPicture = "/presentation/images/avatar.png";
 	private $email = "";
-	private $emailPublic = false;
+	private $emailPublic = 0;
 	private $username = "";
 	private $hash = "";
 	private $admin = 0;
@@ -88,7 +88,7 @@ class user extends dbo {
 			$this->username = $p[0]['username'];
 			$this->hash = $p[0]['hash'];
 			$this->admin = $p[0]['admin'];
-			$this->emailPublic = (BOOL)$p[0]['emailPublic'];
+			$this->emailPublic = (int)$p[0]['emailPublic'];
 			$this->bio = $p[0]['bio'];
 			
 			$this->getGroups();
@@ -106,9 +106,9 @@ class user extends dbo {
 		$data['email'] = $this->email;
 		$data['username'] = $this->username;
 		$data['hash'] = $this->hash;
-		$data['emailPublic'] = (int)$this->emailPublic;
+		//$data['emailPublic'] = (int)$this->emailPublic;
 		$data['bio'] = $this->bio;
-				
+		
 		$db = db::singleton();
 		$check = $db->single("SELECT id FROM user WHERE id = '{$this->id}'");
 		if(empty($check)) {
@@ -250,7 +250,7 @@ class user extends dbo {
 	}
 	
 	public function setEmailPublic($visibility){
-		$this->emailPublic = (BOOL)$visibility;
+		$this->emailPublic = (int)$visibility;
 	}
 	
 	public function getEmailIsPublic(){
@@ -320,6 +320,94 @@ class user extends dbo {
 		$res = $db->single(sprintf($sql, $username));
 
 		return (BOOL)$res[0]['user_exists'];
+	}
+	
+	public function getInnovations(){		
+		$ideasIcons = "";
+		$incubatedIcons = "";
+		$projectIcons = "";
+		$maxCount = 10;
+		
+		$i = 0;		
+		foreach($this->getIdeas() as $p){
+			$ideasIcons .= '<img src="/presentation/images/lightbulb-small.png" alt="this user has an idea"/>';
+			$i++;
+			if($i == $maxCount) break;
+		}
+		$i = 0;
+		foreach($this->getIncubated()as $p){
+			$incubatedIcons .= '<img src="/presentation/images/plant-small.png" alt="this user has an incubated idea"/>';
+			$i++;
+			if($i == $maxCount) break;
+		}
+		$i = 0;
+		foreach($this->getProjects()as $p){
+			$projectIcons .= '<img src="/presentation/images/briefcase-small.png" alt="this user has a project"/>';
+			$i++;
+			if($i == $maxCount) break;
+		}
+		
+		return $ideasIcons.$incubatedIcons.$projectIcons;
+	}
+	
+	public function displayIdeas(){
+		$projects = null;
+		
+		foreach($this->getIdeas() as $p){
+			$project = new view('frag.profileProject');
+			$project->replace("image", $p['image']);
+			$project->replace("url", "/idea/".$p['id']);
+			$project->replace("name", $p['title']);
+			$project->replace("description", $p['overview']);
+			$projects.=$project->get();
+		}
+		return $projects;
+	}
+	
+	public function displayIncubated(){
+		$projects = null;
+		
+		foreach($this->getIncubated() as $p){
+			$project = new view('frag.profileProject');
+			$project->replace("image", $p['image']);
+			$project->replace("url", "/incubator/".$p['id']);
+			$project->replace("name", $p['name']); 
+			$project->replace("description", $p['overview']);
+			$projects.=$project->get();
+		}
+		return $projects;
+	}
+	
+	public function displayProjects(){
+		$projects = null;
+		
+		foreach($this->getProjects() as $p){
+			$project = new view('frag.profileProject');
+			$project->replace("image", $p['image']);
+			$project->replace("url", "/project/".$p['id']);
+			$project->replace("name", $p['name']);
+			$project->replace("description", $p['overview']);
+			$projects.=$project->get();
+		}
+		return $projects;
+	}
+	
+	public function getIdeas(){
+		$db = db::singleton();
+		$result = $db->single("SELECT * FROM idea WHERE user_id={$this->getId()} AND hidden = 0");
+		return $result;
+	}
+	
+	public function getIncubated(){
+		$db = db::singleton();
+		$result = $db->single("SELECT * FROM project LEFT JOIN project_user ON project.id=project_user.project_id WHERE project_user.user_id={$this->getId()} AND incubated = 1 AND hidden = 0");
+		return $result;
+	}
+	
+	public function getProjects(){
+		$db = db::singleton();
+		$result = $db->single("SELECT * FROM project LEFT JOIN project_user ON project.id=project_user.project_id WHERE project_user.user_id={$this->getId()} AND incubated = 0 AND hidden = 0");
+		return $result;
 	}
 	
 }

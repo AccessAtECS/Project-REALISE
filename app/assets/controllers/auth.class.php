@@ -35,6 +35,7 @@ class controller_auth extends controller {
 			$u->setName($_POST['name']);
 			$u->setTagline("");
 			$u->setEmail($_POST['email']);
+			$u->setEmailPublic(0);
 			
 			$u->setUsername($_POST['username']);
 			$u->setHash(util::pass($_POST['password']));
