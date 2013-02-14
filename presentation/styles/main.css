@@ -1250,3 +1250,11 @@ a#skip {
 	line-height: 60px;
 	border-radius: 5px;
 }
+
+.community-links {
+	font-size: 160%;
+}
+
+.community-links a {
+	vertical-align: super;
+}
