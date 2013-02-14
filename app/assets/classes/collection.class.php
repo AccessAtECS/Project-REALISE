@@ -73,9 +73,12 @@ class collection {
 
 				// Set the found rows.
 				$this->m_foundRows = $output[1][0]['FOUND_ROWS()'];
-
-				foreach($output[0] as $idea){
-					array_push($this->m_returnArray, new idea($idea['id']));
+				
+				
+				if(!empty($output[0])){
+					foreach($output[0] as $idea){
+						array_push($this->m_returnArray, new idea($idea['id']));
+					}
 				}
 			break;
 			
@@ -90,9 +93,11 @@ class collection {
 				// Set the found rows.
 				$this->m_foundRows = $output[1][0]['FOUND_ROWS()'];
 				
-				foreach($output[0] as $project){
-					array_push($this->m_returnArray, new project($project['id']));
-				}			
+				if(!empty($output[0])){
+					foreach($output[0] as $project){
+						array_push($this->m_returnArray, new project($project['id']));
+					}
+				}
 			break;
 			
 			case collection::TYPE_PROJECT:
@@ -106,9 +111,11 @@ class collection {
 				// Set the found rows.
 				$this->m_foundRows = $output[1][0]['FOUND_ROWS()'];
 				
-				foreach($output[0] as $project){
-					array_push($this->m_returnArray, new project($project['id']));
-				}				
+				if(!empty($output[0])){
+					foreach($output[0] as $project){
+						array_push($this->m_returnArray, new project($project['id']));
+					}
+				}
 			break;
 			
 			case collection::TYPE_USER:
@@ -116,9 +123,11 @@ class collection {
 				$output = $db->runBatch();
 				if(empty($output)) return array();
 				
-				foreach($output[0] as $user){
-					array_push($this->m_returnArray, new user($user['id']));
-				}				
+				if(!empty($output[0])){
+					foreach($output[0] as $user){
+						array_push($this->m_returnArray, new user($user['id']));
+					}
+				}
 			break;
 			
 			case collection::TYPE_TOP_TAGS:
@@ -134,9 +143,11 @@ class collection {
 				$output = $db->runBatch();
 				if(empty($output)) return array();
 				
-				foreach($output[0] as $tag){
-					array_push($this->m_returnArray, new tag($tag['id']));
-				} 					
+				if(!empty($output[0])){
+					foreach($output[0] as $tag){
+						array_push($this->m_returnArray, new tag($tag['id']));
+					}
+				}
 			break;
 			
 			case collection::TYPE_LICENSE:
@@ -144,9 +155,11 @@ class collection {
 				$output = $db->runBatch();
 				if(empty($output)) return array();
 				
-				foreach($output[0] as $license){
-					array_push($this->m_returnArray, new license((int)$license['id']));
-				} 			
+				if(!empty($output[0])){
+					foreach($output[0] as $license){
+						array_push($this->m_returnArray, new license((int)$license['id']));
+					}
+				}	
 			break;
 			
 			case collection::TYPE_CATEGORY:
@@ -154,9 +167,11 @@ class collection {
 				$output = $db->runBatch();
 				if(empty($output)) return array();
 				
-				foreach($output[0] as $category){
-					array_push($this->m_returnArray, new category((int)$category['id']));
-				} 
+				if(!empty($output[0])){
+					foreach($output[0] as $category){
+						array_push($this->m_returnArray, new category((int)$category['id']));
+					}
+				}
 			break;
 			
 			case collection::TYPE_COMMENT:
@@ -164,9 +179,11 @@ class collection {
 				$output = $db->runBatch();
 				if(empty($output)) return array();
 				
-				foreach($output[0] as $comment){
-					array_push($this->m_returnArray, new comment((int)$comment['id']));
-				} 
+				if(!empty($output[0])){
+					foreach($output[0] as $comment){
+						array_push($this->m_returnArray, new comment((int)$comment['id']));
+					}
+				}
 			break;
 			
 			default:
