@@ -18,9 +18,7 @@ class controller_about extends controller {
 	}
 	
 	protected function aboutPage(){
-		$this->setViewport(new view("homepage"));
-		
-		$this->viewport()->append(new view('about'));
+		$this->setViewport(new view("about"));
 		
 		$this->pageName = "- About";
 	}
