@@ -1,4 +1,4 @@
-<?
+<?php
 class user extends dbo {
 	private $id = null;
 	private $linkedin_id = null;
@@ -411,3 +411,5 @@ class user extends dbo {
 	}
 	
 }
+?>
+
